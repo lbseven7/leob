@@ -25,6 +25,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/barra-progresso.css">
 
     <style>
         body {
@@ -45,6 +46,9 @@
     </style>
 </head>
 <body class="bg-white text-black dark:bg-black dark:text-white transition-colors duration-500 antialiased">
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
 
     <!-- HEADER -->
     <header class="fixed w-full top-0 z-40 bg-white/90 dark:bg-black/90 border-b border-gray-100 dark:border-zinc-800 backdrop-blur-sm">
@@ -202,6 +206,14 @@
             entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
         }, { threshold: 0.1 });
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            document.querySelector('header')?.classList.toggle('scrolled', scrollTop > 24);
+        });
     </script>
 </body>
 </html>
