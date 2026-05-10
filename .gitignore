@@ -1,0 +1,25 @@
+# Ignorar as dependências do Node.js
+/node_modules
+
+# Ignorar os logs de build
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.pnpm-state.json
+.pnpm-store
+
+# Arquivos gerados pelo sistema ou editores de texto
+.DS_Store
+Thumbs.db
+*.bak
+*.swp
+
+# Ignorar a pasta de saída do script de conversão
+# (Contém os arquivos HTML que serão gerados a partir do Markdown)
+# Se você chamou a sua pasta de saída de 'posts', mantenha assim:
+# /posts/
+
+# Se você tivesse o Hugo instalado, também ignoraria a pasta de build:
+# /public/
+*.txt
