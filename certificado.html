@@ -33,16 +33,15 @@
 </head>
 <body class="bg-zinc-50 text-black dark:bg-black dark:text-white transition-colors duration-500 antialiased min-h-screen flex items-center justify-center p-4">
 
-    <!-- BOTÕES DE AÇÃO (Não saem na impressão) -->
+    <!-- BOTÕES DE AÇÃO -->
     <div class="fixed top-6 right-6 flex gap-4 no-print">
-        <button onclick="window.print()" class="bg-black text-white dark:bg-white dark:text-black px-4 py-2 text-xs font-bold uppercase tracking-widest hover:bg-brand-orange dark:hover:bg-brand-orange transition">Imprimir PDF</button>
-        <a href="index.html" class="px-4 py-2 text-xs font-bold uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 hover:border-brand-orange transition">Voltar Galeria</a>
+        <button onclick="window.print()" class="bg-black text-white dark:bg-white dark:text-black px-4 py-2 text-xs font-bold uppercase tracking-widest hover:bg-brand-orange transition">Imprimir PDF</button>
+        <a href="index.html" class="px-4 py-2 text-xs font-bold uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 hover:border-brand-orange transition">Voltar</a>
     </div>
 
     <!-- CERTIFICADO -->
     <div id="cert-content" class="bg-white dark:bg-zinc-950 max-w-3xl w-full p-8 md:p-16 shadow-2xl relative overflow-hidden cert-border">
         
-        <!-- MARCA D'ÁGUA DE FUNDO -->
         <div class="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none">
             <h1 class="text-[200px] font-bold">LB</h1>
         </div>
@@ -53,14 +52,12 @@
                 <p class="serif italic text-zinc-400">Este documento comprova a originalidade e procedência da obra abaixo descrita.</p>
             </header>
 
-            <!-- IMAGEM DA OBRA -->
             <div class="mb-12 flex justify-center">
                 <div class="p-2 bg-white shadow-lg border border-zinc-100 grayscale">
                     <img id="cert-img" src="" alt="Obra" class="max-h-[350px] w-auto">
                 </div>
             </div>
 
-            <!-- DADOS DA OBRA -->
             <div class="space-y-6 mb-16">
                 <h2 id="cert-title" class="serif text-4xl md:text-5xl font-light italic mb-2">---</h2>
                 <div class="w-16 h-px bg-brand-orange mx-auto mb-6"></div>
@@ -85,31 +82,34 @@
                 </div>
             </div>
 
-            <!-- ASSINATURA -->
-            <footer class="mt-20">
-                <div class="inline-block border-t border-zinc-200 dark:border-zinc-800 pt-4 px-12">
-                    <!-- Substitua pela sua assinatura digitalizada (PNG transparente) -->
+            <footer class="mt-20 flex flex-col md:flex-row justify-between items-center gap-8">
+                <div class="text-left">
+                     <p class="text-[8px] opacity-30 tracking-widest uppercase mb-1">Verification ID</p>
+                     <span id="cert-hash" class="text-[10px] font-mono opacity-50">LB-XXXX-000</span>
+                </div>
+
+                <div class="border-t border-zinc-200 dark:border-zinc-800 pt-4 px-8 text-center">
                     <p class="serif italic text-2xl mb-1">Leo Barbosa</p>
                     <p class="text-[9px] tracking-[0.3em] uppercase opacity-60">Artista Plástico</p>
                 </div>
-                <div class="mt-8 text-[8px] opacity-30 tracking-widest uppercase">
-                    Verification ID: <span id="cert-hash">LB-XXXX-000</span>
+
+                <!-- O QR CODE VAI APARECER AQUI -->
+                <div class="flex flex-col items-center">
+                    <img id="qrcode-img" src="" alt="QR Code" class="w-20 h-20 border border-zinc-100 p-1 bg-white">
+                    <p class="text-[7px] uppercase tracking-tighter mt-1 opacity-40">Validar Obra</p>
                 </div>
             </footer>
         </div>
     </div>
 
     <script>
-        // Simulando o Banco de Dados (deve ser o mesmo do index.html)
         const obras = [
             { id: 1, titulo: "O Gigante Naval", tecnica: "Óleo Monocromático", dimensoes: "120x80cm", img: "images/loading.jpg", serie: "05/100", hash: "LB-99283-001" },
             { id: 2, titulo: "O Imperador", tecnica: "Acrílica sobre tela", dimensoes: "100x100cm", img: "images/loading.jpg", serie: "01/50", hash: "LB-44512-002" }
         ];
 
-        // Lógica para capturar o ID da URL (?id=1)
         const urlParams = new URLSearchParams(window.location.search);
         const obraId = parseInt(urlParams.get('id'));
-
         const obraEncontrada = obras.find(o => o.id === obraId);
 
         if (obraEncontrada) {
@@ -120,16 +120,22 @@
             document.getElementById('cert-series').innerText = obraEncontrada.serie;
             document.getElementById('cert-hash').innerText = obraEncontrada.hash;
             document.title = `Certificado - ${obraEncontrada.titulo} | leob.`;
+
+            // LÓGICA DO QR CODE
+            const qrCodeImg = document.getElementById('qrcode-img');
+            const currentURL = window.location.href; 
+            // Usando as configurações que você criou no QR Server (Cor C99A16)
+            qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(currentURL)}&color=C99A16&bgcolor=FFFFFF&qzone=1&margin=0`;
+
         } else {
             document.getElementById('cert-content').innerHTML = `
-                <div class="py-20">
+                <div class="py-20 text-center">
                     <h1 class="text-2xl font-bold">Certificado Não Encontrado</h1>
-                    <p class="mt-4 opacity-60">Por favor, verifique o QR Code ou entre em contato com o artista.</p>
+                    <p class="mt-4 opacity-60">Por favor, acesse via QR Code oficial.</p>
                 </div>
             `;
         }
 
-        // Dark Mode Check
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.classList.add('dark');
         }

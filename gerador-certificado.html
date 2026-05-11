@@ -4,56 +4,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Certificado | leob.</title>
+    <title>Certificado de Autenticidade | leob.</title>
 
     <!-- Tailwind & Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
     <!-- Biblioteca para Gerar PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
-        body {
-            font-family: 'Comfortaa', cursive;
-        }
+        body { font-family: 'Comfortaa', cursive; }
+        .serif { font-family: 'Playfair Display', serif; }
 
-        .serif {
-            font-family: 'Playfair Display', serif;
-        }
-
-        /* Estilo do Certificado para o PDF */
         #certificado-area {
             width: 210mm;
-            /* Tamanho A4 */
             min-height: 297mm;
             padding: 20mm;
             margin: auto;
             background: white;
             color: black;
             position: relative;
-            border: 1px solid #eee;
         }
 
         .moldura {
-            border: 2px solid #000;
+            border: 4px double #000;
             padding: 10mm;
             height: 100%;
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        .selo-ouro {
-            filter: grayscale(100%);
-            opacity: 0.8;
-        }
-
-        @media print {
-            .no-print {
-                display: none;
-            }
-        }
+        @media print { .no-print { display: none; } }
     </style>
 </head>
 
@@ -61,17 +44,16 @@
 
     <!-- CONTROLES -->
     <div class="max-w-[210mm] mx-auto mb-6 flex justify-between items-center no-print px-4">
-        <a href="index.html" class="text-xs uppercase tracking-widest opacity-50 hover:opacity-100">← Voltar</a>
+        <a href="index.html" class="text-xs uppercase tracking-widest opacity-50 hover:opacity-100">← Voltar Galeria</a>
         <button onclick="gerarPDF()"
             class="bg-orange-600 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-black transition shadow-lg">
             ⬇ Baixar Certificado (PDF)
         </button>
     </div>
 
-    <!-- ÁREA DO CERTIFICADO (O que será capturado pelo PDF) -->
+    <!-- ÁREA DO CERTIFICADO -->
     <div id="certificado-area">
-        <div class="moldura flex flex-col justify-between h-full border-4 border-double border-black">
-
+        <div class="moldura">
             <!-- Cabeçalho -->
             <div class="text-center mt-10">
                 <h1 class="text-xs tracking-[0.8em] uppercase mb-4">Certificado de Autenticidade</h1>
@@ -81,20 +63,17 @@
             <!-- Corpo -->
             <div class="text-center my-10">
                 <p class="serif italic text-lg mb-8 text-zinc-600">
-                    Pelo presente documento, certifico que a obra de arte abaixo descrita é uma criação original e
-                    autêntica de autoria exclusiva de:
+                    Pelo presente documento, certifico que a obra de arte abaixo descrita é uma criação original e autêntica de autoria exclusiva de:
                 </p>
                 <h2 class="serif text-5xl font-light mb-12">Leo Barbosa</h2>
 
                 <!-- Imagem da Obra -->
                 <div class="flex justify-center mb-10">
-                    <img id="obra-img" src="images/loading.jpg"
-                        class="max-h-[280px] border border-zinc-200 p-2 shadow-sm grayscale">
+                    <img id="obra-img" src="" class="max-h-[280px] border border-zinc-200 p-2 shadow-sm grayscale">
                 </div>
 
                 <!-- Detalhes -->
-                <div
-                    class="max-w-md mx-auto text-left border-t border-b border-zinc-100 py-8 grid grid-cols-2 gap-6 text-sm">
+                <div class="max-w-md mx-auto text-left border-t border-b border-zinc-100 py-8 grid grid-cols-2 gap-6 text-sm">
                     <div>
                         <span class="block text-[10px] uppercase opacity-40">Título</span>
                         <strong id="obra-titulo" class="serif text-xl">---</strong>
@@ -118,7 +97,7 @@
             <div class="flex justify-between items-end mb-10 px-10">
                 <div class="text-left">
                     <p class="text-[9px] uppercase tracking-widest opacity-40 mb-1">ID de Autenticidade</p>
-                    <p id="obra-hash" class="text-[10px] font-mono">#LB-0000-000</p>
+                    <p id="obra-hash" class="text-[10px] font-mono opacity-60">#LB-0000-000</p>
                 </div>
 
                 <div class="text-center">
@@ -130,62 +109,52 @@
 
                 <!-- QR Code Dinâmico -->
                 <div class="text-right flex flex-col items-end">
-                    <div id="qrcode-container" class="p-1 bg-white border border-zinc-200 shadow-sm">
-                        <img id="qrcode-img" src="" alt="QR Code de Verificação" class="w-20 h-20">
+                    <div class="p-1 bg-white border border-zinc-100 shadow-sm">
+                        <img id="qrcode-img" src="" alt="QR Code" class="w-20 h-20">
                     </div>
-                    <p class="text-[7px] uppercase tracking-tighter mt-1 opacity-40">Verificação Digital</p>
+                    <p class="text-[7px] uppercase tracking-tighter mt-1 opacity-40">Validação Original</p>
                 </div>
             </div>
-
         </div>
     </div>
 
     <script>
-        // Dados das Obras (Mantenha sincronizado com sua galeria)
         const obras = [
             { id: 1, titulo: "O Gigante Naval", tecnica: "Óleo Monocromático", img: "images/loading.jpg", serie: "05/100", hash: "LB-99283-001", ano: "2024" },
             { id: 2, titulo: "O Imperador", tecnica: "Acrílica sobre tela", img: "images/loading.jpg", serie: "01/50", hash: "LB-44512-002", ano: "2020" }
         ];
 
-        // Carregar dados da URL
         const params = new URLSearchParams(window.location.search);
-        const id = parseInt(params.get('id')) || 1;
-        const obra = obras.find(o => o.id === id);
+        const idObra = parseInt(params.get('id')) || 1;
+        const obra = obras.find(o => o.id === idObra);
 
         if (obra) {
+            // Preenche os dados
             document.getElementById('obra-img').src = obra.img;
             document.getElementById('obra-titulo').innerText = obra.titulo;
             document.getElementById('obra-tecnica').innerText = obra.tecnica;
             document.getElementById('obra-serie').innerText = obra.serie;
             document.getElementById('obra-hash').innerText = obra.hash;
             document.getElementById('obra-ano').innerText = obra.ano;
+            document.title = `Certificado - ${obra.titulo}`;
+
+            // Gera o QR Code com a cor personalizada C99A16
+            const qrCodeImg = document.getElementById('qrcode-img');
+            const linkCertificado = `https://www.leob.com.br/certificado?id=${obra.id}`;
+            qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(linkCertificado)}&color=C99A16&bgcolor=FFFFFF&qzone=1&margin=0`;
         }
-        // Gera o link de verificação baseado na URL atual do seu site
-        const urlVerificacao = window.location.href;
 
-        // Utiliza a API do QR Server para gerar a imagem dinamicamente
-        // A variável 'id' vem do parâmetro da URL que já configuramos antes
-        const qrCodeImg = document.getElementById('qrcode-img');
-        const linkCertificado = `https://www.leob.com.br/certificado?id=${obra.id}`;
-
-        // URL da API com as suas customizações de cor (C99A16) e fundo branco
-        qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(linkCertificado)}&color=C99A16&bgcolor=FFFFFF&qzone=1&margin=0`;
-
-        // Função para Gerar o PDF
         function gerarPDF() {
             const element = document.getElementById('certificado-area');
             const opt = {
                 margin: 0,
-                filename: `Certificado-${obra.titulo}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
+                filename: `Certificado-LeoBarbosa-${obra ? obra.titulo : 'Obra'}.pdf`,
+                image: { type: 'jpeg', quality: 1 },
+                html2canvas: { scale: 3, useCORS: true, letterRendering: true },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
-
-            // Executa a conversão
             html2pdf().set(opt).from(element).save();
         }
     </script>
 </body>
-
 </html>
