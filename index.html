@@ -1,64 +1,61 @@
 <!DOCTYPE html>
 <html lang="pt-br" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo de Arte | leob.</title>
-    
-    <!-- Tailwind CSS com Configuração de Dark Mode -->
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: {
-                        brand: {
-                            orange: '#F97316',
-                        }
-                    }
+                    colors: { brand: { orange: '#F97316' } }
                 }
             }
         }
     </script>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/barra-progresso.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
-        body {
-            font-family: 'Comfortaa', cursive;
+        body { font-family: 'Comfortaa', cursive; cursor: none; }
+        .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+        .hero-height { height: 70vh; }
+        #custom-cursor {
+            width: 12px; height: 12px; background: rgba(249, 115, 22, 0.28);
+            border: 1px solid rgba(249, 115, 22, 0.55); border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.12s ease, background-color 0.12s ease, opacity 0.12s ease;
         }
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        .filter-btn.active { background-color: #F97316; color: white; border-color: #F97316; }
+        @keyframes pulse-low {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .hero-height {
-            height: 70vh;
-        }
+        .animate-urgent { animation: pulse-low 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     </style>
 </head>
+
 <body class="bg-white text-black dark:bg-black dark:text-white transition-colors duration-500 antialiased">
     <div id="progress-container">
         <div id="progress-bar"></div>
     </div>
+    <div id="custom-cursor"></div>
 
-    <!-- HEADER -->
     <header class="fixed w-full top-0 z-40 bg-white/90 dark:bg-black/90 border-b border-gray-100 dark:border-zinc-800 backdrop-blur-sm">
         <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-            <h1 class="text-xl font-bold tracking-tighter">leob.</h1>
-            
+            <!-- <h1 class="text-xl font-bold tracking-tighter">leob.</h1> -->
+             <img src="images/logo-laranja-branco-removebg-preview.png" alt="Logo" class="max-w-[185px] h-auto">
             <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
                 <a href="#catalogo" class="hover:text-brand-orange transition">Catálogo</a>
                 <a href="#sobre" class="hover:text-brand-orange transition">Sobre</a>
-                
                 <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition">
                     <span id="theme-icon-light" class="hidden dark:block">☀️</span>
                     <span id="theme-icon-dark" class="block dark:hidden">🌙</span>
@@ -68,41 +65,42 @@
     </header>
 
     <main class="pt-20">
-        
-        <!-- ÁREA DA IMAGEM GRANDE (HERO) -->
         <section class="relative w-full hero-height overflow-hidden bg-zinc-200 dark:bg-zinc-900">
-            <img src="images/capa.jpg" alt="Destaque Galeria" 
-                 class="w-full h-full object-cover">
+            <img src="images/miguelo-zezo-pb.jpg" alt="Destaque Galeria" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
                 <div class="text-center fade-in visible">
-                    <h2 class="text-white text-4xl md:text-6xl font-light uppercase tracking-[0.2em]">Curadoria</h2>
-                    <p class="text-white/80 mt-4 tracking-widest text-sm uppercase">Expressão em Luz e Sombra</p>
+                    <h2 class="text-white text-4xl md:text-6xl font-light uppercase tracking-[0.2em]">O Artista</h2>
+                    <p class="text-white/80 mt-4 tracking-widest text-sm uppercase">Eterniza o Momento e Traduz Emoções</p>
                 </div>
             </div>
         </section>
 
-        <!-- CATÁLOGO -->
         <section id="catalogo" class="max-w-7xl mx-auto px-6 py-20">
-            <div class="mb-12">
-                <h2 class="text-3xl font-light">50 Tons de Cinza!</h2>
-                <div class="h-1 w-20 bg-brand-orange mt-2"></div>
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8">
+                <div>
+                    <h2 class="text-3xl font-light">50 Tons de Cinza!</h2>
+                    <div class="h-1 w-20 bg-brand-orange mt-2"></div>
+                </div>
+                <div class="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-widest">
+                    <button onclick="filterGallery('todos')" class="filter-btn active border border-zinc-200 dark:border-zinc-800 px-6 py-2 transition-all hover:border-brand-orange">Todos</button>
+                    <button onclick="filterGallery('óleo')" class="filter-btn border border-zinc-200 dark:border-zinc-800 px-6 py-2 transition-all hover:border-brand-orange">Óleo</button>
+                    <button onclick="filterGallery('acrílica')" class="filter-btn border border-zinc-200 dark:border-zinc-800 px-6 py-2 transition-all hover:border-brand-orange">Acrílica</button>
+                    <button onclick="filterGallery('disponível')" class="filter-btn border border-zinc-200 dark:border-zinc-800 px-6 py-2 transition-all hover:border-brand-orange">Disponíveis</button>
+                </div>
             </div>
 
-            <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                <!-- Itens via JS -->
-            </div>
+            <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-3 gap-12"></div>
         </section>
 
-        <!-- SOBRE -->
-        <section id="sobre" class="max-w-7xl mx-auto px-6 py-32 mt-20 bg-gray-50 dark:bg-zinc-950 transition-colors">
+        <section id="sobre" class="max-w-7xl mx-auto px-6 py-32 mt-20 bg-gray-50 dark:bg-zinc-950">
             <div class="flex flex-col md:flex-row items-center gap-16">
                 <div class="w-64 h-64 md:w-80 md:h-80 bg-gray-300 dark:bg-zinc-800 overflow-hidden grayscale">
-                    <img src="images/leob..jpg" alt="Artista" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/400x400?text=Leo'">
+                    <img src="images/logo-laranja-branco.png" alt="Artista" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/400x400?text=Leo'">
                 </div>
                 <div class="flex-1">
                     <h2 class="text-4xl font-light mb-6">Sobre o Artista</h2>
                     <p class="text-gray-600 dark:text-zinc-400 leading-relaxed mb-6">
-                        Leo Barbosa é um artista focado na técnica monocromática, explorando as nuances entre o preto e o branco para criar profundidade e emoção através de óleos e acrílicas.
+                        Leo Barbosa explora a profundidade do preto e branco em óleos e acrílicas, focando em edições limitadas para colecionadores exigentes.
                     </p>
                 </div>
             </div>
@@ -110,12 +108,13 @@
     </main>
 
     <!-- FOOTER -->
-    <footer class="border-t border-gray-100 dark:border-zinc-800 py-12">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 opacity-60">
-            <p class="text-sm">&copy; 2026 leob.</p>
-            <div class="flex space-x-6 text-sm">
-                <a href="https://www.instagram.com/leob_pinturas/" target="_blank" class="hover:text-brand-orange transition">Instagram</a>
-                <a href="https://wa.me/5573991182932    " target="_blank" class="hover:text-brand-orange transition">WhatsApp</a>
+    <footer class="border-t border-gray-100 dark:border-zinc-800 py-12 opacity-60">
+        <div class="relative max-w-7xl mx-auto px-6 flex flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
+            <p class="text-sm">&copy; 2026 leob. - por lbseven7</p>
+            <div class="flex items-center gap-6 text-xl md:ml-auto">
+                <a href="https://wa.me/5573991182932" target="_blank" aria-label="WhatsApp" class="hover:text-brand-orange transition"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="https://www.instagram.com/leob_pinturas/" target="_blank" aria-label="Instagram" class="hover:text-brand-orange transition"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.youtube.com/@leob.25Anos" target="_blank" aria-label="YouTube" class="hover:text-brand-orange transition"><i class="fa-brands fa-youtube"></i></a>
             </div>
         </div>
     </footer>
@@ -128,15 +127,13 @@
             </div>
             <div class="md:w-1/3 p-10 flex flex-col justify-center relative">
                 <button onclick="closeModal()" class="absolute top-4 right-4 text-2xl hover:text-brand-orange">&times;</button>
-                <span class="text-brand-orange text-xs font-bold tracking-widest uppercase mb-2">Série Limitada</span>
+                <div id="modal-stock-badge" class="inline-block px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold tracking-tighter mb-4 w-fit"></div>
                 <h3 id="modal-title" class="text-3xl font-bold mb-4 italic"></h3>
                 <div class="space-y-2 mb-8 text-sm text-gray-600 dark:text-zinc-400 border-l-2 border-brand-orange pl-4">
                     <p><strong>Técnica:</strong> <span id="modal-technique"></span></p>
                     <p><strong>Dimensões:</strong> <span id="modal-dimensions"></span></p>
                 </div>
-                <a id="whatsapp-link" href="#" target="_blank" class="bg-brand-orange text-white text-center py-4 px-6 font-bold hover:bg-black dark:hover:bg-white dark:hover:text-black transition duration-300">
-                    Tenho Interesse
-                </a>
+                <a id="whatsapp-link" href="https://wa.me/5573991182932"  target="_blank" class="bg-brand-orange text-white text-center py-4 px-6 font-bold hover:bg-black dark:hover:bg-white dark:hover:text-black transition duration-300">Consultar Disponibilidade</a>
             </div>
         </div>
     </div>
@@ -147,73 +144,113 @@
             localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
         }
 
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        }
-
-        // CONFIGURAÇÃO DAS OBRAS COM IMAGENS DE LOADING (Fictícias Grayscale)
         const obras = [
-            { id: 1, titulo: "O Gigante Naval", tecnica: "Óleo Monocromático", dimensoes: "120x80cm", img: "images/loading.jpg" },
-            { id: 2, titulo: "O Imperador", tecnica: "Acrílica sobre tela", dimensoes: "100x100cm", img: "images/loading.jpg" },
-            { id: 3, titulo: "Microfone Shure Dourado", tecnica: "Mista Monocromática", dimensoes: "60x40cm", img: "images/loading.jpg" }
+            { id: 1, titulo: "Título 1", tecnica: "Técnica", dimensoes: "...", img: "images/logo-laranja-branco.png", categoria: "óleo", restante: 18, total: 18 },
+            { id: 2, titulo: "Título 2", tecnica: "Técnica", dimensoes: "...", img: "images/logo-laranja-preto.png", categoria: "disponível", restante: 18, total: 18 },
+            { id: 3, titulo: "Título 3", tecnica: "Técnica", dimensoes: "...", img: "images/logo-laranja-branco.png", categoria: "disponível", restante: 18, total: 18 }
         ];
 
-        // Adiciona placeholders até completar 12 cards para visualização do grid
-        for(let i = 4; i <= 12; i++) {
-            obras.push({
-                id: i,
-                titulo: `Estudo Monocromático #${i}`,
-                tecnica: "Processo Criativo",
-                dimensoes: "Variável",
-                img: 'images/loading.jpg'
+        const galleryGrid = document.getElementById('gallery-grid');
+
+        function renderGallery(filter = 'todos') {
+            galleryGrid.innerHTML = '';
+            const filtered = filter === 'todos' ? obras : obras.filter(o => o.categoria === filter);
+
+            filtered.forEach(obra => {
+                const isLowStock = obra.restante < 10;
+                const item = document.createElement('div');
+                item.className = 'fade-in group cursor-pointer';
+                item.innerHTML = `
+                    <div class="relative overflow-hidden bg-zinc-100 dark:bg-zinc-900 aspect-[4/5] mb-4">
+                        <img src="${obra.img}" alt="${obra.titulo}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        ${isLowStock ? '<div class="absolute top-4 left-4 bg-brand-orange text-white text-[9px] px-2 py-1 font-bold uppercase tracking-tighter">Últimas Unidades</div>' : ''}
+                    </div>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-lg font-medium group-hover:text-brand-orange transition">${obra.titulo}</h3>
+                            <p class="text-[10px] opacity-50 uppercase tracking-widest">${obra.tecnica}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[11px] font-bold ${isLowStock ? 'text-brand-orange animate-urgent' : ''}">${obra.restante}/${obra.total}</span>
+                            <p class="text-[8px] opacity-40 uppercase">Restantes</p>
+                        </div>
+                    </div>
+                `;
+                item.onclick = () => openModal(obra);
+                galleryGrid.appendChild(item);
+                setTimeout(() => item.classList.add('visible'), 50);
             });
+            updateCursorEvents();
         }
 
-        const galleryGrid = document.getElementById('gallery-grid');
-        obras.forEach(obra => {
-            const item = document.createElement('div');
-            item.className = 'fade-in group cursor-pointer';
-            item.innerHTML = `
-                <div class="relative overflow-hidden bg-zinc-100 dark:bg-zinc-900 aspect-[4/5] mb-4">
-                    <img src="images/loading.jpg" alt="${obra.titulo}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" onerror="this.src='images/loading.jpg'">
-                </div>
-                <div class="flex justify-between items-baseline">
-                    <h3 class="text-lg font-medium group-hover:text-brand-orange transition">${obra.titulo}</h3>
-                    <span class="text-[10px] text-brand-orange font-bold uppercase">Série Limitada</span>
-                </div>
-            `;
-            item.onclick = () => openModal(obra);
-            galleryGrid.appendChild(item);
-        });
-
-        const modal = document.getElementById('modal-overlay');
         function openModal(obra) {
-            document.getElementById('modal-img').src = obra.img || 'images/loading.jpg';
+            document.getElementById('modal-img').src = obra.img;
             document.getElementById('modal-title').innerText = obra.titulo;
             document.getElementById('modal-technique').innerText = obra.tecnica;
             document.getElementById('modal-dimensions').innerText = obra.dimensoes;
-            document.getElementById('whatsapp-link').href = `https://wa.me/+5573991182932?text=Olá! Gostaria de informações sobre a obra ${obra.titulo}.`;
+            
+            const badge = document.getElementById('modal-stock-badge');
+            badge.innerText = `SÉRIE LIMITADA: ${obra.restante} DE ${obra.total} DISPONÍVEIS`;
+            badge.className = obra.restante < 10 ? 'inline-block px-2 py-1 bg-brand-orange text-white text-[10px] font-bold tracking-tighter mb-4 w-fit' : 'inline-block px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold tracking-tighter mb-4 w-fit';
+
+            document.getElementById('whatsapp-link').href = `https://wa.me/5573991182932?text=Olá Leo! Gostaria de consultar a numeração disponível para a obra ${obra.titulo}.`;
+            
+            const modal = document.getElementById('modal-overlay');
             modal.classList.remove('hidden');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
         }
 
         function closeModal() {
+            const modal = document.getElementById('modal-overlay');
             modal.classList.add('opacity-0');
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+        function filterGallery(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText.toLowerCase() === category);
+            });
+            renderGallery(category);
+        }
 
-        window.addEventListener('scroll', () => {
+        // Custom Cursor
+        const cursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', e => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        function updateCursorEvents() {
+            document.querySelectorAll('a, button, .group').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    const isFooterLink = !!el.closest('footer');
+                    cursor.style.transform = isFooterLink ? 'translate(-50%, -50%) scale(1.7)' : 'translate(-50%, -50%) scale(2.4)';
+                    cursor.style.backgroundColor = isFooterLink ? 'rgba(249, 115, 22, 0.16)' : 'rgba(249, 115, 22, 0.28)';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                    cursor.style.backgroundColor = 'rgba(249, 115, 22, 0.28)';
+                });
+            });
+        }
+
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+
+        function updateProgressBar() {
             const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
             const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
-            document.getElementById('progress-bar').style.width = `${progress}%`;
+            const progressBar = document.getElementById('progress-bar');
+            if (progressBar) progressBar.style.width = `${progress}%`;
             document.querySelector('header')?.classList.toggle('scrolled', scrollTop > 24);
-        });
+        }
+
+        window.addEventListener('scroll', updateProgressBar);
+
+        renderGallery();
+        updateProgressBar();
     </script>
 </body>
 </html>
