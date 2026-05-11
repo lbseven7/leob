@@ -39,8 +39,9 @@
         #catalog-filters { -ms-overflow-style: none; scrollbar-width: none; }
         @media (max-width: 767px) {
             body { cursor: auto; }
-            .hero-height { height: 58vh; min-height: 420px; }
+            .hero-height { height: 56vh; min-height: 360px; }
             #custom-cursor { display: none; }
+            .hero-mobile-focus { object-position: 38% center; }
         }
         @keyframes pulse-low {
             0%, 100% { opacity: 1; }
@@ -57,22 +58,27 @@
     <div id="custom-cursor"></div>
 
     <header class="fixed w-full top-0 z-40 bg-white/90 dark:bg-black/90 border-b border-gray-100 dark:border-zinc-800 backdrop-blur-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex justify-between items-center gap-3">
-            <img src="images/logo-laranja-branco-removebg-preview.png" alt="Logo" class="max-w-[132px] sm:max-w-[185px] h-auto">
-            <nav class="flex items-center gap-3 sm:gap-5 text-[11px] sm:text-sm font-medium">
-                <a href="#catalogo" class="hover:text-brand-orange transition">Catálogo</a>
-                <a href="#sobre" class="hover:text-brand-orange transition">Sobre</a>
-                <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition">
-                    <span id="theme-icon-light" class="hidden dark:block">☀️</span>
-                    <span id="theme-icon-dark" class="block dark:hidden">🌙</span>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 h-20 flex justify-between items-center gap-3">
+            <img src="images/logo-preto-removebg-preview.png" alt="Logo" class="max-w-[132px] sm:max-w-[140px] h-auto">
+            <div class="flex items-center gap-2">
+                <nav id="main-nav" class="hidden md:flex absolute md:static top-full left-4 right-4 md:left-auto md:right-auto mt-3 md:mt-0 flex-col md:flex-row items-start md:items-center gap-4 md:gap-5 bg-transparent rounded-2xl md:rounded-none border-0 p-5 md:p-0 shadow-none text-sm font-medium">
+                    <a href="#catalogo" class="hover:text-brand-orange transition">Catálogo</a>
+                    <a href="#sobre" class="hover:text-brand-orange transition">Sobre</a>
+                    <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition" aria-label="Alternar tema">
+                        <span id="theme-icon-light" class="hidden dark:block">☀️</span>
+                        <span id="theme-icon-dark" class="block dark:hidden">🌙</span>
+                    </button>
+                </nav>
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition" aria-label="Abrir menu">
+                    <i class="fa-solid fa-bars"></i>
                 </button>
-            </nav>
+            </div>
         </div>
     </header>
 
     <main class="pt-20">
         <section class="relative w-full hero-height overflow-hidden bg-zinc-200 dark:bg-zinc-900">
-            <img src="images/miguelo-zezo-pb.jpg" alt="Destaque Galeria" class="w-full h-full object-cover">
+            <img src="images/miguelo-zezo-pb.jpg" alt="Destaque Galeria" class="w-full h-full object-cover hero-mobile-focus">
             <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
                 <div class="text-center fade-in visible px-5">
                     <h2 class="text-white text-3xl sm:text-4xl md:text-6xl font-light uppercase tracking-[0.12em] sm:tracking-[0.2em]">O Artista</h2>
@@ -84,14 +90,14 @@
         <section id="catalogo" class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-12 gap-6 sm:gap-8">
                 <div>
-                    <h2 class="text-3xl font-light">50 Tons de Cinza!</h2>
+                    <h2 class="text-3xl font-light">Edições Limitadas</h2>
                     <div class="h-1 w-20 bg-brand-orange mt-2"></div>
                 </div>
-                <div id="catalog-filters" class="flex gap-2 overflow-x-auto pb-2 text-xs font-bold uppercase tracking-widest whitespace-nowrap">
-                    <button onclick="filterGallery('todos')" class="filter-btn active border border-zinc-200 dark:border-zinc-800 px-6 py-2 transition-all hover:border-brand-orange">Todos</button>
-                    <button onclick="filterGallery('óleo')" class="filter-btn border border-zinc-200 dark:border-zinc-800 px-6 py-2 transition-all hover:border-brand-orange">Óleo</button>
-                    <button onclick="filterGallery('acrílica')" class="filter-btn border border-zinc-200 dark:border-zinc-800 px-6 py-2 transition-all hover:border-brand-orange">Acrílica</button>
-                    <button onclick="filterGallery('disponível')" class="filter-btn border border-zinc-200 dark:border-zinc-800 px-6 py-2 transition-all hover:border-brand-orange">Disponíveis</button>
+                <div id="catalog-filters" class="w-full grid grid-cols-2 gap-2 sm:w-auto sm:flex sm:gap-2 pb-1 text-[10px] sm:text-xs font-bold uppercase tracking-wide sm:tracking-widest">
+                    <button onclick="filterGallery('todos')" class="filter-btn active w-full border border-zinc-200 dark:border-zinc-800 px-3 sm:px-6 py-2 transition-all hover:border-brand-orange">Todos</button>
+                    <button onclick="filterGallery('óleo')" class="filter-btn w-full border border-zinc-200 dark:border-zinc-800 px-3 sm:px-6 py-2 transition-all hover:border-brand-orange">Óleo</button>
+                    <button onclick="filterGallery('acrílica')" class="filter-btn w-full border border-zinc-200 dark:border-zinc-800 px-3 sm:px-6 py-2 transition-all hover:border-brand-orange">Acrílica</button>
+                    <button onclick="filterGallery('disponível')" class="filter-btn w-full border border-zinc-200 dark:border-zinc-800 px-3 sm:px-6 py-2 transition-all hover:border-brand-orange">Disponíveis</button>
                 </div>
             </div>
 
@@ -258,6 +264,13 @@
         }
 
         window.addEventListener('scroll', updateProgressBar);
+
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mainNav = document.getElementById('main-nav');
+        mobileMenuBtn?.addEventListener('click', () => mainNav.classList.toggle('hidden'));
+        mainNav?.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => mainNav.classList.add('hidden'));
+        });
 
         renderGallery();
         updateProgressBar();
