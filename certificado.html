@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificado de Autenticidade | leob.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brand: { orange: '#F97316' } }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Comfortaa', cursive; }
+        .serif { font-family: 'Playfair Display', serif; }
+        .cert-border {
+            border: 20px solid transparent;
+            border-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="none" stroke="%23F97316" stroke-width="2" x="10" y="10" width="80" height="80"/></svg>') 30 stretch;
+        }
+        @media print {
+            .no-print { display: none; }
+            body { background: white !important; color: black !important; }
+        }
+    </style>
+</head>
+<body class="bg-zinc-50 text-black dark:bg-black dark:text-white transition-colors duration-500 antialiased min-h-screen flex items-center justify-center p-4">
+
+    <!-- BOTÕES DE AÇÃO (Não saem na impressão) -->
+    <div class="fixed top-6 right-6 flex gap-4 no-print">
+        <button onclick="window.print()" class="bg-black text-white dark:bg-white dark:text-black px-4 py-2 text-xs font-bold uppercase tracking-widest hover:bg-brand-orange dark:hover:bg-brand-orange transition">Imprimir PDF</button>
+        <a href="index.html" class="px-4 py-2 text-xs font-bold uppercase tracking-widest border border-zinc-200 dark:border-zinc-800 hover:border-brand-orange transition">Voltar Galeria</a>
+    </div>
+
+    <!-- CERTIFICADO -->
+    <div id="cert-content" class="bg-white dark:bg-zinc-950 max-w-3xl w-full p-8 md:p-16 shadow-2xl relative overflow-hidden cert-border">
+        
+        <!-- MARCA D'ÁGUA DE FUNDO -->
+        <div class="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none">
+            <h1 class="text-[200px] font-bold">LB</h1>
+        </div>
+
+        <div class="relative z-10 text-center">
+            <header class="mb-12">
+                <h1 class="text-xs tracking-[0.5em] uppercase text-brand-orange font-bold mb-2">Digital Certificate of Authenticity</h1>
+                <p class="serif italic text-zinc-400">Este documento comprova a originalidade e procedência da obra abaixo descrita.</p>
+            </header>
+
+            <!-- IMAGEM DA OBRA -->
+            <div class="mb-12 flex justify-center">
+                <div class="p-2 bg-white shadow-lg border border-zinc-100 grayscale">
+                    <img id="cert-img" src="" alt="Obra" class="max-h-[350px] w-auto">
+                </div>
+            </div>
+
+            <!-- DADOS DA OBRA -->
+            <div class="space-y-6 mb-16">
+                <h2 id="cert-title" class="serif text-4xl md:text-5xl font-light italic mb-2">---</h2>
+                <div class="w-16 h-px bg-brand-orange mx-auto mb-6"></div>
+                
+                <div class="grid grid-cols-2 gap-y-6 text-left max-w-md mx-auto text-sm border-t border-zinc-100 dark:border-zinc-900 pt-8">
+                    <div>
+                        <p class="text-[10px] uppercase tracking-widest opacity-50 mb-1">Técnica</p>
+                        <p id="cert-tech" class="font-medium">---</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-widest opacity-50 mb-1">Dimensões</p>
+                        <p id="cert-dims" class="font-medium">---</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-widest opacity-50 mb-1">Série / Tiragem</p>
+                        <p id="cert-series" class="font-bold text-brand-orange">---</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-widest opacity-50 mb-1">Data de Criação</p>
+                        <p id="cert-date" class="font-medium">2026</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ASSINATURA -->
+            <footer class="mt-20">
+                <div class="inline-block border-t border-zinc-200 dark:border-zinc-800 pt-4 px-12">
+                    <!-- Substitua pela sua assinatura digitalizada (PNG transparente) -->
+                    <p class="serif italic text-2xl mb-1">Leo Barbosa</p>
+                    <p class="text-[9px] tracking-[0.3em] uppercase opacity-60">Artista Plástico</p>
+                </div>
+                <div class="mt-8 text-[8px] opacity-30 tracking-widest uppercase">
+                    Verification ID: <span id="cert-hash">LB-XXXX-000</span>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Simulando o Banco de Dados (deve ser o mesmo do index.html)
+        const obras = [
+            { id: 1, titulo: "O Gigante Naval", tecnica: "Óleo Monocromático", dimensoes: "120x80cm", img: "images/loading.jpg", serie: "05/100", hash: "LB-99283-001" },
+            { id: 2, titulo: "O Imperador", tecnica: "Acrílica sobre tela", dimensoes: "100x100cm", img: "images/loading.jpg", serie: "01/50", hash: "LB-44512-002" }
+        ];
+
+        // Lógica para capturar o ID da URL (?id=1)
+        const urlParams = new URLSearchParams(window.location.search);
+        const obraId = parseInt(urlParams.get('id'));
+
+        const obraEncontrada = obras.find(o => o.id === obraId);
+
+        if (obraEncontrada) {
+            document.getElementById('cert-img').src = obraEncontrada.img;
+            document.getElementById('cert-title').innerText = obraEncontrada.titulo;
+            document.getElementById('cert-tech').innerText = obraEncontrada.tecnica;
+            document.getElementById('cert-dims').innerText = obraEncontrada.dimensoes;
+            document.getElementById('cert-series').innerText = obraEncontrada.serie;
+            document.getElementById('cert-hash').innerText = obraEncontrada.hash;
+            document.title = `Certificado - ${obraEncontrada.titulo} | leob.`;
+        } else {
+            document.getElementById('cert-content').innerHTML = `
+                <div class="py-20">
+                    <h1 class="text-2xl font-bold">Certificado Não Encontrado</h1>
+                    <p class="mt-4 opacity-60">Por favor, verifique o QR Code ou entre em contato com o artista.</p>
+                </div>
+            `;
+        }
+
+        // Dark Mode Check
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</body>
+</html>
