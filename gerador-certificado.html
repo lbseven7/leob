@@ -8,42 +8,89 @@
 
     <!-- Tailwind & Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
 
     <!-- Biblioteca para Gerar PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
-        body { font-family: 'Comfortaa', cursive; }
-        .serif { font-family: 'Playfair Display', serif; }
+        body {
+            font-family: 'Comfortaa', cursive;
+        }
+
+        .serif {
+            font-family: 'Playfair Display', serif;
+        }
 
         #certificado-area {
             width: 210mm;
-            min-height: 297mm;
-            padding: 20mm;
-            margin: auto;
+            height: 297mm;
+            /* Altura exata do A4 */
+            padding: 15mm;
+            /* Reduzi um pouco para dar "fôlego" */
+            margin: 0 auto;
             background: white;
             color: black;
             position: relative;
+            box-sizing: border-box;
+            /* Garante que o padding não aumente o tamanho total */
+            overflow: hidden;
+            /* Corta qualquer elemento que tente criar uma 2ª página */
+            page-break-after: avoid;
+        }
+
+        #obra-img {
+            width: auto;
+            max-width: 100%;
+            max-height: 280px;
+            object-fit: contain;
+            /* Mantém a proporção original */
+            display: block;
+            margin: 0 auto;
         }
 
         .moldura {
             border: 4px double #000;
-            padding: 10mm;
+            padding: 8mm;
             height: 100%;
+            /* Ocupa o espaço interno da área A4 */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            box-sizing: border-box;
         }
 
-        @media print { .no-print { display: none; } }
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            #certificado-area {
+                width: 100%;
+                min-height: auto;
+                padding: 1rem;
+            }
+
+            .moldura {
+                padding: 1.25rem;
+            }
+        }
+
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
     </style>
 </head>
 
 <body class="bg-zinc-100 py-10">
 
     <!-- CONTROLES -->
-    <div class="max-w-[210mm] mx-auto mb-6 flex justify-between items-center no-print px-4">
+    <div
+        class="max-w-[210mm] mx-auto mb-6 flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center no-print px-4">
         <a href="index.html" class="text-xs uppercase tracking-widest opacity-50 hover:opacity-100">← Voltar Galeria</a>
         <button onclick="gerarPDF()"
             class="bg-orange-600 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-black transition shadow-lg">
@@ -55,25 +102,28 @@
     <div id="certificado-area">
         <div class="moldura">
             <!-- Cabeçalho -->
-            <div class="text-center mt-10">
+            <div class="text-center mt-4 sm:mt-10">
                 <h1 class="text-xs tracking-[0.8em] uppercase mb-4">Certificado de Autenticidade</h1>
                 <div class="w-20 h-px bg-orange-500 mx-auto"></div>
             </div>
 
             <!-- Corpo -->
             <div class="text-center my-10">
-                <p class="serif italic text-lg mb-8 text-zinc-600">
-                    Pelo presente documento, certifico que a obra de arte abaixo descrita é uma criação original e autêntica de autoria exclusiva de:
+                <p class="serif italic text-base sm:text-lg mb-6 sm:mb-8 text-zinc-600">
+                    Pelo presente documento, certifico que a obra de arte abaixo descrita é uma criação original e
+                    autêntica de autoria exclusiva de:
                 </p>
-                <h2 class="serif text-5xl font-light mb-12">Leo Barbosa</h2>
+                <h2 class="serif text-3xl sm:text-5xl font-light mb-8 sm:mb-12">Leo Barbosa</h2>
 
                 <!-- Imagem da Obra -->
                 <div class="flex justify-center mb-10">
-                    <img id="obra-img" src="" class="max-h-[280px] border border-zinc-200 p-2 shadow-sm grayscale">
+                    <img id="obra-img" src=""
+                        class="w-full max-w-[280px] sm:max-w-none max-h-[220px] sm:max-h-[280px] border border-zinc-200 p-2 shadow-sm grayscale object-contain">
                 </div>
 
                 <!-- Detalhes -->
-                <div class="max-w-md mx-auto text-left border-t border-b border-zinc-100 py-8 grid grid-cols-2 gap-6 text-sm">
+                <div
+                    class="max-w-md mx-auto text-left border-t border-b border-zinc-100 py-6 sm:py-8 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-sm">
                     <div>
                         <span class="block text-[10px] uppercase opacity-40">Título</span>
                         <strong id="obra-titulo" class="serif text-xl">---</strong>
@@ -94,13 +144,13 @@
             </div>
 
             <!-- Rodapé e Assinatura -->
-            <div class="flex justify-between items-end mb-10 px-10">
+            <div class="flex flex-col gap-8 sm:flex-row sm:justify-between sm:items-end mb-4 sm:mb-10 px-0 sm:px-10">
                 <div class="text-left">
                     <p class="text-[9px] uppercase tracking-widest opacity-40 mb-1">ID de Autenticidade</p>
                     <p id="obra-hash" class="text-[10px] font-mono opacity-60">#LB-0000-000</p>
                 </div>
 
-                <div class="text-center">
+                <div class="text-center order-first sm:order-none">
                     <div class="w-48 border-t border-black pt-2">
                         <p class="serif italic text-xl">Leo Barbosa</p>
                         <p class="text-[8px] uppercase tracking-tighter">Artista Responsável</p>
@@ -108,7 +158,7 @@
                 </div>
 
                 <!-- QR Code Dinâmico -->
-                <div class="text-right flex flex-col items-end">
+                <div class="text-center sm:text-right flex flex-col items-center sm:items-end">
                     <div class="p-1 bg-white border border-zinc-100 shadow-sm">
                         <img id="qrcode-img" src="" alt="QR Code" class="w-20 h-20">
                     </div>
@@ -146,15 +196,32 @@
 
         function gerarPDF() {
             const element = document.getElementById('certificado-area');
+
+            // Garante que a página esteja no topo para a captura ser limpa
+            window.scrollTo(0, 0);
+
             const opt = {
-                margin: 0,
-                filename: `Certificado-LeoBarbosa-${obra ? obra.titulo : 'Obra'}.pdf`,
+                margin: 0, // Zero margens externas no PDF
+                filename: `Certificado-LeoBarbosa.pdf`,
                 image: { type: 'jpeg', quality: 1 },
-                html2canvas: { scale: 3, useCORS: true, letterRendering: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                html2canvas: {
+                    scale: 3,
+                    useCORS: true,
+                    letterRendering: true,
+                    height: 1122, // Altura exata em pixels para 300 DPI em A4
+                    windowHeight: 1122
+                },
+                jsPDF: {
+                    unit: 'mm',
+                    format: 'a4',
+                    orientation: 'portrait',
+                    putOnlyUsedFonts: true
+                }
             };
-            html2pdf().set(opt).from(element).save();
+
+            html2pdf().from(element).set(opt).save();
         }
     </script>
 </body>
+
 </html>

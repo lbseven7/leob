@@ -35,6 +35,13 @@
             transition: transform 0.12s ease, background-color 0.12s ease, opacity 0.12s ease;
         }
         .filter-btn.active { background-color: #F97316; color: white; border-color: #F97316; }
+        #catalog-filters::-webkit-scrollbar { display: none; }
+        #catalog-filters { -ms-overflow-style: none; scrollbar-width: none; }
+        @media (max-width: 767px) {
+            body { cursor: auto; }
+            .hero-height { height: 58vh; min-height: 420px; }
+            #custom-cursor { display: none; }
+        }
         @keyframes pulse-low {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
@@ -50,10 +57,9 @@
     <div id="custom-cursor"></div>
 
     <header class="fixed w-full top-0 z-40 bg-white/90 dark:bg-black/90 border-b border-gray-100 dark:border-zinc-800 backdrop-blur-sm">
-        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-            <!-- <h1 class="text-xl font-bold tracking-tighter">leob.</h1> -->
-             <img src="images/logo-laranja-branco-removebg-preview.png" alt="Logo" class="max-w-[185px] h-auto">
-            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex justify-between items-center gap-3">
+            <img src="images/logo-laranja-branco-removebg-preview.png" alt="Logo" class="max-w-[132px] sm:max-w-[185px] h-auto">
+            <nav class="flex items-center gap-3 sm:gap-5 text-[11px] sm:text-sm font-medium">
                 <a href="#catalogo" class="hover:text-brand-orange transition">Catálogo</a>
                 <a href="#sobre" class="hover:text-brand-orange transition">Sobre</a>
                 <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition">
@@ -68,20 +74,20 @@
         <section class="relative w-full hero-height overflow-hidden bg-zinc-200 dark:bg-zinc-900">
             <img src="images/miguelo-zezo-pb.jpg" alt="Destaque Galeria" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                <div class="text-center fade-in visible">
-                    <h2 class="text-white text-4xl md:text-6xl font-light uppercase tracking-[0.2em]">O Artista</h2>
-                    <p class="text-white/80 mt-4 tracking-widest text-sm uppercase">Eterniza o Momento e Traduz Emoções</p>
+                <div class="text-center fade-in visible px-5">
+                    <h2 class="text-white text-3xl sm:text-4xl md:text-6xl font-light uppercase tracking-[0.12em] sm:tracking-[0.2em]">O Artista</h2>
+                    <p class="text-white/80 mt-4 tracking-[0.22em] sm:tracking-widest text-[11px] sm:text-sm uppercase">Eterniza o Momento e Traduz Emoções</p>
                 </div>
             </div>
         </section>
 
-        <section id="catalogo" class="max-w-7xl mx-auto px-6 py-20">
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8">
+        <section id="catalogo" class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-12 gap-6 sm:gap-8">
                 <div>
                     <h2 class="text-3xl font-light">50 Tons de Cinza!</h2>
                     <div class="h-1 w-20 bg-brand-orange mt-2"></div>
                 </div>
-                <div class="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-widest">
+                <div id="catalog-filters" class="flex gap-2 overflow-x-auto pb-2 text-xs font-bold uppercase tracking-widest whitespace-nowrap">
                     <button onclick="filterGallery('todos')" class="filter-btn active border border-zinc-200 dark:border-zinc-800 px-6 py-2 transition-all hover:border-brand-orange">Todos</button>
                     <button onclick="filterGallery('óleo')" class="filter-btn border border-zinc-200 dark:border-zinc-800 px-6 py-2 transition-all hover:border-brand-orange">Óleo</button>
                     <button onclick="filterGallery('acrílica')" class="filter-btn border border-zinc-200 dark:border-zinc-800 px-6 py-2 transition-all hover:border-brand-orange">Acrílica</button>
@@ -89,12 +95,12 @@
                 </div>
             </div>
 
-            <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-3 gap-12"></div>
+            <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12"></div>
         </section>
 
-        <section id="sobre" class="max-w-7xl mx-auto px-6 py-32 mt-20 bg-gray-50 dark:bg-zinc-950">
-            <div class="flex flex-col md:flex-row items-center gap-16">
-                <div class="w-64 h-64 md:w-80 md:h-80 bg-gray-300 dark:bg-zinc-800 overflow-hidden grayscale">
+        <section id="sobre" class="max-w-7xl mx-auto px-4 sm:px-6 py-20 sm:py-32 mt-14 sm:mt-20 bg-gray-50 dark:bg-zinc-950">
+            <div class="flex flex-col md:flex-row items-center gap-10 sm:gap-16">
+                <div class="w-full max-w-[260px] h-[260px] md:w-80 md:h-80 bg-gray-300 dark:bg-zinc-800 overflow-hidden grayscale">
                     <img src="images/logo-laranja-branco.png" alt="Artista" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/400x400?text=Leo'">
                 </div>
                 <div class="flex-1">
@@ -120,12 +126,12 @@
     </footer>
 
     <!-- MODAL -->
-    <div id="modal-overlay" class="fixed inset-0 bg-black/90 z-50 hidden opacity-0 flex items-center justify-center p-4 backdrop-blur-md">
-        <div class="bg-white dark:bg-zinc-900 max-w-5xl w-full max-h-[90vh] overflow-y-auto md:overflow-hidden flex flex-col md:flex-row shadow-2xl">
+    <div id="modal-overlay" class="fixed inset-0 bg-black/90 z-50 hidden opacity-0 flex items-center justify-center p-3 sm:p-4 backdrop-blur-md">
+        <div class="bg-white dark:bg-zinc-900 max-w-5xl w-full max-h-[92vh] overflow-y-auto md:overflow-hidden flex flex-col md:flex-row shadow-2xl rounded-2xl md:rounded-none">
             <div class="md:w-2/3 bg-zinc-100 dark:bg-black flex items-center justify-center">
                 <img id="modal-img" src="" alt="" class="max-w-full max-h-full object-contain p-4">
             </div>
-            <div class="md:w-1/3 p-10 flex flex-col justify-center relative">
+            <div class="md:w-1/3 p-6 sm:p-10 flex flex-col justify-center relative">
                 <button onclick="closeModal()" class="absolute top-4 right-4 text-2xl hover:text-brand-orange">&times;</button>
                 <div id="modal-stock-badge" class="inline-block px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold tracking-tighter mb-4 w-fit"></div>
                 <h3 id="modal-title" class="text-3xl font-bold mb-4 italic"></h3>
@@ -215,12 +221,16 @@
 
         // Custom Cursor
         const cursor = document.getElementById('custom-cursor');
-        document.addEventListener('mousemove', e => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
+        const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+        if (!isTouchDevice && cursor) {
+            document.addEventListener('mousemove', e => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+        }
 
         function updateCursorEvents() {
+            if (isTouchDevice || !cursor) return;
             document.querySelectorAll('a, button, .group').forEach(el => {
                 el.addEventListener('mouseenter', () => {
                     const isFooterLink = !!el.closest('footer');
