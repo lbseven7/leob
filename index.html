@@ -25,6 +25,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
+        /* IMPORTAÇÃO DA FONTE AVALLON */
+        @font-face {
+            font-family: 'Avallon';
+            src: url('fonts/avallon.woff2') format('woff2'),
+                url('fonts/avallon.woff') format('woff'),
+                url('fonts/avallon.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
             font-family: 'Comfortaa', cursive;
             cursor: none;
@@ -34,6 +44,11 @@
 
         .serif {
             font-family: 'Playfair Display', serif;
+        }
+
+        /* CLASSE UTILITÁRIA PARA A FONTE AVALLON */
+        .font-avallon {
+            font-family: 'Avallon', brush, sans-serif;
         }
 
         .fade-in {
@@ -136,8 +151,8 @@
     <header
         class="fixed w-full top-0 z-40 bg-white/90 dark:bg-black/90 border-b border-gray-100 dark:border-zinc-800 backdrop-blur-sm">
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 h-20 flex justify-between items-center gap-3">
-            <img src="images/logo-laranja-branco-removebg-preview.png" alt="Logo"
-                class="max-w-[132px] sm:max-w-[140px] h-auto">
+            <img id="header-logo" src="images/logo-laranja-branco-removebg-preview.png" alt="Logo"
+                class="max-w-[132px] sm:max-w-[140px] h-auto opacity-0 transition-opacity duration-300">
             <div class="flex items-center gap-2">
                 <nav id="main-nav"
                     class="hidden md:flex absolute md:static top-full left-4 right-4 md:left-auto md:right-auto mt-3 md:mt-0 flex-col md:flex-row items-start md:items-center gap-4 md:gap-5 bg-transparent rounded-2xl md:rounded-none border-0 p-5 md:p-0 shadow-none text-sm font-medium">
@@ -167,7 +182,12 @@
             <div class="absolute inset-0 hero-overlay flex items-end">
                 <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 pb-12 sm:pb-16 fade-in visible">
                     <p class="text-white/70 text-[11px] uppercase tracking-[0.35em] mb-4">Fine Art Collection</p>
-                    <h1 class="serif text-white text-4xl sm:text-5xl md:text-7xl leading-none max-w-4xl">leob.</h1>
+
+                    <h1
+                        class="font-avallon text-brand-orange text-5xl sm:text-6xl md:text-8xl tracking-normal normal-case leading-none select-none">
+                        leob.
+                    </h1>
+
                     <p class="text-white/80 mt-5 max-w-2xl text-sm sm:text-base leading-relaxed">Pintura autoral em
                         edições limitadas, com presença visual, memória e atmosfera.</p>
                 </div>
@@ -219,7 +239,7 @@
                 <div class="flex-1">
                     <h2 class="serif text-4xl sm:text-5xl font-normal mb-6">Sobre o Artista</h2>
                     <p class="text-zinc-700 dark:text-zinc-400 leading-relaxed mb-6 max-w-2xl">Leo Barbosa desenvolve
-                        uma pintura de presença silenciosa, onde luz, matéria e memória se encontram em composições de
+                        uma painting de presença silenciosa, onde luz, matéria e memória se encontram em composições de
                         caráter autoral. A pesquisa visual da leob. aproxima o gesto contemporâneo da atmosfera clássica
                         da fine art.</p>
                 </div>
@@ -227,7 +247,6 @@
         </section>
     </main>
 
-    <!-- FOOTER -->
     <footer class="border-t border-gray-100 dark:border-zinc-800 py-12 opacity-60">
         <div
             class="relative max-w-7xl mx-auto px-6 flex flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
@@ -243,19 +262,16 @@
         </div>
     </footer>
 
-    <!-- MODAL -->
     <div id="modal-overlay"
         class="fixed inset-0 bg-black/92 z-50 hidden opacity-0 flex items-center justify-center p-3 sm:p-5 backdrop-blur-md">
         <div
             class="bg-[#f8f3ec] dark:bg-zinc-900 max-w-6xl w-full max-h-[92vh] overflow-y-auto md:overflow-hidden flex flex-col md:flex-row shadow-[0_30px_80px_rgba(0,0,0,0.28)] rounded-3xl border border-white/20">
-
             <div class="md:w-[62%] bg-[#efe7dc] dark:bg-black flex items-center justify-center p-6 sm:p-8 md:p-12">
                 <div class="bg-white p-3 sm:p-4 shadow-[0_16px_40px_rgba(0,0,0,0.15)] flex items-center justify-center">
                     <img id="modal-img" src="" alt=""
                         class="w-auto h-auto max-w-full max-h-[65vh] md:max-h-[70vh] object-contain">
                 </div>
             </div>
-
             <div class="md:w-[38%] p-6 sm:p-8 md:p-10 flex flex-col justify-between relative">
                 <button onclick="closeModal()"
                     class="absolute top-4 right-4 w-10 h-10 rounded-full border border-black/10 dark:border-white/10 text-xl hover:text-brand-orange hover:border-brand-orange transition">&times;</button>
@@ -295,7 +311,7 @@
         const obras = [
             { id: 1, titulo: "Casa do Vaqueiro", tecnica: "Acrílica Sobre Papel", dimensoes: "20x28cm", img: "images/casa-de-deri.webp", categoria: "acrílica", restante: 10, total: 10 },
             { id: 2, titulo: "O Caminho da Luz", tecnica: "Técnica", dimensoes: "...", img: "images/caminho-da-luz.jpg", categoria: "disponível", restante: 10, total: 10 },
-            { id: 3, titulo: "Nelore", tecnica: "ÓLeo Sobre Tela", dimensoes: "30x40cm", img: "images/nelore-ouro-verde.jpg", categoria: "disponível", restante: 10, total: 10 },
+            { id: 3, titulo: "Nelore", tecnica: "Óleo Sobre Tela", dimensoes: "30x40cm", img: "images/nelore-ouro-verde.jpg", categoria: "disponível", restante: 10, total: 10 },
             { id: 4, titulo: "O Treino", tecnica: "Acrílico Sobre Papel", dimensoes: "27,9x42cm", img: "images/menino-e-cavalo.jpg", categoria: "disponível", restante: 10, total: 10 },
         ];
 
@@ -452,6 +468,34 @@
         renderEvents();
         renderGallery();
         updateProgressBar();
+
+
+        function updateProgressBar() {
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+
+            const progressBar = document.getElementById('progress-bar');
+            if (progressBar) progressBar.style.width = `${progress}%`;
+
+            // Descobre a altura exata da seção Hero naquele dispositivo (computador ou celular)
+            const heroSection = document.querySelector('section.hero-height');
+            const heroHeight = heroSection ? heroSection.offsetHeight : window.innerHeight * 0.7;
+            const headerLogo = document.getElementById('header-logo');
+
+            if (headerLogo) {
+                // Só exibe a logo se o scroll passou do final da seção Hero (descontando um respiro do header)
+                if (scrollTop >= (heroHeight - 80)) {
+                    headerLogo.classList.remove('opacity-0', 'pointer-events-none');
+                    headerLogo.classList.add('opacity-100');
+                } else {
+                    headerLogo.classList.remove('opacity-100');
+                    headerLogo.classList.add('opacity-0', 'pointer-events-none');
+                }
+            }
+
+            document.querySelector('header')?.classList.toggle('scrolled', scrollTop > 24);
+        }
     </script>
 </body>
 
