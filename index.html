@@ -804,7 +804,8 @@
                     <button onclick="filterGallery('disponível')"
                         class="filter-btn w-full border border-zinc-200 dark:border-zinc-800 px-3 sm:px-6 py-2 transition-all hover:border-brand-orange">Disponíveis</button>
                     <button onclick="filterGallery('urgente')"
-                        class="filter-btn w-full border border-zinc-200 dark:border-zinc-800 px-3 sm:px-6 py-2 transition-all hover:border-brand-orange">Últimas Unidades</button>
+                        class="filter-btn w-full border border-zinc-200 dark:border-zinc-800 px-3 sm:px-6 py-2 transition-all hover:border-brand-orange">Últimas
+                        Unidades</button>
                 </div>
             </div>
 
@@ -987,7 +988,7 @@
         // Modificado: Lógica de filtros baseada no status de escassez e estoque real
         function renderGallery(filter = 'todos') {
             galleryGrid.innerHTML = '';
-            
+
             let filtered = obras;
             if (filter === 'disponível') {
                 filtered = obras.filter(o => o.restante > 0);
@@ -1000,7 +1001,7 @@
                 const isSoldOut = obra.restante === 0;
                 const item = document.createElement('div');
                 item.className = 'fade-in group cursor-pointer';
-                
+
                 let badgeHTML = '';
                 if (isSoldOut) {
                     badgeHTML = '<div class="absolute top-4 left-4 bg-zinc-500 text-white text-[9px] px-2 py-1 font-bold uppercase tracking-tighter">Esgotado</div>';
@@ -1028,7 +1029,7 @@
                 galleryGrid.appendChild(item);
                 setTimeout(() => item.classList.add('visible'), 50);
             });
-            
+
             if (typeof updateCursorEvents === 'function') {
                 updateCursorEvents();
             }
@@ -1038,7 +1039,7 @@
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            
+
             const eventTarget = window.event ? window.event.currentTarget : null;
             if (eventTarget) {
                 eventTarget.classList.add('active');
@@ -1049,32 +1050,44 @@
                     }
                 });
             }
-            
+
             renderGallery(category);
         }
 
         let obraSelecionadaAtual = null;
-        let molduraSelecionadaAtual = "Madeira"; 
+        let molduraSelecionadaAtual = "Madeira";
 
         function openModal(obra) {
             obraSelecionadaAtual = obra;
-            molduraSelecionadaAtual = "Madeira"; 
+            molduraSelecionadaAtual = "Madeira";
 
             document.getElementById('modal-img').src = obra.img;
             document.getElementById('modal-title').innerText = obra.titulo;
-            document.getElementById('modal-technique').innerText = obra.tecnica; // Exibe o Suporte (ex: Papel Algodão)
+            document.getElementById('modal-technique').innerText = obra.tecnica;
             document.getElementById('modal-dimensions').innerText = obra.dimensoes;
 
             const badge = document.getElementById('modal-stock-badge');
-            
+            const btnWhatsapp = document.getElementById('whatsapp-link');
+
             if (obra.restante === 0) {
                 badge.innerText = `SÉRIE ESGOTADA`;
                 badge.className = 'inline-block px-2 py-1 bg-zinc-500 text-white text-[10px] font-bold tracking-tighter mb-4 w-fit';
+
+                // Desabilita o botão do WhatsApp para obras esgotadas
+                btnWhatsapp.innerText = "Série Esgotada";
+                btnWhatsapp.removeAttribute('href');
+                btnWhatsapp.style.pointerEvents = "none";
+                btnWhatsapp.className = "inline-flex items-center justify-center w-full bg-zinc-300 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-600 text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] cursor-not-allowed";
             } else {
                 badge.innerText = `SÉRIE LIMITADA: ${obra.restante} DE ${obra.total} DISPONÍVEIS`;
                 badge.className = obra.restante <= 3
                     ? 'inline-block px-2 py-1 bg-brand-orange text-white text-[10px] font-bold tracking-tighter mb-4 w-fit'
                     : 'inline-block px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold tracking-tighter mb-4 w-fit';
+
+                // Reativa o botão caso mude de uma obra para outra
+                btnWhatsapp.innerText = "Verificar Disponibilidade";
+                btnWhatsapp.style.pointerEvents = "auto";
+                btnWhatsapp.className = "inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300";
             }
 
             selectFrame('Madeira');
@@ -1096,8 +1109,29 @@
                 }
             });
 
+            // Só atualiza o link do WhatsApp se a obra NÃO estiver esgotada
+            if (obraSelecionadaAtual && obraSelecionadaAtual.restante > 0) {
+                const numeroWhats = "5573992153128";
+                const mensagem = `Olá Leo! Gostaria de consultar a numeração disponível para a impressão Fine Art "${obraSelecionadaAtual.titulo}" com acabamento em moldura ${molduraSelecionadaAtual.toUpperCase()}.`;
+
+                document.getElementById('whatsapp-link').href = `https://wa.me/${numeroWhats}?text=${encodeURIComponent(mensagem)}`;
+            }
+        }
+
+        function selectFrame(moldura) {
+            molduraSelecionadaAtual = moldura;
+
+            document.querySelectorAll('.frame-btn').forEach(btn => {
+                const circle = btn.querySelector('span:first-child');
+                if (btn.getAttribute('data-frame') === moldura) {
+                    circle.classList.add('ring-2');
+                } else {
+                    circle.classList.remove('ring-2');
+                }
+            });
+
             if (obraSelecionadaAtual) {
-                const numeroWhats = "5573992153128"; 
+                const numeroWhats = "5571992153128";
                 const mensagem = `Olá Leo! Gostaria de consultar a numeração disponível para a impressão Fine Art "${obraSelecionadaAtual.titulo}" com acabamento em moldura ${molduraSelecionadaAtual.toUpperCase()}.`;
 
                 document.getElementById('whatsapp-link').href = `https://wa.me/${numeroWhats}?text=${encodeURIComponent(mensagem)}`;
@@ -1109,7 +1143,7 @@
             modal.classList.add('opacity-0');
             setTimeout(() => {
                 modal.classList.add('hidden');
-                obraSelecionadaAtual = null; 
+                obraSelecionadaAtual = null;
             }, 300);
         }
 
@@ -1173,7 +1207,7 @@
         });
 
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-             document.documentElement.classList.add('dark');
+            document.documentElement.classList.add('dark');
         }
 
         renderEvents();
