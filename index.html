@@ -739,25 +739,27 @@
     <div id="custom-cursor"></div>
 
     <header
-        class="fixed w-full top-0 z-40 bg-white/90 dark:bg-black/90 border-b border-gray-100 dark:border-zinc-800 backdrop-blur-sm">
+        class="fixed w-full top-0 z-40 bg-white/90 dark:bg-zinc-950/90 border-b border-zinc-100 dark:border-zinc-800/50 backdrop-blur-sm text-zinc-800 dark:text-zinc-100 transition-colors duration-300">
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 h-20 flex justify-between items-center gap-3">
             <img id="header-logo" src="images/logo-laranja-branco-removebg-preview.png" alt="Logo"
                 class="max-w-[132px] sm:max-w-[140px] h-auto opacity-0 transition-opacity duration-300">
             <div class="flex items-center gap-2">
                 <nav id="main-nav"
-                    class="hidden md:flex absolute md:static top-full left-4 right-4 md:left-auto md:right-auto mt-3 md:mt-0 flex-col md:flex-row items-start md:items-center gap-4 md:gap-5 bg-transparent rounded-2xl md:rounded-none border-0 p-5 md:p-0 shadow-none text-sm font-medium">
-                    <a href="#catalogo" class="hover:text-brand-orange transition">Catálogo</a>
-                    <a href="#eventos" class="hover:text-brand-orange transition">Eventos</a>
-                    <a href="#sobre" class="hover:text-brand-orange transition">Sobre</a>
+                    class="hidden md:flex absolute md:static top-full left-4 right-4 md:left-auto md:right-auto mt-3 md:mt-0 flex-col md:flex-row items-start md:items-center gap-4 md:gap-5 bg-white md:bg-transparent dark:bg-zinc-900 md:dark:bg-transparent rounded-2xl md:rounded-none border border-zinc-100 md:border-0 dark:border-zinc-800 p-5 md:p-0 shadow-lg md:shadow-none text-sm font-medium text-zinc-700 dark:text-zinc-200">
+                    <a href="#catalogo"
+                        class="hover:text-brand-orange dark:hover:text-brand-orange transition">Catálogo</a>
+                    <a href="#eventos"
+                        class="hover:text-brand-orange dark:hover:text-brand-orange transition">Eventos</a>
+                    <a href="#sobre" class="hover:text-brand-orange dark:hover:text-brand-orange transition">Sobre</a>
                     <button onclick="toggleTheme()"
-                        class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition"
+                        class="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition text-zinc-600 dark:text-zinc-300"
                         aria-label="Alternar tema">
                         <span id="theme-icon-light" class="hidden dark:block">☀️</span>
                         <span id="theme-icon-dark" class="block dark:hidden">🌙</span>
                     </button>
                 </nav>
                 <button id="mobile-menu-btn"
-                    class="md:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition"
+                    class="md:hidden p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition text-zinc-700 dark:text-zinc-200"
                     aria-label="Abrir menu">
                     <i class="fa-solid fa-bars"></i>
                 </button>
@@ -848,9 +850,9 @@
             class="relative max-w-7xl mx-auto px-6 flex flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
             <p class="text-sm">&copy; 2026 leob. - por lbseven7</p>
             <div class="flex items-center gap-6 text-xl md:ml-auto">
-                <a href="https://wa.me/5573992153128" target="_blank" aria-label="WhatsApp"
+                <a href="https://wa.me/5571992153128" target="_blank" aria-label="WhatsApp"
                     class="hover:text-brand-orange transition"><i class="fa-brands fa-whatsapp"></i></a>
-                <a href="https://www.indigo.com/leob_pinturas/" target="_blank" aria-label="Instagram"
+                <a href="https://www.instagram.com/leob_pinturas/" target="_blank" aria-label="Instagram"
                     class="hover:text-brand-orange transition"><i class="fa-brands fa-instagram"></i></a>
                 <a href="https://www.youtube.com/@leob.25Anos" target="_blank" aria-label="YouTube"
                     class="hover:text-brand-orange transition"><i class="fa-brands fa-youtube"></i></a>
