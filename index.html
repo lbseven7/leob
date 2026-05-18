@@ -299,10 +299,41 @@
                         </div>
                     </div>
                 </div>
+                <div class="border-t border-black/10 dark:border-white/10 pt-5 mb-5">
+                    <p class="text-[10px] uppercase tracking-[0.28em] text-zinc-400 mb-3">Escolha a Moldura</p>
+                    <div class="flex gap-4" id="frame-selector">
+                        <button onclick="selectFrame('Madeira')" data-frame="Madeira" title="Moldura Madeira"
+                            class="frame-btn group flex flex-col items-center gap-1.5 focus:outline-none">
+                            <span
+                                class="w-8 h-8 rounded-full border border-black/20 dark:border-white/20 shadow-inner transition-all duration-300 ring-offset-2 dark:ring-offset-zinc-900 ring-brand-orange"
+                                style="background: #b58a5b; background-image: linear-gradient(45deg, #b58a5b 25%, #a4794b 100%);"></span>
+                            <span
+                                class="text-[9px] uppercase tracking-wider text-zinc-500 group-hover:text-black dark:group-hover:text-white transition">Madeira</span>
+                        </button>
+
+                        <button onclick="selectFrame('Preta')" data-frame="Preta" title="Moldura Preta"
+                            class="frame-btn group flex flex-col items-center gap-1.5 focus:outline-none">
+                            <span
+                                class="w-8 h-8 rounded-full border border-black/20 dark:border-white/20 shadow-inner transition-all duration-300 ring-offset-2 dark:ring-offset-zinc-900 ring-brand-orange"
+                                style="background: #18181b;"></span>
+                            <span
+                                class="text-[9px] uppercase tracking-wider text-zinc-500 group-hover:text-black dark:group-hover:text-white transition">Preta</span>
+                        </button>
+
+                        <button onclick="selectFrame('Branca')" data-frame="Branca" title="Moldura Branca"
+                            class="frame-btn group flex flex-col items-center gap-1.5 focus:outline-none">
+                            <span
+                                class="w-8 h-8 rounded-full border border-black/25 dark:border-white/40 shadow-inner transition-all duration-300 ring-offset-2 dark:ring-offset-zinc-900 ring-brand-orange"
+                                style="background: #ffffff;"></span>
+                            <span
+                                class="text-[9px] uppercase tracking-wider text-zinc-500 group-hover:text-black dark:group-hover:text-white transition">Branca</span>
+                        </button>
+                    </div>
+                </div>
                 <div class="border-t border-black/10 dark:border-white/10 pt-6">
                     <p class="text-xs uppercase tracking-[0.28em] text-zinc-400 mb-4">Consulta e disponibilidade</p>
                     <a id="whatsapp-link" href="https://wa.me/5573992153128" target="_blank"
-                        class="inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300">Consultar
+                        class="inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300">Verificar
                         Disponibilidade</a>
                 </div>
             </div>
@@ -317,7 +348,7 @@
 
         const obras = [
             { id: 1, titulo: "Casa do Vaqueiro", tecnica: "Acrílica Sobre Papel", dimensoes: "20x28cm", img: "images/casa-de-deri.webp", categoria: "acrílica", restante: 10, total: 10 },
-            { id: 2, titulo: "O Caminho da Luz", tecnica: "Técnica", dimensoes: "...", img: "images/caminho-da-luz.jpg", categoria: "disponível", restante: 10, total: 10 },
+            { id: 2, titulo: "O Caminho da Luz", tecnica: "Técnica", dimensoes: "27,9x42cm", img: "images/caminho-da-luz.jpg", categoria: "disponível", restante: 10, total: 10 },
             { id: 3, titulo: "Nelore", tecnica: "Óleo Sobre Tela", dimensoes: "30x40cm", img: "images/nelore-ouro-verde.jpg", categoria: "disponível", restante: 10, total: 10 },
             { id: 4, titulo: "O Treino", tecnica: "Acrílico Sobre Papel", dimensoes: "27,9x42cm", img: "images/menino-e-cavalo.jpg", categoria: "disponível", restante: 10, total: 10 },
         ];
@@ -395,7 +426,14 @@
             updateCursorEvents();
         }
 
+        // Variáveis globais para rastrear a seleção atual
+        let obraSelecionadaAtual = null;
+        let molduraSelecionadaAtual = "Madeira"; // Padrão inicial
+
         function openModal(obra) {
+            obraSelecionadaAtual = obra;
+            molduraSelecionadaAtual = "Madeira"; // Reseta para madeira toda vez que abre uma obra nova
+
             document.getElementById('modal-img').src = obra.img;
             document.getElementById('modal-title').innerText = obra.titulo;
             document.getElementById('modal-technique').innerText = obra.tecnica;
@@ -403,26 +441,49 @@
 
             const badge = document.getElementById('modal-stock-badge');
             badge.innerText = `SÉRIE LIMITADA: ${obra.restante} DE ${obra.total} DISPONÍVEIS`;
-            badge.className = obra.restante < 10 ? 'inline-block px-2 py-1 bg-brand-orange text-white text-[10px] font-bold tracking-tighter mb-4 w-fit' : 'inline-block px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold tracking-tighter mb-4 w-fit';
+            badge.className = obra.restante < 10
+                ? 'inline-block px-2 py-1 bg-brand-orange text-white text-[10px] font-bold tracking-tighter mb-4 w-fit'
+                : 'inline-block px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold tracking-tighter mb-4 w-fit';
 
-            document.getElementById('whatsapp-link').href = `https://wa.me/5571992153128?text=Olá Leo! Gostaria de consultar a numeração disponível para a obra ${obra.titulo}.`;
+            // Ativa visualmente o botão padrão (Madeira) no modal
+            selectFrame('Madeira');
 
             const modal = document.getElementById('modal-overlay');
             modal.classList.remove('hidden');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
         }
 
+        function selectFrame(moldura) {
+            molduraSelecionadaAtual = moldura;
+
+            // Atualiza o visual dos círculos seletores (Swatches)
+            document.querySelectorAll('.frame-btn').forEach(btn => {
+                const circle = btn.querySelector('span:first-child');
+                if (btn.getAttribute('data-frame') === moldura) {
+                    // Adiciona o anel laranja de seleção ativa no círculo correto
+                    circle.classList.add('ring-2');
+                } else {
+                    // Remove o efeito dos outros
+                    circle.classList.remove('ring-2');
+                }
+            });
+
+            // Atualiza o link do WhatsApp incluindo a moldura escolhida na mensagem
+            if (obraSelecionadaAtual) {
+                const numeroWhats = "5571992153128"; // Seu número configurado no rodapé
+                const mensagem = `Olá Leo! Gostaria de consultar a numeração disponível para a obra "${obraSelecionadaAtual.titulo}" com acabamento em moldura ${molduraSelecionadaAtual.toUpperCase()}.`;
+
+                document.getElementById('whatsapp-link').href = `https://wa.me/${numeroWhats}?text=${encodeURIComponent(mensagem)}`;
+            }
+        }
+
         function closeModal() {
             const modal = document.getElementById('modal-overlay');
             modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        function filterGallery(category) {
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.innerText.toLowerCase() === category);
-            });
-            renderGallery(category);
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                obraSelecionadaAtual = null; // Limpa a referência
+            }, 300);
         }
 
         // Custom Cursor
