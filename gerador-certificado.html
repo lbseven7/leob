@@ -62,6 +62,14 @@
             box-sizing: border-box;
         }
 
+        /* Garante que a assinatura não fique gigante e mantenha a proporção */
+        img[alt="Assinatura Leo Barbosa"] {
+            max-height: 60px;
+            width: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
         @media screen and (max-width: 768px) {
             body {
                 padding: 1rem;
@@ -175,7 +183,7 @@
 
     <script>
         const obras = [
-            { id: 1, titulo: "O Gigante Naval", tecnica: "Óleo Monocromático", img: "images/loading.jpg", serie: "05/100", hash: "LB-99283-001", ano: "2024" },
+            { id: 1, titulo: "O Nome da Tela", tecnica: "Óleo Monocromático", img: "images/miguelo-zezo-pb.jpg", serie: "05/100", hash: "LB-99283-001", ano: "2024" },
             { id: 2, titulo: "O Imperador", tecnica: "Acrílica sobre tela", img: "images/loading.jpg", serie: "01/50", hash: "LB-44512-002", ano: "2020" }
         ];
 
