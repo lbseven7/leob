@@ -500,66 +500,66 @@
         let obraSelecionadaAtual = null;
         let molduraSelecionadaAtual = "Madeira";
 
- function openModal(obra) {
-    obraSelecionadaAtual = obra;
-    molduraSelecionadaAtual = "Madeira";
+        function openModal(obra) {
+            obraSelecionadaAtual = obra;
+            molduraSelecionadaAtual = "Madeira";
 
-    document.getElementById('modal-img').src = obra.img;
-    document.getElementById('modal-title').innerText = obra.titulo;
-    document.getElementById('modal-technique').innerText = obra.tecnica;
-    document.getElementById('modal-dimensions').innerText = obra.dimensoes;
+            document.getElementById('modal-img').src = obra.img;
+            document.getElementById('modal-title').innerText = obra.titulo;
+            document.getElementById('modal-technique').innerText = obra.tecnica;
+            document.getElementById('modal-dimensions').innerText = obra.dimensoes;
 
-    const badge = document.getElementById('modal-stock-badge');
-    const btnPayment = document.getElementById('whatsapp-link'); // Mapeia o botão principal do modal
+            const badge = document.getElementById('modal-stock-badge');
+            const btnPayment = document.getElementById('whatsapp-link'); // Mapeia o botão principal do modal
 
-    // Limpa estilos prévios para evitar conflito de cores entre chamadas
-    btnPayment.style.pointerEvents = "auto";
-    btnPayment.removeAttribute('disabled');
+            // Limpa estilos prévios para evitar conflito de cores entre chamadas
+            btnPayment.style.pointerEvents = "auto";
+            btnPayment.removeAttribute('disabled');
 
-    if (obra.restante === 0) {
-        badge.innerText = `SÉRIE ESGOTADA`;
-        badge.className = 'inline-block px-2 py-1 bg-zinc-500 text-white text-[10px] font-bold tracking-tighter mb-4 w-fit';
+            if (obra.restante === 0) {
+                badge.innerText = `SÉRIE ESGOTADA`;
+                badge.className = 'inline-block px-2 py-1 bg-zinc-500 text-white text-[10px] font-bold tracking-tighter mb-4 w-fit';
 
-        btnPayment.innerText = "Série Esgotada";
-        btnPayment.removeAttribute('href');
-        btnPayment.style.pointerEvents = "none";
-        btnPayment.className = "inline-flex items-center justify-center w-full bg-zinc-300 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-600 text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] cursor-not-allowed";
-    } else {
-        badge.innerText = `SÉRIE LIMITADA: ${obra.restante} DE ${obra.total} DISPONÍVEIS`;
-        badge.className = obra.restante <= 3
-            ? 'inline-block px-2 py-1 bg-brand-orange text-white text-[10px] font-bold tracking-tighter mb-4 w-fit'
-            : 'inline-block px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold tracking-tighter mb-4 w-fit';
+                btnPayment.innerText = "Série Esgotada";
+                btnPayment.removeAttribute('href');
+                btnPayment.style.pointerEvents = "none";
+                btnPayment.className = "inline-flex items-center justify-center w-full bg-zinc-300 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-600 text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] cursor-not-allowed";
+            } else {
+                badge.innerText = `SÉRIE LIMITADA: ${obra.restante} DE ${obra.total} DISPONÍVEIS`;
+                badge.className = obra.restante <= 3
+                    ? 'inline-block px-2 py-1 bg-brand-orange text-white text-[10px] font-bold tracking-tighter mb-4 w-fit'
+                    : 'inline-block px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold tracking-tighter mb-4 w-fit';
 
-        // SE TIVER LINK DO NUBANK CONFIGURADO
-        if (obra.linkNubank) {
-            btnPayment.innerText = "PAGAR COM PIX";
-            btnPayment.href = obra.linkNubank;
-            // Estilização Roxa do Nubank para passar profissionalismo
-            btnPayment.className = "inline-flex items-center justify-center w-full bg-purple-700 text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-purple-800 transition duration-300 shadow-md";
-        } else {
-            // FLUXO PADRÃO WHATSAPP (Caso não queira usar o link direto em todas)
-            btnPayment.innerText = "Verificar Disponibilidade";
-            btnPayment.className = "inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300";
-            
-            // Chama a função para injetar o texto do WhatsApp baseado na moldura padrão (Madeira)
-            selectFrame('Madeira'); 
+                // SE TIVER LINK DO NUBANK CONFIGURADO
+                if (obra.linkNubank) {
+                    btnPayment.innerText = "PAGAR COM PIX";
+                    btnPayment.href = obra.linkNubank;
+                    // Estilização Roxa do Nubank para passar profissionalismo
+                    btnPayment.className = "inline-flex items-center justify-center w-full bg-purple-700 text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-purple-800 transition duration-300 shadow-md";
+                } else {
+                    // FLUXO PADRÃO WHATSAPP (Caso não queira usar o link direto em todas)
+                    btnPayment.innerText = "Verificar Disponibilidade";
+                    btnPayment.className = "inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300";
+
+                    // Chama a função para injetar o texto do WhatsApp baseado na moldura padrão (Madeira)
+                    selectFrame('Madeira');
+                }
+            }
+
+            // Executa a seleção visual da moldura inicial
+            document.querySelectorAll('.frame-btn').forEach(btn => {
+                const circle = btn.querySelector('span:first-child');
+                if (btn.getAttribute('data-frame') === 'Madeira') {
+                    circle.classList.add('ring-2');
+                } else {
+                    circle.classList.remove('ring-2');
+                }
+            });
+
+            const modal = document.getElementById('modal-overlay');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
         }
-    }
-
-    // Executa a seleção visual da moldura inicial
-    document.querySelectorAll('.frame-btn').forEach(btn => {
-        const circle = btn.querySelector('span:first-child');
-        if (btn.getAttribute('data-frame') === 'Madeira') {
-            circle.classList.add('ring-2');
-        } else {
-            circle.classList.remove('ring-2');
-        }
-    });
-
-    const modal = document.getElementById('modal-overlay');
-    modal.classList.remove('hidden');
-    setTimeout(() => modal.classList.remove('opacity-0'), 10);
-}
 
         function selectFrame(moldura) {
             molduraSelecionadaAtual = moldura;
