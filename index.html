@@ -532,26 +532,6 @@
             }
         }
 
-        function selectFrame(moldura) {
-            molduraSelecionadaAtual = moldura;
-
-            document.querySelectorAll('.frame-btn').forEach(btn => {
-                const circle = btn.querySelector('span:first-child');
-                if (btn.getAttribute('data-frame') === moldura) {
-                    circle.classList.add('ring-2');
-                } else {
-                    circle.classList.remove('ring-2');
-                }
-            });
-
-            if (obraSelecionadaAtual) {
-                const numeroWhats = "5571992153128";
-                const mensagem = `Olá Leo! Gostaria de consultar a numeração disponível para a impressão Fine Art "${obraSelecionadaAtual.titulo}" com acabamento em moldura ${molduraSelecionadaAtual.toUpperCase()}.`;
-
-                document.getElementById('whatsapp-link').href = `https://wa.me/${numeroWhats}?text=${encodeURIComponent(mensagem)}`;
-            }
-        }
-
         function closeModal() {
             const modal = document.getElementById('modal-overlay');
             modal.classList.add('opacity-0');
