@@ -302,39 +302,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="border-t border-black/10 dark:border-white/10 pt-5 mb-5">
-                    <p class="text-[10px] uppercase tracking-[0.28em] text-zinc-400 mb-3">Escolha a Moldura</p>
-                    <div class="flex gap-4" id="frame-selector">
-                        <button onclick="selectFrame('Madeira')" data-frame="Madeira" title="Moldura Madeira"
-                            class="frame-btn group flex flex-col items-center gap-1.5 focus:outline-none">
-                            <span
-                                class="w-8 h-8 rounded-full border border-black/20 dark:border-white/20 shadow-inner transition-all duration-300 ring-offset-2 dark:ring-offset-zinc-900 ring-brand-orange"
-                                style="background: #b58a5b; background-image: linear-gradient(45deg, #b58a5b 25%, #a4794b 100%);"></span>
-                            <span
-                                class="text-[9px] uppercase tracking-wider text-zinc-500 group-hover:text-black dark:group-hover:text-white transition">Madeira</span>
-                        </button>
-
-                        <button onclick="selectFrame('Preta')" data-frame="Preta" title="Moldura Preta"
-                            class="frame-btn group flex flex-col items-center gap-1.5 focus:outline-none">
-                            <span
-                                class="w-8 h-8 rounded-full border border-black/20 dark:border-white/20 shadow-inner transition-all duration-300 ring-offset-2 dark:ring-offset-zinc-900 ring-brand-orange"
-                                style="background: #18181b;"></span>
-                            <span
-                                class="text-[9px] uppercase tracking-wider text-zinc-500 group-hover:text-black dark:group-hover:text-white transition">Preta</span>
-                        </button>
-
-                        <button onclick="selectFrame('Branca')" data-frame="Branca" title="Moldura Branca"
-                            class="frame-btn group flex flex-col items-center gap-1.5 focus:outline-none">
-                            <span
-                                class="w-8 h-8 rounded-full border border-black/25 dark:border-white/40 shadow-inner transition-all duration-300 ring-offset-2 dark:ring-offset-zinc-900 ring-brand-orange"
-                                style="background: #ffffff;"></span>
-                            <span
-                                class="text-[9px] uppercase tracking-wider text-zinc-500 group-hover:text-black dark:group-hover:text-white transition">Branca</span>
-                        </button>
-                    </div>
-                </div>
                 <div class="border-t border-black/10 dark:border-white/10 pt-6">
-                    <p class="text-xs uppercase tracking-[0.28em] text-zinc-400 mb-4">Consulta e disponibilidade</p>
+                    <p class="text-xs uppercase tracking-[0.28em] text-zinc-400 mb-4">quero obra exclusiva agora</p>
                     <a id="whatsapp-link" href="https://wa.me/5573992153128" target="_blank"
                         class="inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300">Verificar
                         Disponibilidade</a>
@@ -506,7 +475,7 @@
         }
 
         let obraSelecionadaAtual = null;
-        let molduraSelecionadaAtual = "Madeira";
+        // let molduraSelecionadaAtual = "Madeira"; // Removido: não há mais seleção de moldura
 
         function openModal(obra) {
             obraSelecionadaAtual = obra;
@@ -554,41 +523,43 @@
                 }
             }
 
+            // Removido: não há mais seleção de moldura
             // Executa a seleção visual da moldura inicial
-            document.querySelectorAll('.frame-btn').forEach(btn => {
-                const circle = btn.querySelector('span:first-child');
-                if (btn.getAttribute('data-frame') === 'Madeira') {
-                    circle.classList.add('ring-2');
-                } else {
-                    circle.classList.remove('ring-2');
-                }
-            });
+            // document.querySelectorAll('.frame-btn').forEach(btn => {
+            //     const circle = btn.querySelector('span:first-child');
+            //     if (btn.getAttribute('data-frame') === 'Madeira') {
+            //         circle.classList.add('ring-2');
+            //     } else {
+            //         circle.classList.remove('ring-2');
+            //     }
+            // });
 
             const modal = document.getElementById('modal-overlay');
             modal.classList.remove('hidden');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
         }
 
-        function selectFrame(moldura) {
-            molduraSelecionadaAtual = moldura;
+        // Removido: não há mais seleção de moldura
+        // function selectFrame(moldura) {
+        //     molduraSelecionadaAtual = moldura;
 
-            document.querySelectorAll('.frame-btn').forEach(btn => {
-                const circle = btn.querySelector('span:first-child');
-                if (btn.getAttribute('data-frame') === moldura) {
-                    circle.classList.add('ring-2');
-                } else {
-                    circle.classList.remove('ring-2');
-                }
-            });
+        //     document.querySelectorAll('.frame-btn').forEach(btn => {
+        //         const circle = btn.querySelector('span:first-child');
+        //         if (btn.getAttribute('data-frame') === moldura) {
+        //             circle.classList.add('ring-2');
+        //         } else {
+        //             circle.classList.remove('ring-2');
+        //         }
+        //     });
 
-            // Só atualiza o link do WhatsApp se a obra NÃO estiver esgotada
-            if (obraSelecionadaAtual && obraSelecionadaAtual.restante > 0) {
-                const numeroWhats = "5573992153128";
-                const mensagem = `Olá Leo! Gostaria de consultar a numeração disponível para a impressão Fine Art "${obraSelecionadaAtual.titulo}" com acabamento em moldura ${molduraSelecionadaAtual.toUpperCase()}.`;
+        //     // Só atualiza o link do WhatsApp se a obra NÃO estiver esgotada
+        //     if (obraSelecionadaAtual && obraSelecionadaAtual.restante > 0) {
+        //         const numeroWhats = "5573992153128";
+        //         const mensagem = `Olá Leo! Gostaria de consultar a numeração disponível para a impressão Fine Art "${obraSelecionadaAtual.titulo}" com acabamento em moldura ${molduraSelecionadaAtual.toUpperCase()}.`;
 
-                document.getElementById('whatsapp-link').href = `https://wa.me/${numeroWhats}?text=${encodeURIComponent(mensagem)}`;
-            }
-        }
+        //         document.getElementById('whatsapp-link').href = `https://wa.me/${numeroWhats}?text=${encodeURIComponent(mensagem)}`;
+        //     }
+        // }
 
         function closeModal() {
             const modal = document.getElementById('modal-overlay');
