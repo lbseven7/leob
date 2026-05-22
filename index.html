@@ -302,11 +302,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="border-t border-black/10 dark:border-white/10 pt-6">
-                    <p class="text-xs uppercase tracking-[0.28em] text-zinc-400 mb-4">quero obra exclusiva agora</p>
-                    <a id="whatsapp-link" href="https://wa.me/5573992153128" target="_blank"
+                <div class="border-t border-black/10 dark:border-white/10 pt-6 space-y-3">
+                    <p class="text-xs uppercase tracking-[0.28em] text-zinc-400">quero obra exclusiva agora</p>
+                    <p id="payment-helper" class="text-sm text-zinc-500 leading-relaxed">Escolha a próxima etapa para reservar esta obra.</p>
+                    <div id="payment-value-wrap" class="hidden">
+                        <label for="payment-value" class="block text-[10px] uppercase tracking-[0.28em] text-zinc-400 mb-2">Valor pago</label>
+                        <input id="payment-value" type="text" inputmode="decimal" placeholder="Ex: 269,01" class="w-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-zinc-800/70 px-4 py-3 text-sm outline-none focus:border-brand-orange">
+                        <p class="text-xs text-zinc-500 mt-2">Digite o valor exato para montar a mensagem automaticamente.</p>
+                    </div>
+                    <a id="payment-link" href="#" target="_blank"
                         class="inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300">Verificar
                         Disponibilidade</a>
+                    <a id="payment-confirm-link" href="#" target="_blank"
+                        class="hidden inline-flex items-center justify-center w-full border border-black/10 dark:border-white/10 text-center py-4 px-6 font-semibold uppercase tracking-[0.18em] hover:border-brand-orange hover:text-brand-orange transition duration-300">Já paguei,
+                        confirmar no WhatsApp</a>
                 </div>
             </div>
         </div>
@@ -329,11 +338,11 @@
                 categoria: "disponível",
                 restante: 10,
                 total: 10,
-                linkNubank: "https://nubank.com.br/cobrar/1ixq0x/6a0fa922-2632-4ac0-a84e-01cc16ce1611" // à vista no PIX
-                // linkNubank: "https://nubank.com.br/cobrar/1ixq0x/6a0faa21-8d92-41ad-b775-9aeb2e39e12c" // à vista no PIX
-                // linkNubank: "https://nubank.com.br/cobrar/1ixq0x/6a0faaf1-d6ca-49c6-a00f-ba3067fa3aa4" // à vista no PIX
-                // linkNubank: "https://nubank.com.br/cobrar/1ixq0x/6a0fab2e-2d86-4177-a190-8eae2a90c5f3" // à vista no PIX
-                // linkNubank: "https://nubank.com.br/cobrar/1ixq0x/6a0fab5d-ff21-49d5-8ed9-6ae63949f331" // à vista no PIX
+                linkNubank: "https://nubank.com.br/cobrar/1ixq0x/6a0fa922-2632-4ac0-a84e-01cc16ce1611" // à vista no PIX 269,01
+                // linkNubank: "https://nubank.com.br/cobrar/1ixq0x/6a0faa21-8d92-41ad-b775-9aeb2e39e12c" // à vista no PIX 269,02
+                // linkNubank: "https://nubank.com.br/cobrar/1ixq0x/6a0faaf1-d6ca-49c6-a00f-ba3067fa3aa4" // à vista no PIX 269,03
+                // linkNubank: "https://nubank.com.br/cobrar/1ixq0x/6a0fab2e-2d86-4177-a190-8eae2a90c5f3" // à vista no PIX 269,04
+                // linkNubank: "https://nubank.com.br/cobrar/1ixq0x/6a0fab5d-ff21-49d5-8ed9-6ae63949f331" // à vista no PIX 269,05
                 // linkNubank: "" // à vista no PIX
                 // linkNubank: "" // à vista no PIX
                 // linkNubank: "" // à vista no PIX
@@ -475,11 +484,34 @@
         }
 
         let obraSelecionadaAtual = null;
+
+        function formatPaymentValue(value) {
+            const normalized = value.replace(/\s/g, '').replace(/\./g, '').replace(',', '.').replace(/[^\d.]/g, '');
+            const amount = Number(normalized);
+            return Number.isFinite(amount) && amount > 0
+                ? amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                : '';
+        }
+
+        function syncPaymentConfirmation(obra) {
+            const input = document.getElementById('payment-value');
+            const btn = document.getElementById('payment-confirm-link');
+            const value = formatPaymentValue(input?.value || '');
+            if (!btn) return;
+            if (!value) {
+                btn.removeAttribute('href');
+                btn.style.pointerEvents = 'none';
+                btn.className = 'inline-flex items-center justify-center w-full bg-zinc-200 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500 text-center py-4 px-6 font-semibold uppercase tracking-[0.18em] cursor-not-allowed';
+                return;
+            }
+            btn.href = `https://wa.me/5571992153128?text=${encodeURIComponent(`Olá Leo! Já realizei o pagamento da obra "${obra.titulo}" e quero confirmar minha reserva. Valor pago: R$ ${value}.`)}`;
+            btn.style.pointerEvents = 'auto';
+            btn.className = 'inline-flex items-center justify-center w-full border border-black/10 dark:border-white/10 text-center py-4 px-6 font-semibold uppercase tracking-[0.18em] hover:border-brand-orange hover:text-brand-orange transition duration-300';
+        }
         // let molduraSelecionadaAtual = "Madeira"; // Removido: não há mais seleção de moldura
 
         function openModal(obra) {
             obraSelecionadaAtual = obra;
-            molduraSelecionadaAtual = "Madeira";
 
             document.getElementById('modal-img').src = obra.img;
             document.getElementById('modal-title').innerText = obra.titulo;
@@ -487,39 +519,52 @@
             document.getElementById('modal-dimensions').innerText = obra.dimensoes;
 
             const badge = document.getElementById('modal-stock-badge');
-            const btnPayment = document.getElementById('whatsapp-link'); // Mapeia o botão principal do modal
+            const btnPayment = document.getElementById('payment-link');
+            const btnConfirm = document.getElementById('payment-confirm-link');
+            const helper = document.getElementById('payment-helper');
+            const valueWrap = document.getElementById('payment-value-wrap');
+            const valueInput = document.getElementById('payment-value');
+            const disponibilidadeMsg = `Olá Leo! Gostaria de consultar a disponibilidade da obra "${obra.titulo}".`;
 
-            // Limpa estilos prévios para evitar conflito de cores entre chamadas
-            btnPayment.style.pointerEvents = "auto";
+            btnPayment.style.pointerEvents = 'auto';
             btnPayment.removeAttribute('disabled');
+            btnConfirm.classList.add('hidden');
+            btnConfirm.removeAttribute('href');
+            valueWrap.classList.add('hidden');
+            valueInput.value = '';
+            valueInput.oninput = null;
+            valueInput.onblur = null;
 
             if (obra.restante === 0) {
                 badge.innerText = `SÉRIE ESGOTADA`;
                 badge.className = 'inline-block px-2 py-1 bg-zinc-500 text-white text-[10px] font-bold tracking-tighter mb-4 w-fit';
-
-                btnPayment.innerText = "Série Esgotada";
+                helper.innerText = 'Esta obra não possui exemplares disponíveis no momento.';
+                btnPayment.innerText = 'Série Esgotada';
                 btnPayment.removeAttribute('href');
-                btnPayment.style.pointerEvents = "none";
-                btnPayment.className = "inline-flex items-center justify-center w-full bg-zinc-300 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-600 text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] cursor-not-allowed";
+                btnPayment.style.pointerEvents = 'none';
+                btnPayment.className = 'inline-flex items-center justify-center w-full bg-zinc-300 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-600 text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] cursor-not-allowed';
             } else {
                 badge.innerText = `SÉRIE LIMITADA: ${obra.restante} DE ${obra.total} DISPONÍVEIS`;
-                badge.className = obra.restante <= 3
-                    ? 'inline-block px-2 py-1 bg-brand-orange text-white text-[10px] font-bold tracking-tighter mb-4 w-fit'
-                    : 'inline-block px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold tracking-tighter mb-4 w-fit';
-
-                // SE TIVER LINK DO NUBANK CONFIGURADO
+                badge.className = obra.restante <= 3 ? 'inline-block px-2 py-1 bg-brand-orange text-white text-[10px] font-bold tracking-tighter mb-4 w-fit' : 'inline-block px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold tracking-tighter mb-4 w-fit';
                 if (obra.linkNubank) {
-                    btnPayment.innerText = "PAGAR COM PIX";
+                    helper.innerText = '1. Vá para o pagamento. 2. Informe o valor pago. 3. Confirme no WhatsApp.';
+                    valueWrap.classList.remove('hidden');
+                    btnPayment.innerText = 'Ir para pagamento';
                     btnPayment.href = obra.linkNubank;
-                    // Estilização Roxa do Nubank para passar profissionalismo
-                    btnPayment.className = "inline-flex items-center justify-center w-full bg-purple-700 text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-purple-800 transition duration-300 shadow-md";
+                    btnPayment.className = 'inline-flex items-center justify-center w-full bg-purple-700 text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-purple-800 transition duration-300 shadow-md';
+                    btnConfirm.classList.remove('hidden');
+                    valueInput.oninput = () => syncPaymentConfirmation(obra);
+                    valueInput.onblur = () => {
+                        const formatted = formatPaymentValue(valueInput.value);
+                        if (formatted) valueInput.value = formatted;
+                        syncPaymentConfirmation(obra);
+                    };
+                    syncPaymentConfirmation(obra);
                 } else {
-                    // FLUXO PADRÃO WHATSAPP (Caso não queira usar o link direto em todas)
-                    btnPayment.innerText = "Verificar Disponibilidade";
-                    btnPayment.className = "inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300";
-
-                    // Chama a função para injetar o texto do WhatsApp baseado na moldura padrão (Madeira)
-                    selectFrame('Madeira');
+                    helper.innerText = 'Fale comigo no WhatsApp para consultar disponibilidade e próximos passos.';
+                    btnPayment.innerText = 'Verificar Disponibilidade';
+                    btnPayment.href = `https://wa.me/5571992153128?text=${encodeURIComponent(disponibilidadeMsg)}`;
+                    btnPayment.className = 'inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300';
                 }
             }
 
@@ -563,7 +608,11 @@
 
         function closeModal() {
             const modal = document.getElementById('modal-overlay');
+            const valueWrap = document.getElementById('payment-value-wrap');
+            const valueInput = document.getElementById('payment-value');
             modal.classList.add('opacity-0');
+            if (valueWrap) valueWrap.classList.add('hidden');
+            if (valueInput) valueInput.value = '';
             setTimeout(() => {
                 modal.classList.add('hidden');
                 obraSelecionadaAtual = null;
