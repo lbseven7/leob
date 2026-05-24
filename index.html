@@ -334,15 +334,15 @@
                 categoria: "disponível",
                 restante: 10,
                 total: 10,
-                linkNubank: "https://nubank.com.br/cobrar/1ixq0x/6a0fa922-2632-4ac0-a84e-01cc16ce1611" // à vista no PIX 269,01
-                // linkNubank: "https://nubank.com.br/cobrar/1ixq0x/6a0faa21-8d92-41ad-b775-9aeb2e39e12c" // à vista no PIX 269,02
-                // linkNubank: "https://nubank.com.br/cobrar/1ixq0x/6a0faaf1-d6ca-49c6-a00f-ba3067fa3aa4" // à vista no PIX 269,03
-                // linkNubank: "https://nubank.com.br/cobrar/1ixq0x/6a0fab2e-2d86-4177-a190-8eae2a90c5f3" // à vista no PIX 269,04
-                // linkNubank: "https://nubank.com.br/cobrar/1ixq0x/6a0fab5d-ff21-49d5-8ed9-6ae63949f331" // à vista no PIX 269,05
-                // linkNubank: "" // à vista no PIX
-                // linkNubank: "" // à vista no PIX
-                // linkNubank: "" // à vista no PIX
-                // linkNubank: "" // à vista no PIX
+                linkPayment: "https://www.asaas.com/c/p2g0km0bu46pecvw" // à vista no PIX 269,01
+                // linkPayment: "https://nubank.com.br/cobrar/1ixq0x/6a0faa21-8d92-41ad-b775-9aeb2e39e12c" // à vista no PIX 269,02
+                // linkPayment: "https://nubank.com.br/cobrar/1ixq0x/6a0faaf1-d6ca-49c6-a00f-ba3067fa3aa4" // à vista no PIX 269,03
+                // linkPayment: "https://nubank.com.br/cobrar/1ixq0x/6a0fab2e-2d86-4177-a190-8eae2a90c5f3" // à vista no PIX 269,04
+                // linkPayment: "https://nubank.com.br/cobrar/1ixq0x/6a0fab5d-ff21-49d5-8ed9-6ae63949f331" // à vista no PIX 269,05
+                // linkPayment: "" // à vista no PIX
+                // linkPayment: "" // à vista no PIX
+                // linkPayment: "" // à vista no PIX
+                // linkPayment: "" // à vista no PIX
             },
             {
                 id: 2,
@@ -353,7 +353,7 @@
                 categoria: "disponível",
                 restante: 10,
                 total: 10,
-                linkNubank: null // Trata pelo WhatsApp ou mantém em loading
+                linkPayment: null // Trata pelo WhatsApp ou mantém em loading
             },
             {
                 id: 3,
@@ -364,7 +364,7 @@
                 categoria: "disponível",
                 restante: 10,
                 total: 10,
-                linkNubank: null
+                linkPayment: null
             }
         ];
 
@@ -500,7 +500,7 @@
                 btn.className = 'inline-flex items-center justify-center w-full bg-zinc-200 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500 text-center py-4 px-6 font-semibold uppercase tracking-[0.18em] cursor-not-allowed';
                 return;
             }
-            btn.href = `https://wa.me/5571992153128?text=${encodeURIComponent(`Olá Leo! Já realizei o pagamento da obra "${obra.titulo}" e quero confirmar minha reserva. Valor pago: R$ ${value}.`)}`;
+            btn.href = `https://wa.me/5573991182932?text=${encodeURIComponent(`Olá Leo! Já realizei o pagamento da obra "${obra.titulo}" e quero confirmar minha reserva. Valor pago: R$ ${value}.`)}`;
             btn.style.pointerEvents = 'auto';
             btn.className = 'inline-flex items-center justify-center w-full border border-black/10 dark:border-white/10 text-center py-4 px-6 font-semibold uppercase tracking-[0.18em] hover:border-brand-orange hover:text-brand-orange transition duration-300';
         }
@@ -542,11 +542,11 @@
             } else {
                 badge.innerText = `SÉRIE LIMITADA: ${obra.restante} DE ${obra.total} DISPONÍVEIS`;
                 badge.className = obra.restante <= 3 ? 'inline-block px-2 py-1 bg-brand-orange text-white text-[10px] font-bold tracking-tighter mb-4 w-fit' : 'inline-block px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold tracking-tighter mb-4 w-fit';
-                if (obra.linkNubank) {
+                if (obra.linkPayment) {
                     helper.innerText = '1. Vá para o pagamento. 2. Informe o valor pago. 3. Confirme no WhatsApp.';
                     valueWrap.classList.remove('hidden');
                     btnPayment.innerText = 'Ir para pagamento';
-                    btnPayment.href = obra.linkNubank;
+                    btnPayment.href = obra.linkPayment;
                     btnPayment.className = 'inline-flex items-center justify-center w-full bg-purple-700 text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-purple-800 transition duration-300 shadow-md';
                     btnConfirm.classList.remove('hidden');
                     valueInput.oninput = () => syncPaymentConfirmation(obra);
@@ -564,43 +564,11 @@
                 }
             }
 
-            // Removido: não há mais seleção de moldura
-            // Executa a seleção visual da moldura inicial
-            // document.querySelectorAll('.frame-btn').forEach(btn => {
-            //     const circle = btn.querySelector('span:first-child');
-            //     if (btn.getAttribute('data-frame') === 'Madeira') {
-            //         circle.classList.add('ring-2');
-            //     } else {
-            //         circle.classList.remove('ring-2');
-            //     }
-            // });
 
             const modal = document.getElementById('modal-overlay');
             modal.classList.remove('hidden');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
         }
-
-        // Removido: não há mais seleção de moldura
-        // function selectFrame(moldura) {
-        //     molduraSelecionadaAtual = moldura;
-
-        //     document.querySelectorAll('.frame-btn').forEach(btn => {
-        //         const circle = btn.querySelector('span:first-child');
-        //         if (btn.getAttribute('data-frame') === moldura) {
-        //             circle.classList.add('ring-2');
-        //         } else {
-        //             circle.classList.remove('ring-2');
-        //         }
-        //     });
-
-        //     // Só atualiza o link do WhatsApp se a obra NÃO estiver esgotada
-        //     if (obraSelecionadaAtual && obraSelecionadaAtual.restante > 0) {
-        //         const numeroWhats = "5573992153128";
-        //         const mensagem = `Olá Leo! Gostaria de consultar a numeração disponível para a impressão Fine Art "${obraSelecionadaAtual.titulo}" com acabamento em moldura ${molduraSelecionadaAtual.toUpperCase()}.`;
-
-        //         document.getElementById('whatsapp-link').href = `https://wa.me/${numeroWhats}?text=${encodeURIComponent(mensagem)}`;
-        //     }
-        // }
 
         function closeModal() {
             const modal = document.getElementById('modal-overlay');
