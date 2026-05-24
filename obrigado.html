@@ -1,92 +1,146 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reserva Iniciada | Léo Barbosa</title>
+    <title>Reserva Iniciada | leob.</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brand: { orange: '#F97316' } }
+                }
+            }
+        }
+    </script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
     <style>
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #fcfcfc;
-            color: #1a1a1a;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            align-flex: center;
-            justify-content: center;
-            min-height: 100vh;
-            text-align: center;
+            font-family: 'Comfortaa', cursive;
+            background: #f6f2eb;
+            color: #171717;
         }
-        .container {
-            max-width: 550px;
-            padding: 40px 20px;
-            margin: auto;
-        }
-        h1 {
-            font-size: 2rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: #8c7853; /* Tom bronze/sofisticado */
-            margin-bottom: 20px;
-        }
-        p {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: #444;
-            margin-bottom: 30px;
-        }
-        .box-info {
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            padding: 25px;
-            margin-bottom: 30px;
-            text-align: left;
-            font-size: 0.95rem;
-        }
-        .btn-voltar {
-            display: inline-block;
-            background-color: #1a1a1a;
-            color: #fff;
-            text-decoration: none;
-            padding: 12px 30px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: background 0.3s;
-        }
-        .btn-voltar:hover {
-            background-color: #8c7853;
+
+        .serif {
+            font-family: 'Playfair Display', serif;
         }
     </style>
 </head>
-<body>
 
-    <div class="container">
-        <h1>Reserva Iniciada</h1>
-        <p>Excelente escolha. O espaço da sua tiragem exclusiva para a obra <strong id="obra-titulo">Fine Art</strong> já está temporariamente reservado para você.</p>
-        
-        <div class="box-info">
-            <strong style="display:block; margin-bottom:15px; font-size: 1.05rem;">Próximos passos para garantir sua obra:</strong>
-            <ul style="margin-top: 10px; padding-left: 20px; color: #555;">
-                <li style="margin-bottom: 12px;">Conclua o pagamento de forma segura através do nosso parceiro financeiro (Asaas).</li>
-                <li style="margin-bottom: 12px;">Após a confirmação, você receberá o recibo em seu e-mail.</li>
-                <li>Em seguida, entraremos em contato pessoalmente para alinhar os detalhes do envio e do Certificado de Autenticidade.</li>
-            </ul>
+<body
+    class="bg-[#f6f2eb] text-[#171717] dark:bg-black dark:text-white transition-colors duration-500 antialiased min-h-screen flex flex-col">
+    <header
+        class="w-full bg-white/90 dark:bg-zinc-950/90 border-b border-zinc-100 dark:border-zinc-800/50 backdrop-blur-sm transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex justify-center items-center relative">
+            <a href="index.html" class="flex items-center justify-center">
+                <img src="images/logo-laranja-preto-removebg-preview.png" alt="Logo"
+                    class="max-w-[132px] sm:max-w-[140px] h-auto dark:hidden">
+                <img src="images/logo-laranja-branco-removebg-preview.png" alt="Logo"
+                    class="max-w-[132px] sm:max-w-[140px] h-auto hidden dark:block">
+            </a>
+            <div class="absolute right-4 sm:right-6">
+                <button onclick="toggleTheme()"
+                    class="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition text-zinc-600 dark:text-zinc-300"
+                    aria-label="Alternar tema">
+                    <span class="hidden dark:block">☀️</span>
+                    <span class="block dark:hidden">🌙</span>
+                </button>
+            </div>
         </div>
+    </header>
 
-        <a href="#" id="btn-pagamento" class="btn-voltar" style="background-color: #8c7853; width: 100%; box-sizing: border-box; margin-bottom: 25px; padding: 18px 20px; font-size: 0.95rem; letter-spacing: 1.5px;">Clique aqui para concluir o pagamento seguro via Pix ou Cartão</a>
-        <br>
-        <a href="index.html" style="color: #777; text-decoration: none; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px;">Voltar ao catálogo</a>
-    </div>
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6 py-12">
+        <div class="max-w-2xl w-full text-center">
+            <h1 class="serif text-3xl sm:text-4xl md:text-5xl font-normal mb-6">Reserva Iniciada</h1>
+            <div class="h-1 w-20 bg-brand-orange mx-auto mb-8"></div>
+
+            <p class="text-lg md:text-xl text-zinc-700 dark:text-zinc-300 mb-10">
+                Excelente escolha. Você está prestes a adquirir a obra <strong id="obra-titulo"
+                    class="font-bold text-black dark:text-white">Fine Art</strong>. Uma pintura original de altissima
+                qualidade e com certificado de autenticidade assinado pelo artista leob.
+
+            </p>
+
+            <div id="obra-imagem-container" class="hidden mb-10 w-full max-w-sm mx-auto shadow-xl border-4 border-white dark:border-zinc-800">
+                <img id="obra-imagem" src="" alt="Obra selecionada" class="w-full h-auto object-cover aspect-[4/5]">
+            </div>
+
+            <div
+                class="bg-white/70 dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 p-6 sm:p-10 mb-10 text-left shadow-lg">
+                <strong class="block mb-6 text-xl serif font-normal text-black dark:text-white">Próximos passos para
+                    garantir sua obra:</strong>
+                <ul class="space-y-5 text-zinc-700 dark:text-zinc-300">
+                    <li class="flex items-start">
+                        <i class="fa-solid fa-check text-brand-orange mt-1 mr-4"></i>
+                        <span>Conclua o pagamento de forma segura através do nosso parceiro financeiro (Asaas).</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa-solid fa-check text-brand-orange mt-1 mr-4"></i>
+                        <span>Após a confirmação, você receberá o recibo em seu e-mail.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa-solid fa-check text-brand-orange mt-1 mr-4"></i>
+                        <span><strong>Importante:</strong> A numeração exclusiva da sua tiragem (ex: 1/10, 2/10) é reservada e garantida pela <strong>ordem cronológica de aprovação do pagamento</strong>.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa-solid fa-check text-brand-orange mt-1 mr-4"></i>
+                        <span>Em seguida, entraremos em contato pessoalmente para alinhar os detalhes do envio e a emissão do seu Certificado de Autenticidade numerado.</span>
+                    </li>
+                </ul>
+
+            </div>
+            
+            <div class="flex flex-col gap-4 max-w-md mx-auto">
+                <a href="#" id="btn-pagamento"
+                class="inline-flex items-center justify-center w-full bg-black dark:bg-white text-white dark:text-black hover:bg-brand-orange dark:hover:bg-brand-orange hover:text-white transition-colors duration-300 py-4 px-6 font-semibold uppercase tracking-[0.22em] text-sm shadow-md">
+                Concluir pagamento
+            </a> <br>
+            <div class="secure-footer">
+                🔒 Ambiente de pagamento processado e criptografado via Asaas
+            </div>
+
+                <a href="index.html"
+                    class="inline-flex items-center justify-center w-full bg-transparent text-zinc-500 hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange transition-colors duration-300 py-4 px-6 font-semibold uppercase tracking-widest text-xs">
+                    Voltar ao catálogo
+                </a>
+            </div>
+        </div>
+    </main>
 
     <script>
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        }
+
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             const paymentUrl = params.get('paymentUrl');
             const titulo = params.get('titulo');
+            const imgUrl = params.get('img');
 
             if (titulo) {
                 document.getElementById('obra-titulo').textContent = titulo;
+            }
+
+            if (imgUrl) {
+                const imgContainer = document.getElementById('obra-imagem-container');
+                const imgElement = document.getElementById('obra-imagem');
+                imgElement.src = imgUrl;
+                imgContainer.classList.remove('hidden');
             }
 
             if (paymentUrl) {
@@ -97,4 +151,5 @@
         });
     </script>
 </body>
+
 </html>
