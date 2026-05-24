@@ -297,21 +297,9 @@
                     <p class="text-xs uppercase tracking-[0.28em] text-zinc-400">quero obra exclusiva agora</p>
                     <p id="payment-helper" class="text-sm text-zinc-500 leading-relaxed">Escolha a próxima etapa para
                         reservar esta obra.</p>
-                    <div id="payment-value-wrap" class="hidden">
-                        <label for="payment-value"
-                            class="block text-[10px] uppercase tracking-[0.28em] text-zinc-400 mb-2">Valor pago</label>
-                        <input id="payment-value" type="text" inputmode="decimal" placeholder="Ex: 269,01"
-                            class="w-full border border-black/10 dark:border-white/10 bg-white/80 dark:bg-zinc-800/70 px-4 py-3 text-sm outline-none focus:border-brand-orange">
-                        <p class="text-xs text-zinc-500 mt-2">Digite o valor exato para montar a mensagem
-                            automaticamente.</p>
-                    </div>
-                    <a id="payment-link" href="#" target="_blank"
+                    <a id="payment-link" href="#"
                         class="inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300">Verificar
                         Disponibilidade</a>
-                    <a id="payment-confirm-link" href="#" target="_blank"
-                        class="hidden inline-flex items-center justify-center w-full border border-black/10 dark:border-white/10 text-center py-4 px-6 font-semibold uppercase tracking-[0.18em] hover:border-brand-orange hover:text-brand-orange transition duration-300">Já
-                        paguei,
-                        confirmar no WhatsApp</a>
                 </div>
             </div>
         </div>
@@ -481,31 +469,6 @@
 
         let obraSelecionadaAtual = null;
 
-        function formatPaymentValue(value) {
-            const normalized = value.replace(/\s/g, '').replace(/\./g, '').replace(',', '.').replace(/[^\d.]/g, '');
-            const amount = Number(normalized);
-            return Number.isFinite(amount) && amount > 0
-                ? amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                : '';
-        }
-
-        function syncPaymentConfirmation(obra) {
-            const input = document.getElementById('payment-value');
-            const btn = document.getElementById('payment-confirm-link');
-            const value = formatPaymentValue(input?.value || '');
-            if (!btn) return;
-            if (!value) {
-                btn.removeAttribute('href');
-                btn.style.pointerEvents = 'none';
-                btn.className = 'inline-flex items-center justify-center w-full bg-zinc-200 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500 text-center py-4 px-6 font-semibold uppercase tracking-[0.18em] cursor-not-allowed';
-                return;
-            }
-            btn.href = `https://wa.me/5573991182932?text=${encodeURIComponent(`Olá Leo! Já realizei o pagamento da obra "${obra.titulo}" e quero confirmar minha reserva. Valor pago: R$ ${value}.`)}`;
-            btn.style.pointerEvents = 'auto';
-            btn.className = 'inline-flex items-center justify-center w-full border border-black/10 dark:border-white/10 text-center py-4 px-6 font-semibold uppercase tracking-[0.18em] hover:border-brand-orange hover:text-brand-orange transition duration-300';
-        }
-        // let molduraSelecionadaAtual = "Madeira"; // Removido: não há mais seleção de moldura
-
         function openModal(obra) {
             obraSelecionadaAtual = obra;
 
@@ -516,20 +479,11 @@
 
             const badge = document.getElementById('modal-stock-badge');
             const btnPayment = document.getElementById('payment-link');
-            const btnConfirm = document.getElementById('payment-confirm-link');
             const helper = document.getElementById('payment-helper');
-            const valueWrap = document.getElementById('payment-value-wrap');
-            const valueInput = document.getElementById('payment-value');
             const disponibilidadeMsg = `Olá Leo! Gostaria de consultar a disponibilidade da obra "${obra.titulo}".`;
 
             btnPayment.style.pointerEvents = 'auto';
             btnPayment.removeAttribute('disabled');
-            btnConfirm.classList.add('hidden');
-            btnConfirm.removeAttribute('href');
-            valueWrap.classList.add('hidden');
-            valueInput.value = '';
-            valueInput.oninput = null;
-            valueInput.onblur = null;
 
             if (obra.restante === 0) {
                 badge.innerText = `SÉRIE ESGOTADA`;
@@ -543,24 +497,17 @@
                 badge.innerText = `SÉRIE LIMITADA: ${obra.restante} DE ${obra.total} DISPONÍVEIS`;
                 badge.className = obra.restante <= 3 ? 'inline-block px-2 py-1 bg-brand-orange text-white text-[10px] font-bold tracking-tighter mb-4 w-fit' : 'inline-block px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold tracking-tighter mb-4 w-fit';
                 if (obra.linkPayment) {
-                    helper.innerText = '1. Vá para o pagamento. 2. Informe o valor pago. 3. Confirme no WhatsApp.';
-                    valueWrap.classList.remove('hidden');
-                    btnPayment.innerText = 'Ir para pagamento';
-                    btnPayment.href = obra.linkPayment;
-                    btnPayment.className = 'inline-flex items-center justify-center w-full bg-purple-700 text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-purple-800 transition duration-300 shadow-md';
-                    btnConfirm.classList.remove('hidden');
-                    valueInput.oninput = () => syncPaymentConfirmation(obra);
-                    valueInput.onblur = () => {
-                        const formatted = formatPaymentValue(valueInput.value);
-                        if (formatted) valueInput.value = formatted;
-                        syncPaymentConfirmation(obra);
-                    };
-                    syncPaymentConfirmation(obra);
+                    helper.innerText = 'Você será direcionado para uma página segura para iniciar sua reserva.';
+                    btnPayment.innerText = 'Adquirir Obra';
+                    btnPayment.href = `obrigado.html?paymentUrl=${encodeURIComponent(obra.linkPayment)}&titulo=${encodeURIComponent(obra.titulo)}`;
+                    btnPayment.className = 'inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300 shadow-md';
+                    btnPayment.removeAttribute('target');
                 } else {
                     helper.innerText = 'Fale comigo no WhatsApp para consultar disponibilidade e próximos passos.';
                     btnPayment.innerText = 'Verificar Disponibilidade';
                     btnPayment.href = `https://wa.me/5571992153128?text=${encodeURIComponent(disponibilidadeMsg)}`;
                     btnPayment.className = 'inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300';
+                    btnPayment.setAttribute('target', '_blank');
                 }
             }
 
@@ -572,11 +519,7 @@
 
         function closeModal() {
             const modal = document.getElementById('modal-overlay');
-            const valueWrap = document.getElementById('payment-value-wrap');
-            const valueInput = document.getElementById('payment-value');
             modal.classList.add('opacity-0');
-            if (valueWrap) valueWrap.classList.add('hidden');
-            if (valueInput) valueInput.value = '';
             setTimeout(() => {
                 modal.classList.add('hidden');
                 obraSelecionadaAtual = null;

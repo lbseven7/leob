@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva Iniciada | Léo Barbosa</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #fcfcfc;
+            color: #1a1a1a;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-flex: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .container {
+            max-width: 550px;
+            padding: 40px 20px;
+            margin: auto;
+        }
+        h1 {
+            font-size: 2rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #8c7853; /* Tom bronze/sofisticado */
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 30px;
+        }
+        .box-info {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        .btn-voltar {
+            display: inline-block;
+            background-color: #1a1a1a;
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 30px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background 0.3s;
+        }
+        .btn-voltar:hover {
+            background-color: #8c7853;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Reserva Iniciada</h1>
+        <p>Excelente escolha. O espaço da sua tiragem exclusiva para a obra <strong id="obra-titulo">Fine Art</strong> já está temporariamente reservado para você.</p>
+        
+        <div class="box-info">
+            <strong style="display:block; margin-bottom:15px; font-size: 1.05rem;">Próximos passos para garantir sua obra:</strong>
+            <ul style="margin-top: 10px; padding-left: 20px; color: #555;">
+                <li style="margin-bottom: 12px;">Conclua o pagamento de forma segura através do nosso parceiro financeiro (Asaas).</li>
+                <li style="margin-bottom: 12px;">Após a confirmação, você receberá o recibo em seu e-mail.</li>
+                <li>Em seguida, entraremos em contato pessoalmente para alinhar os detalhes do envio e do Certificado de Autenticidade.</li>
+            </ul>
+        </div>
+
+        <a href="#" id="btn-pagamento" class="btn-voltar" style="background-color: #8c7853; width: 100%; box-sizing: border-box; margin-bottom: 25px; padding: 18px 20px; font-size: 0.95rem; letter-spacing: 1.5px;">Clique aqui para concluir o pagamento seguro via Pix ou Cartão</a>
+        <br>
+        <a href="index.html" style="color: #777; text-decoration: none; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px;">Voltar ao catálogo</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const paymentUrl = params.get('paymentUrl');
+            const titulo = params.get('titulo');
+
+            if (titulo) {
+                document.getElementById('obra-titulo').textContent = titulo;
+            }
+
+            if (paymentUrl) {
+                document.getElementById('btn-pagamento').href = paymentUrl;
+            } else {
+                document.getElementById('btn-pagamento').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
