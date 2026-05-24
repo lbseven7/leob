@@ -499,7 +499,7 @@
                 if (obra.linkPayment) {
                     helper.innerText = 'Você será direcionado para uma página segura para iniciar sua reserva.';
                     btnPayment.innerText = 'Adquirir Obra';
-                    btnPayment.href = `obrigado.html?paymentUrl=${encodeURIComponent(obra.linkPayment)}&titulo=${encodeURIComponent(obra.titulo)}`;
+                    btnPayment.href = `obrigado.html?paymentUrl=${encodeURIComponent(obra.linkPayment)}&titulo=${encodeURIComponent(obra.titulo)}&img=${encodeURIComponent(obra.img)}`;
                     btnPayment.className = 'inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300 shadow-md';
                     btnPayment.removeAttribute('target');
                 } else {
@@ -515,6 +515,9 @@
             const modal = document.getElementById('modal-overlay');
             modal.classList.remove('hidden');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
+            
+            // Salva o estado do modal para manter aberto ao voltar da página de obrigado
+            sessionStorage.setItem('lastOpenModal', obra.id);
         }
 
         function closeModal() {
@@ -524,6 +527,9 @@
                 modal.classList.add('hidden');
                 obraSelecionadaAtual = null;
             }, 300);
+
+            // Remove o estado salvo do modal
+            sessionStorage.removeItem('lastOpenModal');
         }
 
         // Custom Cursor
@@ -592,6 +598,16 @@
         renderEvents();
         renderGallery();
         updateProgressBar();
+
+        // Restaura o modal aberto caso o usuário tenha voltado da página de pagamento
+        const lastOpenModal = sessionStorage.getItem('lastOpenModal');
+        if (lastOpenModal) {
+            const obraToOpen = obras.find(o => o.id === parseInt(lastOpenModal));
+            if (obraToOpen) {
+                // Pequeno atraso para garantir que tudo foi renderizado
+                setTimeout(() => openModal(obraToOpen), 100);
+            }
+        }
     </script>
 </body>
 
