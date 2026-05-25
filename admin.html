@@ -116,19 +116,31 @@
         </div>
     </div>
 
-    <script>
+<script>
+        // Força a leitura direta do localStorage logo no início
         let apiUrl = localStorage.getItem('leob_sheet_api') || '';
 
         function configurarAPI() {
-            const url = prompt("Cole aqui a URL do seu Google Apps Script (Web App):", apiUrl);
-            if (url !== null) {
-                apiUrl = url;
-                localStorage.setItem('leob_sheet_api', apiUrl);
+            // Sugere a URL atual se ela já existir
+            const url = prompt("Cole aqui a URL do seu Google Apps Script (Web App):", apiUrl || window.localStorage.getItem('leob_sheet_api'));
+            
+            if (url !== null && url.trim() !== "") {
+                apiUrl = url.trim();
+                window.localStorage.setItem('leob_sheet_api', apiUrl);
+                alert("URL configurada com sucesso e salva no navegador!");
+                carregarDados();
+            } else if (url === "") {
+                // Se o usuário apagar tudo e der OK, limpa o registro
+                apiUrl = '';
+                window.localStorage.removeItem('leob_sheet_api');
                 carregarDados();
             }
         }
 
         async function carregarDados() {
+            // Atualiza a variável local antes de tentar carregar, por garantia
+            apiUrl = window.localStorage.getItem('leob_sheet_api') || '';
+            
             const tbody = document.getElementById('tabela-corpo');
             if (!apiUrl) {
                 tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-brand-orange font-bold">⚠️ Clique em "Configurar Planilha" no topo para conectar seu Google Sheets.</td></tr>';
@@ -141,33 +153,40 @@
                 const response = await fetch(apiUrl);
                 const dados = await response.json();
                 
-                if (dados.length === 0) {
+                if (!dados || dados.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-zinc-500">Nenhum registro encontrado na planilha.</td></tr>';
                     return;
                 }
 
                 tbody.innerHTML = '';
                 dados.forEach((linha, index) => {
-                    // Define a cor do badge de status
                     let statusColor = 'bg-zinc-200 text-zinc-700';
                     if(linha.Status === 'Pago') statusColor = 'bg-green-100 text-green-800';
                     if(linha.Status === 'Certificado Emitido') statusColor = 'bg-yellow-100 text-yellow-800';
                     if(linha.Status === 'Enviado') statusColor = 'bg-blue-100 text-blue-800';
                     if(linha.Status === 'Entregue') statusColor = 'bg-purple-100 text-purple-800';
 
-                    // Transformar os dados em JSON para passar no botão
-                    const dadosJSON = encodeURIComponent(JSON.stringify({...linha, index: index + 2})); // +2 porque linha 1 é cabeçalho
+                    // Evita quebras se a data vier inválida ou vazia
+                    let dataFormatada = '---';
+                    if (linha.Data) {
+                        const dataObj = new Date(linha.Data);
+                        if (!isNaN(dataObj)) {
+                            dataFormatada = dataObj.toLocaleDateString('pt-BR');
+                        }
+                    }
+
+                    const dadosJSON = encodeURIComponent(JSON.stringify({...linha, index: index + 2}));
 
                     tbody.innerHTML += `
                         <tr class="hover:bg-zinc-50 transition border-b border-zinc-100">
-                            <td class="p-4">${new Date(linha.Data).toLocaleDateString('pt-BR')}</td>
+                            <td class="p-4">${dataFormatada}</td>
                             <td class="p-4 font-bold">
-                                ${linha.Cliente}
+                                ${linha.Cliente || 'Sem Nome'}
                                 <div class="text-[10px] font-normal text-zinc-500 mt-1 truncate max-w-[150px]">${linha.Observacoes || ''}</div>
                             </td>
-                            <td class="p-4">${linha.Obra}</td>
-                            <td class="p-4"><span class="bg-black text-white px-2 py-1 text-xs font-bold tracking-widest">${linha.Tiragem}</span></td>
-                            <td class="p-4"><span class="px-2 py-1 text-xs font-bold uppercase tracking-wider ${statusColor}">${linha.Status}</span></td>
+                            <td class="p-4">${linha.Obra || '---'}</td>
+                            <td class="p-4"><span class="bg-black text-white px-2 py-1 text-xs font-bold tracking-widest">${linha.Tiragem || '---'}</span></td>
+                            <td class="p-4"><span class="px-2 py-1 text-xs font-bold uppercase tracking-wider ${statusColor}">${linha.Status || 'Pendente'}</span></td>
                             <td class="p-4">
                                 <button onclick="editarRegistro('${dadosJSON}')" class="text-zinc-400 hover:text-brand-orange transition px-2 py-1" title="Editar">
                                     <i class="fa-solid fa-pen-to-square"></i>
@@ -177,12 +196,15 @@
                     `;
                 });
             } catch (error) {
-                tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-red-500">Erro ao carregar os dados. Verifique a URL do Google Script.</td></tr>';
+                console.error(error);
+                tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-red-500">Erro ao carregar os dados. Verifique a URL do Google Script ou se as permissões de CORS estão corretas.</td></tr>';
             }
         }
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
+            // Garante que pega a API atualizada do localStorage na hora de salvar
+            apiUrl = window.localStorage.getItem('leob_sheet_api') || '';
             if(!apiUrl) return alert("Configure a URL da planilha primeiro!");
 
             const btn = e.target.querySelector('button');
@@ -203,15 +225,15 @@
             try {
                 await fetch(apiUrl, {
                     method: 'POST',
-                    mode: 'no-cors', // Necessário para o Google Apps Script não bloquear
+                    mode: 'no-cors', 
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dados)
                 });
                 
                 fecharModal();
                 e.target.reset();
-                alert("Registro salvo com sucesso!");
-                // Recarrega os dados após 2 segundos para dar tempo do Google processar
+                alert("Registro enviado com sucesso!");
+                
                 setTimeout(carregarDados, 2000); 
             } catch (error) {
                 alert("Erro ao salvar. Tente novamente.");
@@ -234,18 +256,20 @@
             const dados = JSON.parse(decodeURIComponent(dadosJSON));
             
             document.getElementById('linha-id').value = dados.index;
-            document.getElementById('cliente').value = dados.Cliente;
-            document.getElementById('obra').value = dados.Obra;
-            document.getElementById('tiragem').value = dados.Tiragem;
-            document.getElementById('status').value = dados.Status;
-            document.getElementById('observacoes').value = dados.Observacoes;
+            document.getElementById('cliente').value = dados.Cliente || '';
+            document.getElementById('obra').value = dados.Obra || '';
+            document.getElementById('tiragem').value = dados.Tiragem || '';
+            document.getElementById('status').value = dados.Status || 'Pago';
+            document.getElementById('observacoes').value = dados.Observacoes || '';
             
             document.querySelector('#modal-registro h2').innerText = 'Editar Registro';
             document.getElementById('modal-registro').classList.remove('hidden');
         }
 
-        // Inicia carregando os dados
-        carregarDados();
+        // Executa a carga inicial assegurando que o DOM está pronto e buscando do localstorage atualizado
+        window.addEventListener('DOMContentLoaded', () => {
+            carregarDados();
+        });
     </script>
 </body>
 </html>
