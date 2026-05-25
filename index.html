@@ -188,6 +188,45 @@
                 </div>
             </div>
         </section>
+        <br>
+
+        <section class="py-12 px-6 max-w-5xl mx-auto text-center">
+    <h2 class="serif text-3xl font-bold mb-8">leob. Fine Art Collection</h2>
+    
+    <div class="relative aspect-video max-w-3xl mx-auto bg-zinc-800 shadow-2xl group cursor-pointer overflow-hidden border border-zinc-300" onclick="toggleVideoModal(true)">
+        <img src="images/ccvolpe.jpg" alt="Preview do vídeo" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition duration-500">
+        
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg group-hover:bg-brand-orange group-hover:text-white transition duration-300">
+                <i class="fa-solid fa-play text-xl ml-1"></i>
+            </div>
+        </div>
+    </div>
+
+    <div id="video-lightbox" class="fixed inset-0 bg-black/95 backdrop-blur-md hidden flex items-center justify-center z-50 p-4">
+        <button onclick="toggleVideoModal(false)" class="absolute top-6 right-6 text-white/70 hover:text-white text-2xl"><i class="fa-solid fa-xmark"></i></button>
+        <div class="w-full max-w-4xl aspect-video bg-black">
+            <video id="modal-player" controls class="w-full h-full">
+                <source src="" type="video/mp4">
+            </video>
+        </div>
+    </div>
+</section>
+
+<script>
+    function toggleVideoModal(show) {
+        const modal = document.getElementById('video-lightbox');
+        const player = document.getElementById('modal-player');
+        if (show) {
+            modal.classList.remove('hidden');
+            player.play();
+        } else {
+            modal.classList.add('hidden');
+            player.pause();
+            player.currentTime = 0; // Reseta o vídeo
+        }
+    }
+</script>
 
         <section id="catalogo" class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-12 gap-6 sm:gap-8">
@@ -253,7 +292,7 @@
             class="relative max-w-7xl mx-auto px-6 flex flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
             <p class="text-sm">&copy; 2026 leob. - por lbseven7</p>
             <div class="flex items-center gap-6 text-xl md:ml-auto">
-                <a href="https://wa.me/5571992153128" target="_blank" aria-label="WhatsApp"
+                <a href="https://wa.me/5573991182932" target="_blank" aria-label="WhatsApp"
                     class="hover:text-brand-orange transition"><i class="fa-brands fa-whatsapp"></i></a>
                 <a href="https://www.instagram.com/leob_pinturas/" target="_blank" aria-label="Instagram"
                     class="hover:text-brand-orange transition"><i class="fa-brands fa-instagram"></i></a>
@@ -322,38 +361,30 @@
                 categoria: "disponível",
                 restante: 10,
                 total: 10,
-                linkPayment: "https://www.asaas.com/c/p2g0km0bu46pecvw" // à vista no PIX 269,01
-                // linkPayment: "https://nubank.com.br/cobrar/1ixq0x/6a0faa21-8d92-41ad-b775-9aeb2e39e12c" // à vista no PIX 269,02
-                // linkPayment: "https://nubank.com.br/cobrar/1ixq0x/6a0faaf1-d6ca-49c6-a00f-ba3067fa3aa4" // à vista no PIX 269,03
-                // linkPayment: "https://nubank.com.br/cobrar/1ixq0x/6a0fab2e-2d86-4177-a190-8eae2a90c5f3" // à vista no PIX 269,04
-                // linkPayment: "https://nubank.com.br/cobrar/1ixq0x/6a0fab5d-ff21-49d5-8ed9-6ae63949f331" // à vista no PIX 269,05
-                // linkPayment: "" // à vista no PIX
-                // linkPayment: "" // à vista no PIX
-                // linkPayment: "" // à vista no PIX
-                // linkPayment: "" // à vista no PIX
-            },
+                linkPayment: "https://www.asaas.com/c/p2g0km0bu46pecvw" 
+        },
             {
                 id: 2,
                 titulo: "LOADING...",
-                tecnica: "Photo Rag",
-                dimensoes: "27,9x42cm",
+                tecnica: "...",
+                dimensoes: "27, 9 x 42cm",
                 img: "images/logo-preto.png",
                 categoria: "disponível",
-                restante: 10,
-                total: 10,
+                restante: 0,
+                total: 0,
                 linkPayment: null // Trata pelo WhatsApp ou mantém em loading
             },
-            {
-                id: 3,
-                titulo: "LOADING...",
-                tecnica: "Papel Algodão 100%",
-                dimensoes: "30x40cm",
-                img: "images/logo-preto.png",
-                categoria: "disponível",
-                restante: 10,
-                total: 10,
-                linkPayment: null
-            }
+            // {
+            //     id: 3,
+            //     titulo: "LOADING...",
+            //     tecnica: "Papel Algodão 100%",
+            //     dimensoes: "30x40cm",
+            //     img: "images/logo-preto.png",
+            //     categoria: "disponível",
+            //     restante: 10,
+            //     total: 10,
+            //     linkPayment: null
+            // }
         ];
 
         const eventos = [
@@ -505,7 +536,7 @@
                 } else {
                     helper.innerText = 'Fale comigo no WhatsApp para consultar disponibilidade e próximos passos.';
                     btnPayment.innerText = 'Verificar Disponibilidade';
-                    btnPayment.href = `https://wa.me/5571992153128?text=${encodeURIComponent(disponibilidadeMsg)}`;
+                    btnPayment.href = `https://wa.me/5573991182932?text=${encodeURIComponent(disponibilidadeMsg)}`;
                     btnPayment.className = 'inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300';
                     btnPayment.setAttribute('target', '_blank');
                 }
