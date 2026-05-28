@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,32 +15,45 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        body { font-family: 'Comfortaa', cursive; background: #f6f2eb; color: #171717; }
-        .serif { font-family: 'Playfair Display', serif; }
+        body {
+            font-family: 'Comfortaa', cursive;
+            background: #f6f2eb;
+            color: #171717;
+        }
+
+        .serif {
+            font-family: 'Playfair Display', serif;
+        }
     </style>
 </head>
+
 <body class="min-h-screen flex flex-col">
 
     <!-- Header Simples -->
     <header class="w-full bg-black text-white py-4 px-6 flex justify-between items-center shadow-md">
         <div class="flex items-center gap-4">
-            <img src="images/logo-laranja-branco-removebg-preview.png" alt="leob." class="h-8">
-            <span class="text-sm tracking-widest uppercase opacity-70 border-l border-white/20 pl-4">Gestão de Obras</span>
+            <img src="images/logo-preto-desktop.png" alt="leob." class="h-8">
+            <span class="text-sm tracking-widest uppercase opacity-70 border-l border-white/20 pl-4">Gestão de
+                Obras</span>
         </div>
-        <button onclick="configurarAPI()" class="text-xs text-brand-orange hover:text-white transition"><i class="fa-solid fa-gear mr-2"></i>Configurar Planilha</button>
+        <button onclick="configurarAPI()" class="text-xs text-brand-orange hover:text-white transition"><i
+                class="fa-solid fa-gear mr-2"></i>Configurar Planilha</button>
     </header>
 
     <main class="flex-grow p-6 max-w-7xl mx-auto w-full">
-        
+
         <div class="flex justify-between items-end mb-8">
             <div>
                 <h1 class="serif text-3xl font-bold mb-2">Controle de Vendas e Entregas</h1>
                 <p class="text-sm text-zinc-600">Acompanhe a numeração das tiragens e o status dos clientes.</p>
             </div>
-            <button onclick="abrirModal()" class="bg-brand-orange text-white px-6 py-3 font-bold uppercase tracking-widest text-xs hover:bg-black transition shadow-lg">
+            <button onclick="abrirModal()"
+                class="bg-brand-orange text-white px-6 py-3 font-bold uppercase tracking-widest text-xs hover:bg-black transition shadow-lg">
                 <i class="fa-solid fa-plus mr-2"></i> Novo Registro
             </button>
         </div>
@@ -69,22 +83,27 @@
     </main>
 
     <!-- Modal Novo Registro -->
-    <div id="modal-registro" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+    <div id="modal-registro"
+        class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
         <div class="bg-white p-8 w-full max-w-lg shadow-2xl">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="serif text-2xl font-bold">Novo Registro</h2>
-                <button onclick="fecharModal()" class="text-zinc-400 hover:text-black"><i class="fa-solid fa-xmark text-xl"></i></button>
+                <button onclick="fecharModal()" class="text-zinc-400 hover:text-black"><i
+                        class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-            
+
             <form id="form-registro" class="space-y-4">
                 <input type="hidden" id="linha-id" value="">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Nome do Cliente</label>
-                    <input type="text" id="cliente" required class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
+                    <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Nome do
+                        Cliente</label>
+                    <input type="text" id="cliente" required
+                        class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Obra</label>
-                    <select id="obra" required class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
+                    <select id="obra" required
+                        class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
                         <option value="Casa do Vaqueiro">Casa do Vaqueiro</option>
                         <option value="Caminho da Luz">Caminho da Luz</option>
                         <!-- Adicione outras obras aqui -->
@@ -92,12 +111,16 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Tiragem (Ex: 1/10)</label>
-                        <input type="text" id="tiragem" required class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Tiragem (Ex:
+                            1/10)</label>
+                        <input type="text" id="tiragem" required
+                            class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Status</label>
-                        <select id="status" class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
+                        <label
+                            class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Status</label>
+                        <select id="status"
+                            class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
                             <option value="Pago">Pago</option>
                             <option value="Certificado Emitido">Certificado Emitido</option>
                             <option value="Enviado">Enviado</option>
@@ -106,24 +129,27 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Observações (Endereço, WhatsApp...)</label>
-                    <textarea id="observacoes" rows="3" class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none"></textarea>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Observações
+                        (Endereço, WhatsApp...)</label>
+                    <textarea id="observacoes" rows="3"
+                        class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none"></textarea>
                 </div>
-                <button type="submit" class="w-full bg-black text-white py-4 font-bold uppercase tracking-[0.2em] hover:bg-brand-orange transition mt-4">
+                <button type="submit"
+                    class="w-full bg-black text-white py-4 font-bold uppercase tracking-[0.2em] hover:bg-brand-orange transition mt-4">
                     Salvar na Planilha
                 </button>
             </form>
         </div>
     </div>
 
-<script>
+    <script>
         // Força a leitura direta do localStorage logo no início
         let apiUrl = localStorage.getItem('leob_sheet_api') || '';
 
         function configurarAPI() {
             // Sugere a URL atual se ela já existir
             const url = prompt("Cole aqui a URL do seu Google Apps Script (Web App):", apiUrl || window.localStorage.getItem('leob_sheet_api'));
-            
+
             if (url !== null && url.trim() !== "") {
                 apiUrl = url.trim();
                 window.localStorage.setItem('leob_sheet_api', apiUrl);
@@ -140,7 +166,7 @@
         async function carregarDados() {
             // Atualiza a variável local antes de tentar carregar, por garantia
             apiUrl = window.localStorage.getItem('leob_sheet_api') || '';
-            
+
             const tbody = document.getElementById('tabela-corpo');
             if (!apiUrl) {
                 tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-brand-orange font-bold">⚠️ Clique em "Configurar Planilha" no topo para conectar seu Google Sheets.</td></tr>';
@@ -152,7 +178,7 @@
             try {
                 const response = await fetch(apiUrl);
                 const dados = await response.json();
-                
+
                 if (!dados || dados.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-zinc-500">Nenhum registro encontrado na planilha.</td></tr>';
                     return;
@@ -161,10 +187,10 @@
                 tbody.innerHTML = '';
                 dados.forEach((linha, index) => {
                     let statusColor = 'bg-zinc-200 text-zinc-700';
-                    if(linha.Status === 'Pago') statusColor = 'bg-green-100 text-green-800';
-                    if(linha.Status === 'Certificado Emitido') statusColor = 'bg-yellow-100 text-yellow-800';
-                    if(linha.Status === 'Enviado') statusColor = 'bg-blue-100 text-blue-800';
-                    if(linha.Status === 'Entregue') statusColor = 'bg-purple-100 text-purple-800';
+                    if (linha.Status === 'Pago') statusColor = 'bg-green-100 text-green-800';
+                    if (linha.Status === 'Certificado Emitido') statusColor = 'bg-yellow-100 text-yellow-800';
+                    if (linha.Status === 'Enviado') statusColor = 'bg-blue-100 text-blue-800';
+                    if (linha.Status === 'Entregue') statusColor = 'bg-purple-100 text-purple-800';
 
                     // Evita quebras se a data vier inválida ou vazia
                     let dataFormatada = '---';
@@ -175,7 +201,7 @@
                         }
                     }
 
-                    const dadosJSON = encodeURIComponent(JSON.stringify({...linha, index: index + 2}));
+                    const dadosJSON = encodeURIComponent(JSON.stringify({ ...linha, index: index + 2 }));
 
                     tbody.innerHTML += `
                         <tr class="hover:bg-zinc-50 transition border-b border-zinc-100">
@@ -205,7 +231,7 @@
             e.preventDefault();
             // Garante que pega a API atualizada do localStorage na hora de salvar
             apiUrl = window.localStorage.getItem('leob_sheet_api') || '';
-            if(!apiUrl) return alert("Configure a URL da planilha primeiro!");
+            if (!apiUrl) return alert("Configure a URL da planilha primeiro!");
 
             const btn = e.target.querySelector('button');
             const textoOriginal = btn.innerText;
@@ -225,16 +251,16 @@
             try {
                 await fetch(apiUrl, {
                     method: 'POST',
-                    mode: 'no-cors', 
+                    mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dados)
                 });
-                
+
                 fecharModal();
                 e.target.reset();
                 alert("Registro enviado com sucesso!");
-                
-                setTimeout(carregarDados, 2000); 
+
+                setTimeout(carregarDados, 2000);
             } catch (error) {
                 alert("Erro ao salvar. Tente novamente.");
             } finally {
@@ -243,25 +269,25 @@
             }
         });
 
-        function abrirModal() { 
+        function abrirModal() {
             document.getElementById('form-registro').reset();
             document.getElementById('linha-id').value = '';
             document.querySelector('#modal-registro h2').innerText = 'Novo Registro';
-            document.getElementById('modal-registro').classList.remove('hidden'); 
+            document.getElementById('modal-registro').classList.remove('hidden');
         }
-        
+
         function fecharModal() { document.getElementById('modal-registro').classList.add('hidden'); }
 
         function editarRegistro(dadosJSON) {
             const dados = JSON.parse(decodeURIComponent(dadosJSON));
-            
+
             document.getElementById('linha-id').value = dados.index;
             document.getElementById('cliente').value = dados.Cliente || '';
             document.getElementById('obra').value = dados.Obra || '';
             document.getElementById('tiragem').value = dados.Tiragem || '';
             document.getElementById('status').value = dados.Status || 'Pago';
             document.getElementById('observacoes').value = dados.Observacoes || '';
-            
+
             document.querySelector('#modal-registro h2').innerText = 'Editar Registro';
             document.getElementById('modal-registro').classList.remove('hidden');
         }
@@ -272,4 +298,5 @@
         });
     </script>
 </body>
+
 </html>
