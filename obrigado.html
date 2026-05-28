@@ -12,15 +12,23 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    colors: { brand: { orange: '#F97316' } }
+                    colors: { brand: { orange: '#F97316' } },
+                    // ADICIONADO: Animação de pulso suave personalizada
+                    animation: {
+                        'pulse-slow': 'pulse-subtle 2.5s infinite ease-in-out',
+                    },
+                    keyframes: {
+                        'pulse-subtle': {
+                            '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+                            '50%': { transform: 'scale(1.03)', opacity: '0.95' },
+                        }
+                    }
                 }
             }
         }
     </script>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
@@ -36,21 +44,15 @@
     </style>
 </head>
 
-<body
-    class="bg-[#f6f2eb] text-[#171717] dark:bg-black dark:text-white transition-colors duration-500 antialiased min-h-screen flex flex-col">
-    <header
-        class="w-full bg-white/90 dark:bg-zinc-950/90 border-b border-zinc-100 dark:border-zinc-800/50 backdrop-blur-sm transition-colors duration-300">
+<body class="bg-[#f6f2eb] text-[#171717] dark:bg-black dark:text-white transition-colors duration-500 antialiased min-h-screen flex flex-col">
+    <header class="w-full bg-white/90 dark:bg-zinc-950/90 border-b border-zinc-100 dark:border-zinc-800/50 backdrop-blur-sm transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex justify-center items-center relative">
             <a href="index.html" class="flex items-center justify-center">
-                <img src="images/logo-laranja-preto-removebg-preview.png" alt="Logo"
-                    class="max-w-[132px] sm:max-w-[140px] h-auto dark:hidden">
-                <img src="images/logo-laranja-branco-removebg-preview.png" alt="Logo"
-                    class="max-w-[132px] sm:max-w-[140px] h-auto hidden dark:block">
+                <img src="images/logo-s-bg-preto.png" alt="Logo" class="max-w-[132px] sm:max-w-[140px] h-auto dark:hidden">
+                <img src="images/logo-s-bg-branco.png" alt="Logo" class="max-w-[132px] sm:max-w-[140px] h-auto hidden dark:block">
             </a>
             <div class="absolute right-4 sm:right-6">
-                <button onclick="toggleTheme()"
-                    class="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition text-zinc-600 dark:text-zinc-300"
-                    aria-label="Alternar tema">
+                <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition text-zinc-600 dark:text-zinc-300" aria-label="Alternar tema">
                     <span class="hidden dark:block">☀️</span>
                     <span class="block dark:hidden">🌙</span>
                 </button>
@@ -64,20 +66,11 @@
             <div class="h-1 w-20 bg-brand-orange mx-auto mb-8"></div>
 
             <p class="text-lg md:text-xl text-zinc-700 dark:text-zinc-300 mb-10">
-                Excelente escolha. Você está prestes a adquirir a obra <strong id="obra-titulo"
-                    class="font-bold text-black dark:text-white">Fine Art</strong>. Um Giclée da obra original de altissima
-                qualidade e com certificado de autenticidade assinado pelo artista.
-
+                Excelente escolha. Você está prestes a adquirir a obra <strong id="obra-titulo" class="font-bold text-black dark:text-white">Casa do Vaqueiro</strong>, um Giclée da obra original de altíssima qualidade e com certificado de autenticidade assinado pelo artista.
             </p>
 
-            <div id="obra-imagem-container" class="hidden mb-10 w-full max-w-sm mx-auto shadow-xl border-4 border-white dark:border-zinc-800">
-                <img id="obra-imagem" src="" alt="Obra selecionada" class="w-full h-auto object-cover aspect-[4/5]">
-            </div>
-
-            <div
-                class="bg-white/70 dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 p-6 sm:p-10 mb-10 text-left shadow-lg">
-                <strong class="block mb-6 text-xl serif font-normal text-black dark:text-white">Próximos passos para
-                    garantir sua obra:</strong>
+            <div class="bg-white/70 dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 p-6 sm:p-10 mb-10 text-left shadow-lg">
+                <strong class="block mb-6 text-xl serif font-normal text-black dark:text-white">Próximos passos para garantir sua obra:</strong>
                 <ul class="space-y-5 text-zinc-700 dark:text-zinc-300">
                     <li class="flex items-start">
                         <i class="fa-solid fa-check text-brand-orange mt-1 mr-4"></i>
@@ -96,20 +89,17 @@
                         <span>Em seguida, entraremos em contato pessoalmente para alinhar os detalhes do envio e a emissão do seu Certificado de Autenticidade numerado.</span>
                     </li>
                 </ul>
-
             </div>
             
             <div class="flex flex-col gap-4 max-w-md mx-auto">
-                <a href="#" id="btn-pagamento"
-                class="inline-flex items-center justify-center w-full bg-black dark:bg-white text-white dark:text-black hover:bg-brand-orange dark:hover:bg-brand-orange hover:text-white transition-colors duration-300 py-4 px-6 font-semibold uppercase tracking-[0.22em] text-sm shadow-md">
-                Concluir pagamento
-            </a> <br>
-            <div class="secure-footer">
-                🔒 Ambiente de pagamento processado e criptografado via Asaas
-            </div>
+                <a href="#" id="btn-pagamento" class="inline-flex items-center justify-center w-full bg-black dark:bg-white text-white dark:text-black hover:bg-brand-orange dark:hover:bg-brand-orange hover:text-white transition-colors duration-300 py-4 px-6 font-semibold uppercase tracking-[0.22em] text-sm shadow-md animate-pulse-slow">
+                    Concluir pagamento
+                </a>
+                <div class="secure-footer text-xs opacity-60">
+                    🔒 Ambiente de pagamento processado e criptografado via Asaas
+                </div>
 
-                <a href="index.html"
-                    class="inline-flex items-center justify-center w-full bg-transparent text-zinc-500 hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange transition-colors duration-300 py-4 px-6 font-semibold uppercase tracking-widest text-xs">
+                <a href="index.html" class="inline-flex items-center justify-center w-full bg-transparent text-zinc-500 hover:text-brand-orange dark:text-zinc-400 dark:hover:text-brand-orange transition-colors duration-300 py-4 px-6 font-semibold uppercase tracking-widest text-xs">
                     Voltar ao catálogo
                 </a>
             </div>
@@ -139,8 +129,10 @@
             if (imgUrl) {
                 const imgContainer = document.getElementById('obra-imagem-container');
                 const imgElement = document.getElementById('obra-imagem');
-                imgElement.src = imgUrl;
-                imgContainer.classList.remove('hidden');
+                if(imgElement && imgContainer) {
+                    imgElement.src = imgUrl;
+                    imgContainer.classList.remove('hidden');
+                }
             }
 
             if (paymentUrl) {
