@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Textos & Ensaios | Leo Barbosa</title>
+
+    <meta name="theme-color" content="#000000">
+    <link rel="icon" href="data:;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMklEQVR42mP8/5+hfgAJgHFQgeP8f4ahfgAJgHFQgeP8f4ahfgAJgHFQgeP8f4ahfgAJgH9f4f4AAW0AAAAASUVORK5CYII=">
+
+    <!-- Vercel Speed Insights -->
+    <script>
+        window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/speed-insights/script.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    
+    <style>
+        html {
+            scroll-behavior: smooth;
+            background-color: #000000;
+        }
+
+        /* Custom Scrollbar Fina e Elegante */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #262626;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #404040;
+        }
+
+        /* Barra de progresso sutil */
+        #progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: transparent;
+            z-index: 9999;
+        }
+
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #ffffff;
+            transition: width 0.1s;
+        }
+
+        /* Efeito de transição de Galeria de Arte */
+        .art-card {
+            opacity: 0;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .art-img-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            transition: background 0.4s ease;
+        }
+
+        .art-card:hover .art-img-wrapper::after {
+            background: rgba(0, 0, 0, 0);
+        }
+
+        /* Animação Fade-In */
+        .animate-fade-in {
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Ocultar scrollbars dos filtros mobile */
+        #filter-buttons::-webkit-scrollbar {
+            display: none;
+        }
+        #filter-buttons {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Input de busca minimalista */
+        .search-underlined {
+            border-bottom: 1px solid #262626;
+            transition: border-color 0.4s ease;
+        }
+        .search-underlined:focus {
+            border-color: #ffffff;
+        }
+    </style>
+</head>
+
+<body class="bg-black text-neutral-200 font-sans selection:bg-neutral-800 selection:text-white">
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+
+    <!-- Cabeçalho de Portfólio -->
+    <header class="bg-black/80 backdrop-blur-md text-white px-6 py-6 sticky top-0 z-50 border-b border-neutral-900 transition-all">
+        <div class="container mx-auto max-w-6xl flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="opacity-90 hover:opacity-100 transition">
+                    <img src="images/sem-bg-black.webp" alt="Logo" class="h-8 brightness-95 contrast-105">
+                </a>
+                <h1 class="text-lg font-light tracking-[0.2em] uppercase text-neutral-300">Leo Barbosa</h1>
+            </div>
+
+            <div class="flex items-center space-x-6">
+                <button id="mobileMenuBtn" aria-label="Abrir menu"
+                    class="md:hidden text-neutral-400 hover:text-white p-2 min-w-[44px] min-h-[44px] transition">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+
+                <nav id="main-nav"
+                    class="hidden md:block absolute left-0 right-0 top-full w-full bg-black border-b border-neutral-900 p-6 md:static md:bg-transparent md:border-none md:p-0">
+                    <ul class="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-8 items-start md:items-center">
+                        <li><a href="index.html" class="text-xs uppercase tracking-[0.2em] text-neutral-400 hover:text-white transition">Galeria</a></li>
+                        <li><a href="blog.html" class="text-xs uppercase tracking-[0.2em] text-white font-medium border-b border-white pb-1">Textos</a></li>
+                        <li><a href="about.html" class="text-xs uppercase tracking-[0.2em] text-neutral-400 hover:text-white transition">O Artista</a></li>
+                        <li id="menuItemAdmin" style="display: none !important;">
+                            <a href="admin.html" id="linkAdminHome" class="relative text-neutral-500 hover:text-white transition" aria-label="Painel Admin">
+                                <i class="fas fa-user-shield text-sm"></i>
+                                <span id="notificacaoAdmin" class="hidden absolute -top-1 -right-1 w-1.5 h-1.5 bg-neutral-400 rounded-full"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto max-w-6xl mt-12 p-6">
+        <!-- Identidade Visual do Blog de Pintura -->
+        <div class="max-w-3xl mx-auto text-center my-16 animate-fade-in">
+            <h2 class="text-2xl font-light tracking-[0.3em] uppercase text-white mb-4">Caderno de Ateliê</h2>
+            <p class="text-neutral-500 text-xs tracking-widest uppercase max-w-xl mx-auto">Notas de processo, análises técnicas e reflexões teóricas sobre pintura.</p>
+            <div class="h-[1px] w-12 bg-neutral-800 mx-auto mt-6 mb-8"></div>
+            
+            <div class="relative max-w-md mx-auto mt-6">
+                <input type="text" id="searchBlog" placeholder="BUSCAR ARTIGO..."
+                    class="w-full bg-transparent text-neutral-200 placeholder-neutral-700 pl-2 pr-8 py-2 rounded-none search-underlined outline-none text-xs tracking-[0.2em] uppercase transition">
+                <i class="fas fa-search absolute right-2 top-3 text-neutral-700 text-xs"></i>
+            </div>
+        </div>
+
+        <!-- Categorias Técnicas de Artes Plásticas -->
+        <div class="max-w-4xl mx-auto mb-16">
+            <div id="filter-buttons" class="flex gap-6 justify-start md:justify-center overflow-x-auto pb-4 border-b border-neutral-900">
+                <button onclick="filtrarCategoria('todos', this)"
+                    class="filter-btn text-white text-xs uppercase tracking-[0.2em] whitespace-nowrap min-h-[32px] border-b border-white pb-1 transition">Exibir Tudo</button>
+                <button onclick="filtrarCategoria('Monocromático', this)"
+                    class="filter-btn text-neutral-500 hover:text-neutral-200 text-xs uppercase tracking-[0.2em] whitespace-nowrap min-h-[32px] pb-1 transition">Monocromático</button>
+                <button onclick="filtrarCategoria('Óleo', this)"
+                    class="filter-btn text-neutral-500 hover:text-neutral-200 text-xs uppercase tracking-[0.2em] whitespace-nowrap min-h-[32px] pb-1 transition">Óleo</button>
+                <button onclick="filtrarCategoria('Acrílico', this)"
+                    class="filter-btn text-neutral-500 hover:text-neutral-200 text-xs uppercase tracking-[0.2em] whitespace-nowrap min-h-[32px] pb-1 transition">Acrílico</button>
+                <button onclick="filtrarCategoria('Técnica', this)"
+                    class="filter-btn text-neutral-500 hover:text-neutral-200 text-xs uppercase tracking-[0.2em] whitespace-nowrap min-h-[32px] pb-1 transition">Técnica</button>
+            </div>
+        </div>
+
+        <!-- Grid Exposição -->
+        <section class="mb-24">
+            <div id="blogGrid" class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
+                <!-- Skeletons Iniciais -->
+                <div class="h-64 bg-neutral-950 border border-neutral-900 animate-pulse"></div>
+                <div class="h-64 bg-neutral-950 border border-neutral-900 animate-pulse"></div>
+            </div>
+            
+            <!-- Estado Vazio -->
+            <div id="emptyState" class="hidden text-center py-24 animate-fade-in">
+                <p class="text-xs uppercase tracking-[0.2em] text-neutral-600">Nenhum ensaio corresponde aos termos buscados.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="border-t border-neutral-900 bg-black py-12 text-center">
+        <p class="text-[10px] uppercase tracking-[0.3em] text-neutral-600">© Leo Barbosa. Ateliê de Pintura.</p>
+    </footer>
+
+    <script>
+        // --- CONFIGURAÇÕES GLOBAIS ---
+        const WEB_APP_URL_SISTEMA = 'https://script.google.com/macros/s/AKfycbwnnAaAFE0lhzil864Ir-SR7-UNmkFysmIgPiU9ZZypThK0GK2lAApcUpD9siCkl62Q/exec';
+        
+        window.todosOsArtigos = [];
+        let categoriaAtual = 'todos';
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.02 });
+
+        function escapeHTML(str) {
+            const p = document.createElement('p');
+            p.textContent = str || "";
+            return p.innerHTML;
+        }
+
+        // --- SISTEMA DE ENGENHARIA DE DADOS ---
+        async function carregarBlog() {
+            try {
+                const res = await fetch('posts/index.json');
+                if (!res.ok) throw new Error('Falha ao obter índice de posts');
+
+                window.todosOsArtigos = await res.json();
+
+                window.todosOsArtigos.sort((a, b) => {
+                    const parseData = (item) => {
+                        const d = item.date || item.mtime;
+                        if (!d) return 0;
+                        return typeof d === 'string' && d.length === 10 ? new Date(d + 'T12:00:00').getTime() : new Date(d).getTime();
+                    };
+                    return parseData(b) - parseData(a);
+                });
+
+                aplicarFiltrosEBusca();
+
+            } catch (err) {
+                console.error("Erro no carregamento do feed técnico:", err);
+                document.getElementById('blogGrid').innerHTML = '<p class="text-xs text-neutral-600 uppercase tracking-widest text-center col-span-full">Erro ao sincronizar catálogo.</p>';
+            }
+        }
+
+        function renderizarBlogGrid(artigos) {
+            const grid = document.getElementById('blogGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            if (artigos.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            artigos.forEach(post => {
+                const card = document.createElement('article');
+                card.className = 'art-card flex flex-col group';
+                card.innerHTML = `
+                    <a href="${post.href}" class="block overflow-hidden bg-neutral-950 border border-neutral-900">
+                        <div class="art-img-wrapper relative aspect-[16/10] overflow-hidden bg-neutral-900">
+                            <img src="images/${post.image || 'default.webp'}" class="blog-img w-full h-full object-cover grayscale opacity-85 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 ease-out" alt="${post.title}">
+                        </div>
+                    </a>
+                    <div class="pt-6 flex flex-col text-left">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <span class="text-[9px] uppercase tracking-[0.2em] font-medium text-neutral-400 group-hover:text-white transition-colors">
+                                ${escapeHTML(post.category)}
+                            </span>
+                            <span class="text-neutral-700 text-[9px] uppercase tracking-[0.2em]">— ${post.date ? new Date(post.date + 'T12:00:00').toLocaleDateString('pt-BR') : 'Recente'}</span>
+                        </div>
+                        
+                        <h3 class="font-light text-lg lg:text-xl text-neutral-100 tracking-wide leading-snug group-hover:text-white transition-colors">
+                            <a href="${post.href}" class="blog-title"></a>
+                        </h3>
+                        
+                        <p class="blog-desc text-xs text-neutral-500 tracking-wide leading-relaxed mt-3 line-clamp-2 font-light"></p>
+                        
+                        <div class="mt-4">
+                            <a href="${post.href}" class="inline-block text-[10px] uppercase tracking-[0.2em] text-neutral-400 group-hover:text-white border-b border-transparent group-hover:border-white pb-0.5 transition-all duration-300">
+                                Ver Detalhes <i class="fas fa-chevron-right text-[8px] ml-1 opacity-60"></i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+
+                card.querySelector('.blog-title').textContent = post.title;
+                card.querySelector('.blog-desc').textContent = post.description || '';
+                
+                const img = card.querySelector('.blog-img');
+                img.onerror = () => {
+                    img.src = 'images/default.webp';
+                    img.classList.add('grayscale');
+                };
+
+                grid.appendChild(card);
+                observer.observe(card);
+            });
+        }
+
+        function aplicarFiltrosEBusca() {
+            const termoBusca = document.getElementById('searchBlog').value.toLowerCase().trim();
+            const catAlvo = categoriaAtual.toLowerCase().trim();
+
+            const resultado = window.todosOsArtigos.filter(post => {
+                const matchesCategoria = (catAlvo === 'todos' || (post.category || "").toLowerCase().trim() === catAlvo);
+                
+                const matchesBusca = !termoBusca || 
+                    (post.title || "").toLowerCase().includes(termoBusca) || 
+                    (post.description || "").toLowerCase().includes(termoBusca);
+
+                return matchesCategoria && matchesBusca;
+            });
+
+            renderizarBlogGrid(resultado);
+        }
+
+        function filtrarCategoria(cat, btn) {
+            categoriaAtual = cat;
+            
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.className = "filter-btn text-neutral-500 hover:text-neutral-200 text-xs uppercase tracking-[0.2em] whitespace-nowrap min-h-[32px] pb-1 transition border-b border-transparent";
+            });
+
+            if (btn) {
+                btn.className = "filter-btn text-white text-xs uppercase tracking-[0.2em] whitespace-nowrap min-h-[32px] border-b border-white pb-1 transition";
+            }
+
+            aplicarFiltrosEBusca();
+        }
+
+        // --- MONITOR DE MODERAÇÃO ---
+        async function verificarNotificacoesAtivas() {
+            const alertaPonto = document.getElementById('notificacaoAdmin');
+            const linkAdminIcone = document.getElementById('linkAdminHome');
+            if (!alertaPonto) return;
+
+            try {
+                const resposta = await fetch(`${WEB_APP_URL_SISTEMA}?mode=checkPendencias&_t=${Date.now()}`);
+                const resultado = await resposta.json();
+
+                if (resultado && resultado.pendente === true) {
+                    alertaPonto.classList.remove('hidden');
+                    if (linkAdminIcone) linkAdminIcone.classList.replace('text-neutral-500', 'text-white');
+                }
+            } catch (e) {
+                console.warn("Aviso: Conexão administrativa em modo offline.");
+            }
+        }
+
+        // --- LOGICA DE EVENTOS ---
+        function configurarInterface() {
+            const mainNav = document.getElementById('main-nav');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const inputBusca = document.getElementById('searchBlog');
+
+            if (inputBusca) {
+                inputBusca.addEventListener('input', aplicarFiltrosEBusca);
+            }
+
+            if (mobileMenuBtn && mainNav) {
+                mobileMenuBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    mainNav.classList.toggle('hidden');
+                };
+                document.addEventListener('click', (e) => {
+                    if (!mainNav.contains(e.target) && !mobileMenuBtn.contains(e.target)) mainNav.classList.add('hidden');
+                });
+            }
+        }
+
+        window.addEventListener('load', () => {
+            configurarInterface();
+            verificarNotificacoesAtivas();
+            carregarBlog();
+        });
+
+        window.onscroll = () => {
+            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const bar = document.getElementById("progress-bar");
+            
+            if (bar && height > 0) bar.style.width = (winScroll / height * 100) + "%";
+        };
+
+        (function () {
+            if (localStorage.getItem("modo_admin") === "true") {
+                const checkExist = setInterval(function () {
+                    const menuItem = document.getElementById("menuItemAdmin");
+                    if (menuItem) {
+                        menuItem.style.setProperty('display', 'block', 'important');
+                        clearInterval(checkExist);
+                    }
+                }, 100);
+            }
+        })();
+    </script>
+</body>
+
+</html>
