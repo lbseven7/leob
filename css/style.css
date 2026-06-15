@@ -1,0 +1,114 @@
+        /* IMPORTAÇÃO DA FONTE AVALLON */
+        @font-face {
+            font-family: 'Avallon';
+            src: url('fonts/avallon.woff2') format('woff2'),
+                url('fonts/avallon.woff') format('woff'),
+                url('fonts/avallon.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'Comfortaa', cursive;
+            cursor: none;
+            background: #f6f2eb;
+            color: #171717;
+        }
+
+        .serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* CLASSE UTILITÁRIA PARA A FONTE AVALLON */
+        .font-avallon {
+            font-family: 'Avallon', brush, sans-serif;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero-height {
+            height: 70vh;
+        }
+
+        #custom-cursor {
+            width: 12px;
+            height: 12px;
+            background: rgba(249, 115, 22, 0.28);
+            border: 1px solid rgba(249, 115, 22, 0.55);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.12s ease, background-color 0.12s ease, opacity 0.12s ease;
+        }
+
+        .filter-btn.active {
+            background-color: #d88800;
+            color: white;
+            border-color: #d88800;
+        }
+
+        #catalog-filters::-webkit-scrollbar {
+            display: none;
+        }
+
+        #catalog-filters {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        @media (max-width: 767px) {
+            body {
+                cursor: auto;
+            }
+
+            .hero-height {
+                height: 56vh;
+                min-height: 360px;
+            }
+
+            #custom-cursor {
+                display: none;
+            }
+
+            .hero-mobile-focus {
+                object-position: 38% center;
+            }
+        }
+
+        @keyframes pulse-low {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .animate-urgent {
+            animation: pulse-low 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .hero-overlay {
+            background: linear-gradient(180deg, rgba(10, 10, 10, 0.18) 0%, rgba(10, 10, 10, 0.45) 55%, rgba(10, 10, 10, 0.72) 100%);
+        }
+
+        .editorial-card {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(24, 24, 24, 0.08);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+        }
