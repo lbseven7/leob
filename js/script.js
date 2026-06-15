@@ -116,7 +116,7 @@ function renderEvents() {
                             </video>
                             <span class="absolute top-4 left-4 bg-black/75 text-white text-[10px] px-3 py-1 uppercase tracking-[0.2em] pointer-events-none">${evento.tipo}</span>
                        </div>`
-            : `<a href="${evento.link}" class="block" target="_blank" rel="noopener noreferrer">
+            : `<a href="${evento.link}" class="block">
                             <div class="relative aspect-video overflow-hidden bg-zinc-100 dark:bg-zinc-900">
                                 <img src="${evento.thumb}" alt="${evento.titulo}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                                 <span class="absolute top-4 left-4 bg-black/75 text-white text-[10px] px-3 py-1 uppercase tracking-[0.2em]">${evento.tipo}</span>
