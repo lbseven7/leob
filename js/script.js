@@ -94,8 +94,8 @@ const bastidores = [
 
 const eventos = [
     // { tipo: "Vídeo", titulo: "Cláudio Colavolpe Photo Art", descricao: "Registro em vídeo da visita ao espaço e da experiência no local.", data: "Mai 2026", thumb: "images/ccvolpe.jpg", video: null },
-    { tipo: "Post", titulo: "Cláudio Colavolpe Photo Art", descricao: "Visitei a galeria do Cláudio Colavolpe.", data: "Mai 2026", thumb: "images/ccvolpe-foto.jpg", link: "#" },
-    { tipo: "Flashes", titulo: "Fotos do Artista", descricao: "Processo Criativo e Bastidores.", data: "Mar 2026", thumb: "./images/leo-cavalete.jpg", link: "/pages/galeria.html" }
+    { tipo: "Palestras", titulo: "Colégio Monteiro Lobato", descricao: "Falar sobre arte é sempre muito bom!", data: "Nov 2025", thumb: "images/ccvolpe-foto.jpg", link: "/pages/eventos.html" },
+    { tipo: "Fotos do Artista", titulo: "Fotos do Artista", descricao: "Processo Criativo e Bastidores.", data: "Mar 2026", thumb: "./images/leo-cavalete.jpg", link: "/pages/galeria.html" }
 ];
 
 const galleryGrid = document.getElementById('gallery-grid');
