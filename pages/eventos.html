@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos do Artista</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/barra-progresso.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+
+    <header
+        class="fixed w-full top-0 z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+        <nav class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="index.html" class="text-xl font-bold uppercase tracking-widest hover:text-orange-500 transition">
+                <img id="header-logo" src="../images/logo-black3-sbg.png" alt="Logo"
+                    class="max-w-[132px] sm:max-w-[140px] h-auto opacity-0  duration-300">
+            </a>
+            <ul class="flex items-center gap-8 text-[12px] uppercase tracking-[0.2em]">
+                <li><a href="../index.html" class="hover:text-orange-500 transition">Voltar</a></li>
+                <li><a href="../index.html#catalogo" class="hover:text-orange-500 transition">Catálogo</a></li>
+                <li><a href="../pages/eventos.html" class="text-orange-500 font-bold">Eventos</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 pt-32 pb-20">
+
+        <!-- <div class="flex flex-col gap-16">
+
+            <article class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+                <div class="w-full">
+                    <img src="images/leo-pintando-2.jpg" alt="Foto" class="w-full h-auto object-contain">
+
+                </div>
+                <div class="pt-6">
+                    <p class="text-[10px] uppercase tracking-[0.3em] text-orange-500 mb-2">Jun 2026</p>
+                    <h3 class="text-xl font-medium mb-2">Pintando 'Farinha'.</h3>
+                    <p class="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed">
+
+                    </p>
+                </div>
+            </article>
+
+            <article class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+                <div class="w-full">
+                    <img src="images/registrando.jpg" alt="Foto" class="w-full h-auto object-contain">
+                    <span
+                        class="inline-block mt-4 bg-zinc-100 dark:bg-zinc-800 text-[10px] px-3 py-1 uppercase tracking-[0.25em]">Bastidores</span>
+                </div>
+                <div class="pt-6">
+                    <p class="text-[10px] uppercase tracking-[0.3em] text-orange-500 mb-2">Jun 2026</p>
+                    <h3 class="text-xl font-medium mb-2">Momentos e Modelos.</h3>
+
+                </div>
+            </article>
+
+            <article class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+                <div class="w-full">
+                    <img src="images/em-baixo-do-pau-brasil.jpg" alt="Foto" class="w-full h-auto object-contain">
+                    <span
+                        class="inline-block mt-4 bg-zinc-100 dark:bg-zinc-800 text-[10px] px-3 py-1 uppercase tracking-[0.25em]">Bastidores</span>
+                </div>
+                <div class="pt-6">
+                    <p class="text-[10px] uppercase tracking-[0.3em] text-orange-500 mb-2">Jun 2026</p>
+                    <h3 class="text-xl font-medium mb-2">À Sombra do Pau Brasil.</h3>
+
+                </div>
+            </article>
+        
+            <article class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+                <div class="w-full">
+                    <img src="images/cavalo-cinza.jpg" alt="Foto" class="w-full h-auto object-contain">
+                    <span
+                        class="inline-block mt-4 bg-zinc-100 dark:bg-zinc-800 text-[10px] px-3 py-1 uppercase tracking-[0.25em]">Bastidores</span>
+                </div>
+                <div class="pt-6">
+                    <p class="text-[10px] uppercase tracking-[0.3em] text-orange-500 mb-2">Mai 2026</p>
+                    <h3 class="text-xl font-medium mb-2">Baruque em Destaque.</h3>
+                </div>
+            </article>
+
+        </div> -->
+        <div id="container-fotos" class="flex flex-col gap-16"></div>
+
+        <!-- <script src="fotos-bastidores.js"></script> -->
+ <script src="../js/script.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const container = document.getElementById('container-fotos');
+        if (container && typeof bastidores !== 'undefined') {
+            container.innerHTML = bastidores.map(item => `
+                <article class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+                    <div class="w-full">
+                        <img src="${item.imagem}" alt="${item.titulo}" class="w-full h-auto object-contain">
+                        <span class="inline-block mt-4 bg-zinc-100 dark:bg-zinc-800 text-[10px] px-3 py-1 uppercase tracking-[0.25em]">${item.tipo}</span>
+                    </div>
+                    <div class="pt-6">
+                        <p class="text-[10px] uppercase tracking-[0.3em] text-orange-500 mb-2">${item.data}</p>
+                        <h3 class="text-xl font-medium mb-2">${item.titulo}</h3>
+                    </div>
+                </article>
+            `).join('');
+        }
+    });
+</script>
+    </main>
+
+</body>
+
+</html>
