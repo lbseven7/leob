@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<!-- <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Arte | leob.</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brand: { orange: '#d88800' } },
+                    fontFamily: {
+                        // Agora você pode usar 'font-display' e 'font-sans' no seu HTML
+                        display: ['Playfair Display', 'serif'],
+                        sans: ['Comfortaa', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+  
+</head> -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Arte | leob.</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Isso é importante para manter o controle manual
+            theme: {
+                extend: {
+                    colors: { brand: { orange: '#d88800' } },
+                    fontFamily: {
+                        display: ['Playfair Display', 'serif'],
+                        sans: ['Comfortaa', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/barra-progresso.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-black text-neutral-300 antialiased">
+
+    <!-- Header -->
+    <header class="bg-black/80 backdrop-blur-md text-white px-6 py-6 border-b border-neutral-900">
+        <div class="container mx-auto max-w-4xl flex items-center justify-between">
+            <a href="#" class="uppercase">
+                <img src="../images/logo-black3-sbg.png" alt="Leo Barbosa"
+                    class="block w-[120px] sm:w-[150px] h-auto object-contain">
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="container mx-auto max-w-4xl px-6 py-16">
+        <div class="text-center mb-16">
+            <h1 class="text-3xl md:text-5xl font-light tracking-wide text-white leading-tight mb-6">Domine a Luz e a
+                Forma</h1>
+            <p class="text-lg text-neutral-400 font-light max-w-2xl mx-auto">Um guia definitivo com minhas técnicas
+                avançadas de pintura. Do hiper-realismo aos segredos da luz que dão vida à tela.</p>
+        </div>
+
+        <!-- Sales Card -->
+        <div
+            class="bg-custom-dark border border-neutral-800 p-8 md:p-12 rounded-lg flex flex-col md:flex-row gap-12 items-center">
+            <div class="w-full md:w-1/2">
+                <div
+                    class="aspect-[3/4] bg-neutral-900 rounded shadow-2xl flex items-center justify-center border border-neutral-800">
+                    <img src="../images/e-book-efeito-metálico.png" alt="Capa do E-book"
+                        class="w-full h-full object-contain rounded">
+                </div>
+            </div>
+            <div class="w-full md:w-1/2">
+                <h2 class="text-2xl text-white font-light mb-4">O que você vai aprender:</h2>
+                <ul class="text-neutral-400 font-light space-y-4 mb-8">
+                    <li><i class="fas fa-check text-neutral-600 mr-2"></i> Domínio técnico da luz e sombra</li>
+                    <li><i class="fas fa-check text-neutral-600 mr-2"></i> Escala monocromática e poder dos cinzas</li>
+                    <li><i class="fas fa-check text-neutral-600 mr-2"></i> O segredo do hiper realismo na prática</li>
+                    <li><i class="fas fa-check text-neutral-600 mr-2"></i> Aprender a ver de verdade</li>
+                </ul>
+                <a href="https://www.asaas.com/c/i8snajem64ctilre" target="_blank"
+                    class="inline-block bg-white text-black px-8 py-4 uppercase tracking-[0.2em] text-sm hover:bg-neutral-200 transition">
+                    Quero acessar agora
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-100 dark:border-zinc-800 py-12 opacity-60">
+        <div
+            class="relative max-w-7xl mx-auto px-6 flex flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
+            <p class="text-sm">&copy; 2026 Leo Barbosa - por lbseven7</p>
+            <div class="flex items-center gap-6 text-xl md:ml-auto">
+                <a href="https://wa.me/5573988279832" target="_blank" aria-label="WhatsApp"
+                    class="hover:text-brand-orange transition"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="https://www.instagram.com/leob_pinturas/" target="_blank" aria-label="Instagram"
+                    class="hover:text-brand-orange transition"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.youtube.com/@leobarbosa-art-studio" target="_blank" aria-label="YouTube"
+                    class="hover:text-brand-orange transition"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
