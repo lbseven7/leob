@@ -222,7 +222,7 @@ function renderBlog() {
                         <p class="text-[10px] uppercase tracking-[0.25em] text-brand-orange mb-2">${post.data}</p>
                         <h3 class="text-xl font-medium mb-3 group-hover:text-brand-orange transition serif leading-tight">${content.titulo}</h3>
                         <p class="text-sm text-gray-600 dark:text-zinc-400 leading-relaxed mb-4">${content.descricao}</p>
-                        <a href="/blog/${post.id}" class="text-xs font-bold uppercase tracking-wider text-black dark:text-white hover:text-brand-orange dark:hover:text-brand-orange transition">
+                        <a href="../pages/blog/${post.id}" class="text-xs font-bold uppercase tracking-wider text-black dark:text-white hover:text-brand-orange dark:hover:text-brand-orange transition">
                             ${currentLang === 'pt' ? 'Ler Artigo →' : 'Read Article →'}
                         </a>
                     </div>
