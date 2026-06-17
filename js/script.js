@@ -427,9 +427,29 @@ if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && w
 }
 
 // CARREGAMENTO INICIAL DA APLICAÇÃO
+// document.addEventListener('DOMContentLoaded', () => {
+//     changeLanguage(currentLang);
+//     renderEvents();
+// });
+
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Aplica o idioma inicial
     changeLanguage(currentLang);
-    renderEvents();
+
+    // 2. Renderização Inteligente baseada na página atual
+    // Verifica a existência do elemento no DOM antes de executar a função
+    
+    if (document.getElementById('events-grid')) {
+        renderEvents();
+    }
+    
+    if (document.getElementById('gallery-grid')) {
+        renderGallery(); // Renderiza galeria apenas se o grid existir nesta página
+    }
+    
+    if (document.getElementById('blog-grid')) {
+        renderBlog();
+    }
 });
 
 function toggleVideoModal(show) {
