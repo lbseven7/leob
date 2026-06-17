@@ -102,6 +102,25 @@ const galleryGrid = document.getElementById('gallery-grid');
 const eventsGrid = document.getElementById('events-grid');
 const blogGrid = document.getElementById('blog-grid');
 
+// Adicione este array no seu script.js
+const palestras = [
+    {
+        titulo: "Colégio Monteiro Lobato",
+        descricao: "Falar sobre arte é sempre muito bom!",
+        data: "Nov 2025",
+        imagem: "../images/monteiro-lobato-turma.JPG",
+        tipo: "Palestras"
+    },
+    {
+        titulo: "Colégio Monteiro Lobato",
+        descricao: "Falar sobre arte é sempre muito bom!",
+        data: "Nov 2025",
+        imagem: "../images/monteiro-lobato-leo-tela2.JPG",
+        tipo: "Palestras"
+    },
+    // Adicione mais palestras aqui conforme necessário
+];
+
 function renderEvents() {
     if (!eventsGrid) return;
     eventsGrid.innerHTML = '';
