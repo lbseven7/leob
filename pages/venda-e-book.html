@@ -1,34 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<!-- <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Arte | leob.</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: { brand: { orange: '#d88800' } },
-                    fontFamily: {
-                        // Agora você pode usar 'font-display' e 'font-sans' no seu HTML
-                        display: ['Playfair Display', 'serif'],
-                        sans: ['Comfortaa', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-
-  
-</head> -->
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,7 +30,7 @@
     <!-- Header -->
     <header class="bg-black/80 backdrop-blur-md text-white px-6 py-6 border-b border-neutral-900">
         <div class="container mx-auto max-w-4xl flex items-center justify-between">
-            <a href="#" class="uppercase">
+            <a href="../index.html" class="uppercase">
                 <img src="../images/logo-black3-sbg.png" alt="Leo Barbosa"
                     class="block w-[120px] sm:w-[150px] h-auto object-contain">
             </a>
@@ -74,31 +45,8 @@
             <p class="text-lg text-neutral-400 font-light max-w-2xl mx-auto">Um guia definitivo com minhas técnicas
                 avançadas de pintura. Do hiper realismo aos segredos da luz que dão vida à tela.</p>
         </div>
-
-        <!-- Sales Card -->
-        <div
-            class="bg-custom-dark border border-neutral-800 p-8 md:p-12 rounded-lg flex flex-col md:flex-row gap-12 items-center">
-            <div class="w-full md:w-1/2">
-                <div
-                    class="aspect-[3/4] bg-neutral-900 rounded shadow-2xl flex items-center justify-center border border-neutral-800">
-                    <img src="../images/e-book-efeito-metálico.png" alt="Capa do E-book"
-                        class="w-full h-full object-contain rounded">
-                </div>
-            </div>
-            <div class="w-full md:w-1/2">
-                <h2 class="text-2xl text-white font-light mb-4">O que você vai aprender:</h2>
-                <ul class="text-neutral-400 font-light space-y-4 mb-8">
-                    <li><i class="fas fa-check text-neutral-600 mr-2"></i> Domínio técnico da luz e sombra</li>
-                    <li><i class="fas fa-check text-neutral-600 mr-2"></i> Escala monocromática e poder dos cinzas</li>
-                    <li><i class="fas fa-check text-neutral-600 mr-2"></i> O segredo do hiper realismo na prática</li>
-                    <li><i class="fas fa-check text-neutral-600 mr-2"></i> Aprender a ver de verdade</li>
-                </ul>
-                <a href="https://www.asaas.com/c/i8snajem64ctilre" target="_blank"
-                    class="inline-block bg-white text-black px-8 py-4 uppercase tracking-[0.2em] text-sm hover:bg-neutral-200 transition">
-                    Quero acessar agora
-                </a>
-            </div>
-        </div>
+        <div id="ebook-container" class="container mx-auto max-w-4xl px-6">
+    </div>
     </main>
 
     <!-- Footer -->
@@ -107,8 +55,6 @@
             class="relative max-w-7xl mx-auto px-6 flex flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
             <p class="text-sm">&copy; 2026 Leo Barbosa - por lbseven7</p>
             <div class="flex items-center gap-6 text-xl md:ml-auto">
-                <a href="https://wa.me/5573988279832" target="_blank" aria-label="WhatsApp"
-                    class="hover:text-brand-orange transition"><i class="fa-brands fa-whatsapp"></i></a>
                 <a href="https://www.instagram.com/leob_pinturas/" target="_blank" aria-label="Instagram"
                     class="hover:text-brand-orange transition"><i class="fa-brands fa-instagram"></i></a>
                 <a href="https://www.youtube.com/@leobarbosa-art-studio" target="_blank" aria-label="YouTube"
@@ -116,7 +62,54 @@
             </div>
         </div>
     </footer>
+<script>
+    const ebooks = [
+        {
+            id: 1,
+            img: "../images/e-book-efeito-metálico.png", // Ajuste o caminho se necessário
+            categoria: "disponível",
+            linkPayment: "https://www.asaas.com/c/i8snajem64ctilre",
+            pt: {
+                titulo: "E-book Técnicas de Pintura Hiper Realista - Efeito Metálico",
+                tecnica: "Óleo | Acrílica"
+            },
+            en: {
+                titulo: "E-book of Painting",
+                tecnica: "Oil | Acrylic"
+            }
+        }
+    ];
 
+    function renderizarEbooks() {
+        const container = document.getElementById('ebook-container');
+        
+        container.innerHTML = ebooks.map(ebook => `
+            <div class="bg-neutral-900 border border-neutral-800 p-8 md:p-12 rounded-lg flex flex-col md:flex-row gap-12 items-center shadow-2xl">
+                <div class="w-full md:w-1/2">
+                    <div class="aspect-[3/4] bg-neutral-950 rounded shadow-2xl flex items-center justify-center border border-neutral-800">
+                        <img src="${ebook.img}" alt="${ebook.pt.titulo}" class="w-full h-full object-contain rounded">
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2">
+                    <h2 class="text-2xl text-white font-light mb-4">${ebook.pt.titulo}</h2>
+                    <p class="text-neutral-400 mb-6 italic">${ebook.pt.tecnica}</p>
+                    <ul class="text-neutral-400 font-light space-y-4 mb-8">
+                        <li><i class="fas fa-check text-neutral-600 mr-2"></i> Domínio técnico da luz e sombra</li>
+                        <li><i class="fas fa-check text-neutral-600 mr-2"></i> Escala monocromática</li>
+                        <li><i class="fas fa-check text-neutral-600 mr-2"></i> O segredo do hiper realismo</li>
+                    </ul>
+                    <a href="${ebook.linkPayment}" target="_blank" 
+                       class="inline-block bg-white text-black px-8 py-4 uppercase tracking-[0.2em] text-sm hover:bg-neutral-200 transition">
+                        Quero acessar agora
+                    </a>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Executa ao carregar a página
+    renderizarEbooks();
+</script>
 </body>
 
 </html>
