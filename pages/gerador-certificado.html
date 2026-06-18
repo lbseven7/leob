@@ -19,7 +19,7 @@
         body {
             background: #e8e8e8;
             font-family: 'Montserrat', sans-serif;
-            padding: 30px 20px;
+            padding: 20px 10px;
             overflow-x: hidden;
         }
 
@@ -52,19 +52,28 @@
             cursor: pointer;
         }
 
+        /* Estrutura Responsiva */
+        .certificado-wrapper {
+            width: 100%;
+            max-width: 1060px;
+            margin: 0 auto;
+            aspect-ratio: 1060 / 750;
+            position: relative;
+        }
+
         #certificado-area {
             width: 1060px;
             height: 750px;
-            margin: 0 auto;
             background: #ffffff url('../images/selo-transp.png') center center / contain no-repeat;
             display: flex;
             box-sizing: border-box;
-            position: relative;
-            overflow: hidden;
-            /* transform-origin: top left; */
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: top left;
+            transform: scale(calc(var(--certificado-scale, 1)));
         }
 
-        /* Marca d'água via img no HTML */
         .marca-dagua {
             position: absolute;
             top: 50%;
@@ -264,37 +273,6 @@
             text-transform: uppercase;
             color: #1a1a1a;
         }
-
-        /* Ajuste para telas pequenas */
-        @media (max-width: 1100px) {
-            body {
-                padding: 10px;
-                /* Reduz o padding do corpo em mobile */
-            }
-
-            #certificado-area {
-                /* Calcula a escala baseada na largura da tela */
-                transform: scale(0.6);
-                transform-origin: top center;
-                margin: 0 auto;
-                /* Reduz a margem inferior para compensar o scale */
-                margin-bottom: -280px;
-            }
-        }
-
-        @media (max-width: 700px) {
-            #certificado-area {
-                transform: scale(0.4);
-                margin-bottom: -430px;
-            }
-        }
-
-        @media (max-width: 500px) {
-            #certificado-area {
-                transform: scale(0.3);
-                margin-bottom: -500px;
-            }
-        }
     </style>
 </head>
 
@@ -305,126 +283,86 @@
         <button class="btn-pdf" onclick="gerarPDF()">⬇ Baixar Certificado (PDF)</button>
     </div>
 
-    <div id="certificado-area">
-
-        <!-- MARCA D'ÁGUA: img no HTML em vez de CSS ::before -->
-        <img src="../images/selo-transp.png" class="marca-dagua" alt="">
-
-        <div class="col-esq">
-            <div class="logo">
-                <img src="../images/logo-white (1).png" alt="LeoBarbosa Art Studio">
-            </div>
-
-            <div class="dados-obra">
-                ARTISTA: <span class="val">LEO BARBOSA</span><br>
-                TÍTULO DA OBRA: <span id="d-titulo" class="val">A CASA DE VAQUEIRO</span><br>
-                ANO DE EXECUÇÃO: <span id="d-ano" class="val">2024</span><br>
-                NÚMERO DE SÉRIE: <span id="d-serie">01</span>
-            </div>
-
-            <div class="secao-titulo">Descrição Técnica</div>
-            <div class="secao-corpo">
-                DIMENSÕES: <span id="d-dimensoes" class="val">29,7 X 42 CM</span><br>
-                SUPORTE: <span id="d-suporte" class="val">IMPRESSÃO EM PAPEL SMOOTH ULTRA</span><br>
-                TÉCNICA DE IMPRESSÃO: <span id="d-tecnica" class="val">TINTA PIGMENTADA</span><br>
-                LONGEVIDADE: <span class="val">DURABILIDADE DE ATÉ 200 ANOS<br>EM CONDIÇÕES ADEQUADAS DE
-                    CONSERVAÇÃO.</span>
-            </div>
-
-            <div class="secao-titulo">Acabamento e Apresentação</div>
-            <div class="secao-corpo">
-                <ul>
-                    <li>MOLDURA: <span class="val">INDUSTRIAL, COR MARROM ESCURO.</span></li>
-                    <li>PROTEÇÃO: <span class="val">VIDRO ARTGLASS 70%.</span></li>
-                </ul>
-            </div>
-
-            <div class="rodape-esq">
-                <div>
-                    <div class="qr-label">Certificado Online</div>
-                    <img id="qrcode-img" src="" alt="QR Code">
+    <div class="certificado-wrapper">
+        <div id="certificado-area">
+            <img src="../images/selo-transp.png" class="marca-dagua" alt="">
+            <div class="col-esq">
+                <div class="logo"><img src="../images/logo-white (1).png" alt="Logo"></div>
+                <div class="dados-obra">
+                    ARTISTA: <span class="val">LEO BARBOSA</span><br>
+                    TÍTULO DA OBRA: <span id="d-titulo" class="val">A CASA DE VAQUEIRO</span><br>
+                    ANO DE EXECUÇÃO: <span id="d-ano" class="val">2024</span><br>
+                    NÚMERO DE SÉRIE: <span id="d-serie">01</span>
                 </div>
-                <div class="selo">
-                    <img src="../images/Gemini_Generated_Image_8w91vi8w91vi8w91-remove-bg-io.png" class="selo-img"
-                        alt="Selo de Autenticidade">
+                <div class="secao-titulo">Descrição Técnica</div>
+                <div class="secao-corpo">
+                    DIMENSÕES: <span id="d-dimensoes" class="val">29,7 X 42 CM</span><br>
+                    SUPORTE: <span id="d-suporte" class="val">IMPRESSÃO EM PAPEL SMOOTH ULTRA</span><br>
+                    TÉCNICA DE IMPRESSÃO: <span id="d-tecnica" class="val">TINTA PIGMENTADA</span><br>
+                    LONGEVIDADE: <span class="val">DURABILIDADE DE ATÉ 200 ANOS</span>
+                </div>
+                <div class="secao-titulo">Acabamento e Apresentação</div>
+                <div class="secao-corpo">
+                    <ul>
+                        <li>MOLDURA: <span class="val">INDUSTRIAL, COR MARROM ESCURO.</span></li>
+                        <li>PROTEÇÃO: <span class="val">VIDRO ARTGLASS 70%.</span></li>
+                    </ul>
+                </div>
+                <div class="rodape-esq">
+                    <div>
+                        <div class="qr-label">Certificado Online</div>
+                        <img id="qrcode-img" src="../images/meu_qrcode.png" alt="QR">
+                    </div>
+                    <div class="selo">
+                        <img src="../images/Gemini_Generated_Image_8w91vi8w91vi8w91-remove-bg-io.png" class="selo-img"
+                            alt="Selo">
+                    </div>
+                </div>
+            </div>
+            <div class="divisoria"></div>
+            <div class="col-dir">
+                <div class="titulo-cert">Certificado de Autenticidade</div>
+                <p class="declaracao">Eu, Léo Barbosa, artista autodidata, declaro que a obra supracitada é original e
+                    de minha autoria.</p>
+                <div class="obra-frame"><img id="obra-img" src="../images/certificado.jpeg" alt="Obra"></div>
+                <div class="rodape-dir">
+                    <p class="linha-data">Local e Data: ______________________, ___ de ___________ de 2026.</p>
+                    <div class="assinatura-bloco">Assinatura do Artista Léo Barbosa</div>
                 </div>
             </div>
         </div>
-
-        <div class="divisoria"></div>
-
-        <div class="col-dir">
-            <div class="titulo-cert">Certificado de Autenticidade</div>
-
-            <p class="declaracao">
-                Eu, Léo Barbosa, artista autodidata, declaro que a obra supracitada é original e de minha autoria.
-                Este certificado atesta a qualidade dos materiais utilizados e a procedência da peça, garantindo sua
-                integridade para colecionadores e apreciadores de arte.
-            </p>
-
-            <div class="obra-frame">
-                <img id="obra-img" src="../images/certificado.jpeg" alt="Obra de arte">
-            </div>
-
-            <div class="rodape-dir">
-                <p class="linha-data">
-                    Local e Data:&nbsp;<span
-                        class="sublinhado">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>,&nbsp;
-                    <span class="sublinhado-sm">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;de&nbsp;
-                    <span
-                        class="sublinhado-sm">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;de
-                    2026.
-                </p>
-                <div class="assinatura-bloco">Assinatura do Artista Léo Barbosa</div>
-            </div>
-        </div>
-
     </div>
 
     <script>
         const obras = [
-            { id: 1, titulo: "A CASA DE VAQUEIRO", tecnica: "TINTA PIGMENTADA", suporte: "IMPRESSÃO EM PAPEL SMOOTH ULTRA", dimensoes: "29,7 X 42 CM", img: "../images/certificado.jpeg", serie: "01", ano: "2024" },
-            { id: 2, titulo: "A MOÇA E SEU CAVALO", tecnica: "TINTA PIGMENTADA", suporte: "IMPRESSÃO EM PAPEL SMOOTH ULTRA", dimensoes: "29,7 X 42 CM", img: "../images/ela-e-seu-cavalo.jpg", serie: "01", ano: "2026" }
+            { id: 1, titulo: "A CASA DE VAQUEIRO", tecnica: "TINTA PIGMENTADA", suporte: "IMPRESSÃO EM PAPEL SMOOTH ULTRA", dimensoes: "29,7 X 42 CM", img: "../images/certificado.jpeg", serie: "01", ano: "2024" }
         ];
+        const obra = obras[0];
 
-        const params = new URLSearchParams(window.location.search);
-        const idObra = parseInt(params.get('id')) || 1;
-        const obra = obras.find(o => o.id === idObra) || obras[0];
+        function ajustarEscala() {
+            const wrapper = document.querySelector('.certificado-wrapper');
+            const area = document.getElementById('certificado-area');
+            const escala = wrapper.offsetWidth / 1060;
+            area.style.setProperty('--certificado-scale', escala);
+            wrapper.style.height = (750 * escala) + 'px';
+        }
 
-        document.getElementById('obra-img').src = obra.img;
-        document.getElementById('d-titulo').innerText = obra.titulo;
-        document.getElementById('d-ano').innerText = obra.ano;
-        document.getElementById('d-serie').innerText = obra.serie;
-        document.getElementById('d-tecnica').innerText = obra.tecnica;
-        document.getElementById('d-suporte').innerText = obra.suporte;
-        document.getElementById('d-dimensoes').innerText = obra.dimensoes;
-        document.title = 'Certificado - ' + obra.titulo;
-
-        const linkCert = 'https://www.leob.com.br/certificado?id=' + obra.id;
-        document.getElementById('qrcode-img').src =
-            'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=' + encodeURIComponent(linkCert) + '&color=000000&bgcolor=FFFFFF&qzone=1&margin=0';
+        window.addEventListener('resize', ajustarEscala);
+        ajustarEscala();
 
         function gerarPDF() {
             const el = document.getElementById('certificado-area');
+            el.style.transform = 'scale(1)';
 
             const opt = {
                 margin: 0,
                 filename: 'Certificado-' + obra.titulo + '.pdf',
                 image: { type: 'jpeg', quality: 1 },
-                // Aumentar o scale ajuda na qualidade, mas pode causar corte se o tamanho da janela for pequeno
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    logging: false,
-                    // Importante: garante que o canvas captura o tamanho total do elemento
-                    width: 1060,
-                    height: 750
-                },
-                // Certifique-se de que o formato do PDF combina com a proporção do elemento
+                html2canvas: { scale: 2, useCORS: true, logging: false, width: 1060, height: 750 },
                 jsPDF: { unit: 'px', format: [1060, 750], orientation: 'landscape' }
             };
 
-            html2pdf().set(opt).from(el).save();
+            html2pdf().set(opt).from(el).save().then(ajustarEscala);
         }
     </script>
 </body>
