@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualização do Certificado | Léo Barbosa</title>
+    <style>
+        body {
+            background: #e8e8e8;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Container que centraliza e dá um efeito de folha sobre a mesa */
+        .container-visualizacao {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            max-width: 1060px;
+            width: 100%;
+        }
+
+        /* Aqui você insere o mesmo CSS do #certificado-area que usamos anteriormente */
+        #certificado-area {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1060 / 750;
+            background: #ffffff url('../images/selo-transp.png') center center / contain no-repeat;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .status-msg {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-visualizacao">
+        <div id="certificado-area">
+            <p style="text-align:center; padding-top: 20%;">Carregando certificado autêntico...</p>
+        </div>
+
+        <div class="status-msg">
+            <p><strong>Certificado Autêntico</strong> | Léo Barbosa Art Studio</p>
+        </div>
+    </div>
+
+    <script>
+        // Lógica simples para validar se o token existe na URL
+        const token = new URLSearchParams(window.location.search).get('token');
+        const urlAPI = 'https://script.google.com/macros/s/AKfycbxsTGT6DIEER7DY0EYnt5N3Hk737mrSbqXR44nTr8u8y9soRwhDld2mh4ChgYfVn-X8Sw/exec';
+
+        fetch(urlAPI + '?token=' + token)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "encontrado") {
+                    // Aqui você preenche os elementos do seu HTML com os dados
+                    document.getElementById('d-titulo').innerText = data.titulo;
+                    document.getElementById('obra-img').src = data.imagem;
+                    // ... preencha os outros campos ...
+                } else {
+                    document.body.innerHTML = "<h1>Certificado Inválido ou não encontrado.</h1>";
+                }
+            });
+    </script>
+</body>
+
+</html>
