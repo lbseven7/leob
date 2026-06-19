@@ -1,81 +1,92 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualização do Certificado | Léo Barbosa</title>
+    <title>Visualização do Certificado | Léo Barbosa Art Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: #e8e8e8;
+            background: #f4f4f4; /* Fundo cinza claro para destacar a imagem */
             font-family: 'Montserrat', sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
             padding: 20px;
         }
 
-        /* Container que centraliza e dá um efeito de folha sobre a mesa */
-        .container-visualizacao {
+        /* Container que centraliza e dá um efeito de 'folha sobre a mesa' */
+        .wrapper-certificado {
             background: white;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            max-width: 1060px;
+            padding: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            max-width: 1060px; /* Largura máxima do certificado original */
             width: 100%;
-        }
-
-        /* Aqui você insere o mesmo CSS do #certificado-area que usamos anteriormente */
-        #certificado-area {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 1060 / 750;
-            background: #ffffff url('../images/selo-transp.png') center center / contain no-repeat;
             position: relative;
-            overflow: hidden;
-            border: 1px solid #eee;
+            margin-bottom: 20px;
         }
 
-        .status-msg {
+        /* NOVA ESTRUTURA RESPONSIVA DA IMAGEM */
+        .img-certificado {
+            display: block;
+            width: 100%; /* O certificado ocupa toda a largura disponível do wrapper */
+            height: auto; /* Mantém a proporção de 1060x750 automaticamente */
+            border: 1px solid #eaeaea; /* Borda sutil */
+        }
+
+        .status-rodape {
             text-align: center;
-            margin-top: 20px;
-            color: #555;
-            font-size: 14px;
+            font-size: 13px;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        /* Ajustes para telas muito pequenas (celulares menores) */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .wrapper-certificado {
+                padding: 10px;
+            }
         }
     </style>
 </head>
-
 <body>
 
-    <div class="container-visualizacao">
-        <div id="certificado-area">
-            <p style="text-align:center; padding-top: 20%;">Carregando certificado autêntico...</p>
-        </div>
+    <div class="wrapper-certificado">
+        <img id="certificado-imagem" class="img-certificado" src="images/placeholder-carregando.jpg" alt="Carregando Certificado Autêntico...">
+    </div>
 
-        <div class="status-msg">
-            <p><strong>Certificado Autêntico</strong> | Léo Barbosa Art Studio</p>
-        </div>
+    <div class="status-rodape">
+        <p>Certificado Autêntico Validado</p>
     </div>
 
     <script>
-        // Lógica simples para validar se o token existe na URL
-        const token = new URLSearchParams(window.location.search).get('token');
-        const urlAPI = 'https://script.google.com/macros/s/AKfycbxsTGT6DIEER7DY0EYnt5N3Hk737mrSbqXR44nTr8u8y9soRwhDld2mh4ChgYfVn-X8Sw/exec';
+        // Lógica simples para pegar o token da URL e exibir a imagem correspondente
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get('token');
+        const imgElement = document.getElementById('certificado-imagem');
 
-        fetch(urlAPI + '?token=' + token)
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "encontrado") {
-                    // Aqui você preenche os elementos do seu HTML com os dados
-                    document.getElementById('d-titulo').innerText = data.titulo;
-                    document.getElementById('obra-img').src = data.imagem;
-                    // ... preencha os outros campos ...
-                } else {
-                    document.body.innerHTML = "<h1>Certificado Inválido ou não encontrado.</h1>";
-                }
-            });
+        // Se houver um token, carrega a imagem correspondente
+        if (token) {
+            imgElement.src = `images/certificados/${token}.png`;
+            imgElement.alt = `Certificado Autêntico - Obra ${token}`;
+            document.title = `Certificado - Obra ${token} | Léo Barbosa`;
+        } else {
+            // Exibe mensagem de erro caso não haja token na URL
+            document.body.innerHTML = "<h1 style='color:#c0392b; font-family:Montserrat,sans-serif; text-align:center;'>⚠ Erro: Certificado não encontrado.<br><span style='font-size:16px; font-weight:normal; color:#555;'>Por favor, tente escanear o QR Code novamente.</span></h1>";
+        }
     </script>
-</body>
 
+</body>
 </html>
