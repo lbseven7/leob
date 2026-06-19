@@ -3,7 +3,7 @@ from PIL import Image
 
 def gerar_qr_obra(token):
     # O link usa o token passado no argumento da função
-    url = f"https://www.leob.com.br/visualizar-certificado.html?token={token}"
+    url = f"https://www.leob.com.br/pages/visualizar-certificado.html?token={token}"
     
     # Criando um QR Code com mais qualidade
     qr = qrcode.QRCode(
