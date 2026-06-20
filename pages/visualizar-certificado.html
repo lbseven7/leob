@@ -83,7 +83,7 @@
             imgElement.alt = `Certificado Autêntico - Obra ${token}`;
             document.title = `Certificado - Obra ${token} | Léo Barbosa`;
         } else {
-            // Exibe mensagem de erro caso não haja token na URL
+            // Exibe mensagem de erro caso não haja token na URL ex.: www.leob.com.br/pages/visualizar-certificado.html?token=lb-2026-001
             document.body.innerHTML = "<h1 style='color:#c0392b; font-family:Montserrat,sans-serif; text-align:center;'>⚠ Erro: Certificado não encontrado.<br><span style='font-size:16px; font-weight:normal; color:#555;'>Por favor, tente escanear o QR Code novamente.</span></h1>";
         }
     </script>
