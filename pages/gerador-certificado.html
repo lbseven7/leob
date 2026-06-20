@@ -82,7 +82,7 @@
             width: 520px;
             height: 520px;
             object-fit: contain;
-            opacity: 0.08;
+            opacity: 0.05;
             pointer-events: none;
             z-index: 0;
         }
@@ -115,23 +115,20 @@
             z-index: 1;
         }
 
-        .logo {
-            margin-bottom: 30px;
-        }
-
         .logo img {
-            height: 52px;
-            width: auto;
+            width: 150px;
+            height: auto;
+            margin-bottom: 50px;
         }
 
         .dados-obra {
-            font-size: 10px;
+            font-size: 12px;
             line-height: 2;
             color: #1a1a1a;
             font-weight: 500;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-            margin-bottom: 18px;
+            margin-bottom: 30px;
         }
 
         .dados-obra .val {
@@ -140,7 +137,7 @@
         }
 
         .secao-titulo {
-            font-size: 10px;
+            font-size: 12px;
             font-weight: 700;
             letter-spacing: 1px;
             text-transform: uppercase;
@@ -149,7 +146,7 @@
         }
 
         .secao-corpo {
-            font-size: 10px;
+            font-size: 12px;
             line-height: 1.95;
             color: #1a1a1a;
             font-weight: 400;
@@ -191,6 +188,8 @@
             padding: 4px;
             background: white;
             display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .selo {
@@ -245,10 +244,10 @@
         }
 
         .linha-data {
-            font-size: 10px;
+            font-size: 15px;
             color: #1a1a1a;
             margin-bottom: 26px;
-            letter-spacing: 0.3px;
+            letter-spacing: 3px;
         }
 
         .sublinhado {
@@ -273,6 +272,25 @@
             text-transform: uppercase;
             color: #1a1a1a;
         }
+
+        .assinatura-img {
+            width: 50px;
+            height: auto;
+            /* margin-bottom: 12px; */
+            margin-left: 250px;
+            margin-right: auto;
+        }
+
+        .token {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+            margin-left: 30px;
+            margin-top: 6px;
+        }
     </style>
 </head>
 
@@ -287,7 +305,9 @@
         <div id="certificado-area">
             <img src="../images/selo-transp.png" class="marca-dagua" alt="">
             <div class="col-esq">
-                <div class="logo"><img src="../images/logo-white (1).png" alt="Logo"></div>
+                <div class="logo">
+                    <img src="../images/logo-white (1).png" alt="Logo">
+                </div>
                 <div class="dados-obra">
                     ARTISTA: <span class="val">LEO BARBOSA</span><br>
                     TÍTULO DA OBRA: <span id="d-titulo" class="val">A CASA DE VAQUEIRO</span><br>
@@ -310,8 +330,9 @@
                 </div>
                 <div class="rodape-esq">
                     <div>
-                        <div class="qr-label">Certificado Online</div>
+                        <div class="qr-label">Verificar Certificado</div>
                         <img id="qrcode-img" src="../images/qrcode_lb-2026-001.png" alt="QR">
+                        <p class="token">lb-2026-001</p>
                     </div>
                     <div class="selo">
                         <img src="../images/Gemini_Generated_Image_8w91vi8w91vi8w91-remove-bg-io.png" class="selo-img"
@@ -326,7 +347,10 @@
                     de minha autoria.</p>
                 <div class="obra-frame"><img id="obra-img" src="../images/certificado.jpeg" alt="Obra"></div>
                 <div class="rodape-dir">
-                    <p class="linha-data">Local e Data: ______________________, ___ de ___________ de 2026.</p>
+                    <p class="linha-data" id="data-certificado">Itaquara, _________ de ________________________ de
+                        ________________.</p>
+
+                    <img src="../images/assinatura-leob.-removebg-preview.png" class="assinatura-img" alt="Logo">
                     <div class="assinatura-bloco">Assinatura do Artista Léo Barbosa</div>
                 </div>
             </div>
@@ -364,6 +388,23 @@
 
             html2pdf().set(opt).from(el).save().then(ajustarEscala);
         }
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const meses = [
+                "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+                "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+            ];
+
+            const hoje = new Date();
+            const dia = hoje.getDate();
+            const mes = meses[hoje.getMonth()];
+            const ano = hoje.getFullYear();
+
+            document.getElementById("data-certificado").innerText =
+                `Itaquara, ${dia} de ${mes} de ${ano}.`;
+        });
     </script>
 </body>
 
