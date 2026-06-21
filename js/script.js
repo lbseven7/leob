@@ -13,17 +13,17 @@ const obras = [
         id: 1,
         img: "images/casa-do-vaqueiro.jpg",
         categoria: "disponível",
-        restante: 10,
-        total: 10,
+        restante: 30,
+        total: 30,
         linkPayment: null,
         pt: {
             titulo: "Casa de Vaqueiro",
-            tecnica: "Papel Algodão 100%",
+            tecnica: "Papel Ultra Smooth",
             dimensoes: "20x28cm"
         },
         en: {
             titulo: "The Cowboy's House",
-            tecnica: "100% Cotton Paper",
+            tecnica: "Ultra Smooth Paper",
             dimensoes: "20x28cm"
         }
     },
@@ -31,8 +31,8 @@ const obras = [
         id: 2,
         img: "images/ela-e-seu-cavalo.jpg",
         categoria: "disponível",
-        restante: 10,
-        total: 10,
+        restante: 30,
+        total: 30,
         linkPayment: null,
         pt: {
             titulo: "Ela e Seu Cavalo",
@@ -274,7 +274,7 @@ function changeLanguage(lang) {
         document.getElementById('nav-sobre').innerText = "About";
 
         // Elementos da página
-        document.getElementById('inspiration-title').innerText = "The Artist's Inspiration";
+        // document.getElementById('inspiration-title').innerText = "The Artist's Inspiration";
         document.getElementById('catalog-heading').innerText = "Fine Art Limited Series";
         document.getElementById('filter-all').innerText = "All";
         document.getElementById('filter-available').innerText = "Available";
@@ -298,7 +298,7 @@ function changeLanguage(lang) {
         document.getElementById('nav-eventos').innerText = "Eventos";
         document.getElementById('nav-sobre').innerText = "Sobre";
 
-        document.getElementById('inspiration-title').innerText = "A Inspiração do Artista";
+        // document.getElementById('inspiration-title').innerText = "A Inspiração do Artista";
         document.getElementById('catalog-heading').innerText = "Séries Limitadas Fine Art";
         document.getElementById('filter-all').innerText = "Todos";
         document.getElementById('filter-available').innerText = "Disponíveis";
