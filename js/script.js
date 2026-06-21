@@ -281,7 +281,7 @@ function changeLanguage(lang) {
         document.getElementById('filter-urgent').innerText = "Low Stock";
 
         document.getElementById('events-heading').innerText = "Events & Records";
-        document.getElementById('events-subtitle').innerText = "Short videos, posts, and snapshots of leob.'s journey in exhibitions, behind the scenes, and gatherings.";
+        document.getElementById('events-subtitle').innerText = "Short videos, posts, and snapshots of Leo Barbosa's journey in exhibitions, behind the scenes, and gatherings.";
 
         document.getElementById('about-heading').innerText = "About the Artist";
         document.getElementById('about-text').innerHTML = "Born in Jequié and forged by the streets of São Paulo, my artistic journey began with a simple drawing of candy wrapper stickers in the 90s. Between the graffiti of the metropolis and the tranquility of the countryside in Jaguaquara, I learned that art is the translation of the soul. With 20 years of experience, today I use hyperrealism to capture more than images: I capture stories, lights, and rural memories. As an artist, designer, and web developer, I combine technical rigor with emotion, believing that a house by the roadside has as much to say as the landscape that surrounds it. My goal is simple: to bring peace and reflection to those who observe what my brushes have been able to record.";
@@ -305,7 +305,7 @@ function changeLanguage(lang) {
         document.getElementById('filter-urgent').innerText = "Últimas Unidades";
 
         document.getElementById('events-heading').innerText = "Eventos & Registros";
-        document.getElementById('events-subtitle').innerText = "Pequenos vídeos, posts e momentos da trajetória da leob. em exposições, bastidores e encontros.";
+        document.getElementById('events-subtitle').innerText = "Pequenos vídeos, posts e momentos da trajetória de Leo Barbosa em exposições, bastidores e encontros.";
 
         document.getElementById('about-heading').innerText = "Sobre o Artista";
         document.getElementById('about-text').innerHTML = "Nascido em Jequié e forjado pelas ruas de São Paulo, minha jornada artística começou com um simples desenho de figurinhas de bala nos anos 90. Entre o grafite da metrópole e a calmaria do campo em Jaguaquara, aprendi que a arte é a tradução da alma. Com 20 anos de experiência, hoje utilizo o hiper-realismo para capturar mais do que imagens: capturo histórias, luzes e memórias rurais. Como artista, designer e desenvolvedor web, uno o rigor técnico à emoção, acreditando que uma casa à beira da estrada tem tanto a dizer quanto a paisagem que a envolve. Meu objetivo é simples: levar paz e reflexão a quem observa o que meus pincéis puderam registrar."
