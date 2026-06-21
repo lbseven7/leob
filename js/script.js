@@ -11,7 +11,6 @@ function toggleTheme() {
 const obras = [
     {
         id: 1,
-        token: "CV_lb-2026-?",
         img: "images/casa-do-vaqueiro.jpg",
         categoria: "disponível",
         restante: 30,
@@ -30,7 +29,6 @@ const obras = [
     },
     {
         id: 2,
-        token: "ESC_lb-2026-?",
         img: "images/ela-e-seu-cavalo.jpg",
         categoria: "disponível",
         restante: 30,
@@ -214,8 +212,8 @@ function openModal(obra) {
     const btnPayment = document.getElementById('payment-link');
     const helper = document.getElementById('payment-helper');
 
-    const msgPT = `Olá Leo! Gostaria de consultar a disponibilidade da obra "${content.titulo}", com o token ${obra.token}.`;
-    const msgEN = `Hello Leo! I would like to inquire about the availability of the artwork "${content.titulo}", with the token ${obra.token}.`;
+    const msgPT = `Olá Leo! Gostaria de consultar a disponibilidade da obra "${content.titulo}"`;
+    const msgEN = `Hello Leo! I would like to inquire about the availability of the artwork "${content.titulo}"`;
     const disponibilidadeMsg = currentLang === 'pt' ? msgPT : msgEN;
 
     btnPayment.style.pointerEvents = 'auto';
