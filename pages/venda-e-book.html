@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,91 +26,349 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body class="bg-black text-neutral-300 antialiased">
+<body class="bg-white dark:bg-black text-neutral-800 dark:text-neutral-300 antialiased transition-colors duration-300">
 
     <!-- Header -->
-    <header class="bg-black/80 backdrop-blur-md text-white px-6 py-6 border-b border-neutral-900">
+    <header class="bg-white/80 dark:bg-black/80 backdrop-blur-md text-black dark:text-white border-b border-neutral-200 dark:border-neutral-900 px-6 py-6">
         <div class="container mx-auto max-w-4xl flex items-center justify-between">
             <a href="../index.html" class="uppercase">
                 <img src="../images/logo-black3-sbg.png" alt="Leo Barbosa"
                     class="block w-[120px] sm:w-[150px] h-auto object-contain">
             </a>
+            <button id="darkModeToggle" class="w-10 h-10 rounded-full bg-neutral-900 dark:bg-neutral-800 bg-neutral-100 flex items-center justify-center hover:bg-neutral-800 dark:hover:bg-neutral-700 transition-colors">
+                <i id="darkModeIcon" class="fas fa-sun text-yellow-400"></i>
+            </button>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <main class="container mx-auto max-w-4xl px-6 py-16">
-        <div class="text-center mb-16">
-            <h1 class="text-3xl md:text-5xl font-light tracking-wide text-white leading-tight mb-6">Domine a Luz e a
+    <main class="container mx-auto max-w-5xl px-6 py-16">
+        <!-- Hero -->
+        <section class="text-center mb-24">
+            <div
+                class="inline-block px-4 py-1 bg-neutral-100 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-full text-sm text-neutral-600 dark:text-neutral-400 mb-6">
+                <i class="fas fa-fire text-brand-orange mr-2"></i>E-book Exclusivo
+            </div>
+            <h1 class="text-4xl md:text-6xl font-light tracking-wide text-black dark:text-white leading-tight mb-6">Domine a Luz e a
                 Forma</h1>
-            <p class="text-lg text-neutral-400 font-light max-w-2xl mx-auto">Um guia definitivo com minhas técnicas
-                avançadas de pintura. Do hiper realismo aos segredos da luz que dão vida à tela.</p>
-        </div>
-        <div id="ebook-container" class="container mx-auto max-w-4xl px-6">
-    </div>
+            <p class="text-xl text-neutral-600 dark:text-neutral-400 font-light max-w-3xl mx-auto mb-10">
+                Um guia definitivo com minhas técnicas avançadas de pintura. Do hiper realismo aos segredos da luz que
+                dão vida à tela.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#cta"
+                    class="inline-block bg-black dark:bg-white text-white dark:text-black px-10 py-5 uppercase tracking-[0.2em] text-sm hover:bg-neutral-800 dark:hover:bg-neutral-200 transition font-medium">
+                    Quero aprender agora
+                </a>
+                <a href="#sobre"
+                    class="inline-block border border-neutral-400 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 px-10 py-5 uppercase tracking-[0.2em] text-sm hover:border-neutral-600 dark:hover:border-neutral-500 transition">
+                    Saiba mais
+                </a>
+            </div>
+        </section>
+
+        <!-- Sobre o E-book -->
+        <section id="sobre" class="mb-24">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div
+                        class="aspect-[3/4] bg-neutral-100 dark:bg-neutral-900 rounded-lg shadow-2xl flex items-center justify-center border border-neutral-300 dark:border-neutral-800 overflow-hidden">
+                        <img src="../images/e-book-efeito-metálico.png" alt="E-book Técnicas de Pintura Hiper Realista"
+                            class="w-full h-full object-contain p-8">
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-light text-black dark:text-white mb-6">Meu Compromisso com Seu Crescimento</h2>
+                    <p class="text-neutral-600 dark:text-neutral-400 mb-6 leading-relaxed">
+                        Há anos venho aperfeiçoando minhas técnicas de pintura hiper realista, e agora decidi
+                        compartilhar tudo o que aprendi. Não é apenas teoria - é conhecimento prático, direto ao ponto,
+                        que você pode aplicar imediatamente em suas obras.
+                    </p>
+                    <p class="text-neutral-600 dark:text-neutral-400 mb-8 leading-relaxed">
+                        Cada página deste e-book representa horas de estudo, experimentação e paixão pela arte. Meu
+                        objetivo é que você evolua como artista e alcance resultados que antes pareciam impossíveis.
+                    </p>
+                    <div class="flex items-center gap-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-light text-black dark:text-white">+50</div>
+                            <div class="text-sm text-neutral-400 dark:text-neutral-500">Páginas de conteúdo</div>
+                        </div>
+                        <div class="w-px h-12 bg-neutral-300 dark:bg-neutral-800"></div>
+                        <div class="text-center">
+                            <div class="text-3xl font-light text-black dark:text-white">Técnicas</div>
+                            <div class="text-sm text-neutral-400 dark:text-neutral-500">Exclusivas</div>
+                        </div>
+                        <div class="w-px h-12 bg-neutral-800 dark:bg-neutral-800 bg-neutral-300"></div>
+                        <div class="text-center">
+                            <div class="text-3xl font-light text-black dark:text-white">Acesso</div>
+                            <div class="text-sm text-neutral-400 dark:text-neutral-500">Vitalício</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- O Que Você Vai Aprender -->
+        <section class="mb-24">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-light text-white dark:text-white text-black mb-4">O Que Você Vai Aprender</h2>
+                <p class="text-neutral-400 dark:text-neutral-400 text-neutral-600">Conhecimento prático que transformará sua arte</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-neutral-900 dark:bg-neutral-900 bg-white border border-neutral-800 dark:border-neutral-800 border-neutral-300 p-8 rounded-lg">
+                    <div class="w-12 h-12 bg-neutral-800 dark:bg-neutral-800 bg-neutral-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-lightbulb text-brand-orange text-xl"></i>
+                    </div>
+                    <h3 class="text-xl text-white dark:text-white text-black font-light mb-4">Domínio da Luz</h3>
+                    <p class="text-neutral-400 dark:text-neutral-400 text-neutral-600 text-sm leading-relaxed">
+                        Entenda como a luz se comporta, como reflete e como criar profundidade realista em suas
+                        pinturas.
+                    </p>
+                </div>
+                <div class="bg-neutral-900 dark:bg-neutral-900 bg-white border border-neutral-800 dark:border-neutral-800 border-neutral-300 p-8 rounded-lg">
+                    <div class="w-12 h-12 bg-neutral-800 dark:bg-neutral-800 bg-neutral-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-palette text-brand-orange text-xl"></i>
+                    </div>
+                    <h3 class="text-xl text-white dark:text-white text-black font-light mb-4">Técnicas de Mistura</h3>
+                    <p class="text-neutral-400 dark:text-neutral-400 text-neutral-600 text-sm leading-relaxed">
+                        Aprenda a misturar cores como um profissional para obter tons vibrantes e transições suaves.
+                    </p>
+                </div>
+                <div class="bg-neutral-900 dark:bg-neutral-900 bg-white border border-neutral-800 dark:border-neutral-800 border-neutral-300 p-8 rounded-lg">
+                    <div class="w-12 h-12 bg-neutral-800 dark:bg-neutral-800 bg-neutral-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-cube text-brand-orange text-xl"></i>
+                    </div>
+                    <h3 class="text-xl text-white dark:text-white text-black font-light mb-4">Efeito Metálico</h3>
+                    <p class="text-neutral-400 dark:text-neutral-400 text-neutral-600 text-sm leading-relaxed">
+                        O segredo para pintar superfícies metálicas com realismo impressionante, passo a passo.
+                    </p>
+                </div>
+                <div class="bg-neutral-900 dark:bg-neutral-900 bg-white border border-neutral-800 dark:border-neutral-800 border-neutral-300 p-8 rounded-lg">
+                    <div class="w-12 h-12 bg-neutral-800 dark:bg-neutral-800 bg-neutral-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-eye text-brand-orange text-xl"></i>
+                    </div>
+                    <h3 class="text-xl text-white dark:text-white text-black font-light mb-4">Observação Detalhada</h3>
+                    <p class="text-neutral-400 dark:text-neutral-400 text-neutral-600 text-sm leading-relaxed">
+                        Desenvolva seu olho artístico para capturar detalhes que fazem toda a diferença.
+                    </p>
+                </div>
+                <div class="bg-neutral-900 dark:bg-neutral-900 bg-white border border-neutral-800 dark:border-neutral-800 border-neutral-300 p-8 rounded-lg">
+                    <div class="w-12 h-12 bg-neutral-800 dark:bg-neutral-800 bg-neutral-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-layer-group text-brand-orange text-xl"></i>
+                    </div>
+                    <h3 class="text-xl text-white dark:text-white text-black font-light mb-4">Escala Monocromática</h3>
+                    <p class="text-neutral-400 dark:text-neutral-400 text-neutral-600 text-sm leading-relaxed">
+                        Domine a técnica de trabalhar em tons de cinza para entender valores antes de adicionar cor.
+                    </p>
+                </div>
+                <div class="bg-neutral-900 dark:bg-neutral-900 bg-white border border-neutral-800 dark:border-neutral-800 border-neutral-300 p-8 rounded-lg">
+                    <div class="w-12 h-12 bg-neutral-800 dark:bg-neutral-800 bg-neutral-100 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-rocket text-brand-orange text-xl"></i>
+                    </div>
+                    <h3 class="text-xl text-white dark:text-white text-black font-light mb-4">Evolução Rápida</h3>
+                    <p class="text-neutral-400 dark:text-neutral-400 text-neutral-600 text-sm leading-relaxed">
+                        Técnicas que acelerarão seu progresso e ajudarão você a alcançar resultados profissionais.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Para Quem É Este E-book -->
+        <section class="mb-24">
+            <div class="bg-neutral-900 dark:bg-neutral-900 bg-white border border-neutral-800 dark:border-neutral-800 border-neutral-300 p-8 md:p-12 rounded-lg">
+                <h2 class="text-3xl font-light text-white dark:text-white text-black mb-8 text-center">Para Quem É Este E-book?</h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="flex gap-4">
+                        <div
+                            class="w-8 h-8 bg-brand-orange/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="fas fa-check text-brand-orange text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white dark:text-white text-black font-light mb-2">Artistas Iniciantes</h3>
+                            <p class="text-neutral-400 dark:text-neutral-400 text-neutral-600 text-sm">Quer começar com a base sólida e evitar erros comuns?
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div
+                            class="w-8 h-8 bg-brand-orange/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="fas fa-check text-brand-orange text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white dark:text-white text-black font-light mb-2">Artistas Intermediários</h3>
+                            <p class="text-neutral-400 dark:text-neutral-400 text-neutral-600 text-sm">Sente que está preso e quer levar sua arte ao próximo
+                                nível?</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div
+                            class="w-8 h-8 bg-brand-orange/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="fas fa-check text-brand-orange text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white dark:text-white text-black font-light mb-2">Apaixonados por Pintura</h3>
+                            <p class="text-neutral-400 dark:text-neutral-400 text-neutral-600 text-sm">Quer aprender técnicas exclusivas que não encontrará em
+                                qualquer lugar?</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div
+                            class="w-8 h-8 bg-brand-orange/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="fas fa-check text-brand-orange text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-white dark:text-white text-black font-light mb-2">Quem Busca Realismo</h3>
+                            <p class="text-neutral-400 dark:text-neutral-400 text-neutral-600 text-sm">Sonha em criar pinturas hiper realistas que
+                                impressionem?</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Depoimentos -->
+        <section class="mb-24">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-light text-white dark:text-white text-black mb-4">O Que os Artistas Dizem</h2>
+                <p class="text-neutral-400 dark:text-neutral-400 text-neutral-600">Histórias de transformação</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-neutral-900 dark:bg-neutral-900 bg-white border border-neutral-800 dark:border-neutral-800 border-neutral-300 p-8 rounded-lg">
+                    <div class="flex gap-1 mb-6">
+                        <i class="fas fa-star text-brand-orange"></i>
+                        <i class="fas fa-star text-brand-orange"></i>
+                        <i class="fas fa-star text-brand-orange"></i>
+                        <i class="fas fa-star text-brand-orange"></i>
+                        <i class="fas fa-star text-brand-orange"></i>
+                    </div>
+                    <p class="text-neutral-400 dark:text-neutral-400 text-neutral-600 italic mb-6 leading-relaxed">
+                        "As técnicas do Léo mudaram completamente minha forma de pintar. Finalmente entendi como
+                        trabalhar a luz!"
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-neutral-800 dark:bg-neutral-800 bg-neutral-200 rounded-full"></div>
+                        <div>
+                            <div class="text-white dark:text-white text-black font-light">Maria Silva</div>
+                            <div class="text-sm text-neutral-500 dark:text-neutral-500 text-neutral-400">Artista</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-neutral-900 dark:bg-neutral-900 bg-white border border-neutral-800 dark:border-neutral-800 border-neutral-300 p-8 rounded-lg">
+                    <div class="flex gap-1 mb-6">
+                        <i class="fas fa-star text-brand-orange"></i>
+                        <i class="fas fa-star text-brand-orange"></i>
+                        <i class="fas fa-star text-brand-orange"></i>
+                        <i class="fas fa-star text-brand-orange"></i>
+                        <i class="fas fa-star text-brand-orange"></i>
+                    </div>
+                    <p class="text-neutral-400 dark:text-neutral-400 text-neutral-600 italic mb-6 leading-relaxed">
+                        "Conteúdo prático e direto ao ponto. O efeito metálico que aprendi fez minhas obras ganharem
+                        vida!"
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-neutral-800 dark:bg-neutral-800 bg-neutral-200 rounded-full"></div>
+                        <div>
+                            <div class="text-white dark:text-white text-black font-light">João Santos</div>
+                            <div class="text-sm text-neutral-500 dark:text-neutral-500 text-neutral-400">Artista</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Garantia -->
+        <section class="mb-24">
+            <div class="bg-neutral-50 dark:bg-neutral-900/50 border border-brand-orange/30 p-8 md:p-12 rounded-lg text-center">
+                <div class="w-16 h-16 bg-brand-orange/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-shield-alt text-brand-orange text-2xl"></i>
+                </div>
+                <h2 class="text-3xl font-light text-black dark:text-white mb-6">Garantia de Satisfação</h2>
+                <p class="text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto mb-8 leading-relaxed">
+                    Estou tão confiante de que este e-book transformará sua forma de pintar que ofereço uma garantia
+                    incondicional. Se não ficar satisfeito com o conteúdo, é só entrar em contato.
+                </p>
+                <div
+                    class="inline-block px-6 py-2 bg-brand-orange/10 border border-brand-orange/30 rounded-full text-brand-orange font-light">
+                    Compromisso com seu aprendizado
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Final -->
+        <section id="cta" class="mb-16">
+            <div
+                class="bg-gradient-to-br from-white to-neutral-100 dark:from-neutral-900 dark:to-neutral-950 border border-neutral-300 dark:border-neutral-800 p-10 md:p-16 rounded-lg text-center">
+                <h2 class="text-3xl md:text-4xl font-light text-black dark:text-white mb-6">Pronto para Transformar Sua Arte?</h2>
+                <p class="text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+                    Adquira agora o e-book e comece sua jornada rumo ao hiper realismo. Acesso imediato após a
+                    confirmação do pagamento.
+                </p>
+                <a href="https://www.asaas.com/c/i8snajem64ctilre" target="_blank"
+                    class="inline-block bg-black dark:bg-white text-white dark:text-black px-12 py-6 uppercase tracking-[0.2em] text-sm hover:bg-neutral-800 dark:hover:bg-neutral-200 transition font-medium">
+                    Quero acessar agora
+                </a>
+                <p class="text-neutral-400 dark:text-neutral-500 text-sm mt-6">
+                    <i class="fas fa-lock mr-2"></i>Pagamento seguro | Acesso vitalício
+                </p>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-gray-100 dark:border-zinc-800 py-12 opacity-60">
+    <footer class="border-t border-gray-100 dark:border-zinc-800 border-neutral-200 py-12 opacity-60">
         <div
             class="relative max-w-7xl mx-auto px-6 flex flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
-            <p class="text-sm">&copy; 2026 Leo Barbosa - por lbseven7</p>
+            <p class="text-sm text-neutral-800 dark:text-neutral-300">&copy; 2026 Leo Barbosa - por lbseven7</p>
             <div class="flex items-center gap-6 text-xl md:ml-auto">
                 <a href="https://www.instagram.com/leob_pinturas/" target="_blank" aria-label="Instagram"
-                    class="hover:text-brand-orange transition"><i class="fa-brands fa-instagram"></i></a>
+                    class="text-neutral-800 dark:text-neutral-300 hover:text-brand-orange transition"><i class="fa-brands fa-instagram"></i></a>
                 <a href="https://www.youtube.com/@leobarbosa-art-studio" target="_blank" aria-label="YouTube"
-                    class="hover:text-brand-orange transition"><i class="fa-brands fa-youtube"></i></a>
+                    class="text-neutral-800 dark:text-neutral-300 hover:text-brand-orange transition"><i class="fa-brands fa-youtube"></i></a>
             </div>
         </div>
     </footer>
-<script>
-    const ebooks = [
-        {
-            id: 1,
-            img: "../images/e-book-efeito-metálico.png", // Ajuste o caminho se necessário
-            categoria: "disponível",
-            linkPayment: "https://www.asaas.com/c/i8snajem64ctilre",
-            pt: {
-                titulo: "E-book Técnicas de Pintura Hiper Realista - Efeito Metálico",
-                tecnica: "Óleo | Acrílica"
-            },
-            en: {
-                titulo: "E-book of Painting",
-                tecnica: "Oil | Acrylic"
-            }
+    <script>
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeIcon = document.getElementById('darkModeIcon');
+        const html = document.documentElement;
+
+        // Verifica preferência salva no localStorage ou preferência do sistema
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            html.classList.add('dark');
+            darkModeIcon.classList.remove('fa-sun', 'text-yellow-400');
+            darkModeIcon.classList.add('fa-moon', 'text-blue-300');
         }
-    ];
 
-    function renderizarEbooks() {
-        const container = document.getElementById('ebook-container');
-        
-        container.innerHTML = ebooks.map(ebook => `
-            <div class="bg-neutral-900 border border-neutral-800 p-8 md:p-12 rounded-lg flex flex-col md:flex-row gap-12 items-center shadow-2xl">
-                <div class="w-full md:w-1/2">
-                    <div class="aspect-[3/4] bg-neutral-950 rounded shadow-2xl flex items-center justify-center border border-neutral-800">
-                        <img src="${ebook.img}" alt="${ebook.pt.titulo}" class="w-full h-full object-contain rounded">
-                    </div>
-                </div>
-                <div class="w-full md:w-1/2">
-                    <h2 class="text-2xl text-white font-light mb-4">${ebook.pt.titulo}</h2>
-                    <p class="text-neutral-400 mb-6 italic">${ebook.pt.tecnica}</p>
-                    <ul class="text-neutral-400 font-light space-y-4 mb-8">
-                        <li><i class="fas fa-check text-neutral-600 mr-2"></i> Domínio técnico da luz e sombra</li>
-                        <li><i class="fas fa-check text-neutral-600 mr-2"></i> Escala monocromática</li>
-                        <li><i class="fas fa-check text-neutral-600 mr-2"></i> O segredo do hiper realismo</li>
-                    </ul>
-                    <a href="${ebook.linkPayment}" target="_blank" 
-                       class="inline-block bg-white text-black px-8 py-4 uppercase tracking-[0.2em] text-sm hover:bg-neutral-200 transition">
-                        Quero acessar agora
-                    </a>
-                </div>
-            </div>
-        `).join('');
-    }
+        darkModeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            const isDark = html.classList.contains('dark');
 
-    // Executa ao carregar a página
-    renderizarEbooks();
-</script>
+            if (isDark) {
+                localStorage.setItem('theme', 'dark');
+                darkModeIcon.classList.remove('fa-sun', 'text-yellow-400');
+                darkModeIcon.classList.add('fa-moon', 'text-blue-300');
+            } else {
+                localStorage.setItem('theme', 'light');
+                darkModeIcon.classList.remove('fa-moon', 'text-blue-300');
+                darkModeIcon.classList.add('fa-sun', 'text-yellow-400');
+            }
+        });
+
+        // Smooth scroll para anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

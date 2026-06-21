@@ -1,713 +1,412 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Metálicos — Leo Barbosa | Hiper Realismo</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Técnicas de Pintura Hiper Realista | Leo Barbosa</title>
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --zinco:    #8A9099;
-    --ferrugem: #9E4A1E;
-    --carvao:   #1C1C1A;
-    --ocre:     #C9893A;
-    --creme:    #F5F0E8;
-    --branco:   #FDFCFA;
-    --cinza-m:  #6B6B68;
-    --cinza-l:  #E2DDD5;
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--carvao);
-    color: var(--creme);
-    font-family: 'Inter', sans-serif;
-    font-weight: 300;
-    line-height: 1.7;
-    font-size: 16px;
-  }
-
-  /* ── TIPOGRAFIA ── */
-  .display {
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
-  .display-italic {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-weight: 400;
-    line-height: 1.2;
-  }
-
-  /* ── LAYOUT ── */
-  .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
-  section { padding: 80px 0; }
-
-  /* ── TEXTURA METÁLICA (assinatura visual) ── */
-  .metal-stripe {
-    height: 3px;
-    background: linear-gradient(90deg,
-      var(--carvao) 0%,
-      var(--zinco) 20%,
-      #C8CDD4 40%,
-      var(--zinco) 55%,
-      var(--ferrugem) 70%,
-      #6B3A1F 82%,
-      var(--carvao) 100%);
-  }
-
-  /* ── HERO ── */
-  #hero {
-    padding: 100px 0 80px;
-    border-bottom: 1px solid #2E2E2B;
-  }
-
-  .eyebrow {
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--zinco);
-    margin-bottom: 28px;
-  }
-
-  #hero h1 {
-    font-size: clamp(42px, 7vw, 72px);
-    margin-bottom: 16px;
-  }
-
-  #hero h1 em {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-weight: 400;
-    color: var(--ocre);
-  }
-
-  .hero-sub {
-    font-size: 18px;
-    color: var(--zinco);
-    max-width: 520px;
-    margin-bottom: 48px;
-    line-height: 1.6;
-  }
-
-  /* Placeholder imagem hero */
-  .img-placeholder {
-    width: 100%;
-    background: #252521;
-    border: 1px solid #2E2E2B;
-    border-radius: 4px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #444440;
-    font-size: 13px;
-    gap: 8px;
-    position: relative;
-    overflow: hidden;
-  }
-  .img-placeholder::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 20px,
-      #222220 20px,
-      #222220 21px
-    );
-  }
-  .img-placeholder span { position: relative; z-index: 1; }
-  .img-hero { height: 440px; margin-bottom: 12px; }
-  .img-caption {
-    font-size: 12px;
-    color: #555552;
-    text-align: center;
-    margin-top: 8px;
-  }
-
-  /* ── CTA PRINCIPAL ── */
-  .cta-block {
-    background: #252521;
-    border: 1px solid #333330;
-    border-radius: 8px;
-    padding: 32px;
-    margin-top: 56px;
-  }
-  .cta-price {
-    font-size: 13px;
-    color: var(--zinco);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 4px;
-  }
-  .cta-valor {
-    font-family: 'Playfair Display', serif;
-    font-size: 52px;
-    font-weight: 700;
-    color: var(--branco);
-    line-height: 1;
-    margin-bottom: 6px;
-  }
-  .cta-valor sup { font-size: 22px; vertical-align: super; }
-  .cta-desc { font-size: 13px; color: var(--cinza-m); margin-bottom: 24px; }
-
-  .btn-comprar {
-    display: block;
-    width: 100%;
-    background: var(--ferrugem);
-    color: var(--branco);
-    border: none;
-    border-radius: 4px;
-    padding: 18px 32px;
-    font-family: 'Inter', sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    transition: background 0.2s, transform 0.1s;
-  }
-  .btn-comprar:hover { background: #B5541F; }
-  .btn-comprar:active { transform: scale(0.99); }
-
-  .garantia {
-    font-size: 12px;
-    color: var(--cinza-m);
-    text-align: center;
-    margin-top: 14px;
-  }
-
-  /* ── O QUE VOCÊ VAI DOMINAR ── */
-  #dominar { border-bottom: 1px solid #2E2E2B; }
-  #dominar h2 {
-    font-size: clamp(28px, 4vw, 40px);
-    margin-bottom: 48px;
-  }
-
-  .tecnicas-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2px;
-    background: #2E2E2B;
-    border: 1px solid #2E2E2B;
-    border-radius: 6px;
-    overflow: hidden;
-    margin-bottom: 48px;
-  }
-  .tecnica-item {
-    background: #1C1C1A;
-    padding: 28px 24px;
-  }
-  .tecnica-num {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    color: var(--ferrugem);
-    margin-bottom: 10px;
-  }
-  .tecnica-titulo {
-    font-family: 'Playfair Display', serif;
-    font-size: 18px;
-    color: var(--branco);
-    margin-bottom: 8px;
-  }
-  .tecnica-desc {
-    font-size: 13px;
-    color: var(--zinco);
-    line-height: 1.6;
-  }
-
-  /* ── PROCESSO ── */
-  #processo { border-bottom: 1px solid #2E2E2B; }
-  #processo h2 {
-    font-size: clamp(28px, 4vw, 40px);
-    margin-bottom: 12px;
-  }
-  .processo-intro {
-    color: var(--zinco);
-    margin-bottom: 48px;
-    max-width: 560px;
-  }
-
-  .processo-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .step {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 0;
-    background: #2E2E2B;
-    overflow: hidden;
-    border-radius: 0;
-  }
-  .step:first-child { border-radius: 6px 6px 0 0; }
-  .step:last-child { border-radius: 0 0 6px 6px; }
-
-  .step-img {
-    background: #252521;
-    height: 140px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    color: #3A3A37;
-    border-right: 1px solid #2E2E2B;
-    position: relative;
-    overflow: hidden;
-  }
-  .step-img::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 15px,
-      #222220 15px,
-      #222220 16px
-    );
-  }
-  .step-img span { position: relative; z-index: 1; text-align: center; padding: 8px; line-height: 1.5; }
-
-  .step-content { background: #1C1C1A; padding: 24px 28px; }
-  .step-label {
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    color: var(--ferrugem);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .step-titulo {
-    font-family: 'Playfair Display', serif;
-    font-size: 17px;
-    color: var(--branco);
-    margin-bottom: 6px;
-  }
-  .step-desc { font-size: 13px; color: var(--zinco); line-height: 1.6; }
-
-  /* ── SOBRE LEO ── */
-  #sobre { border-bottom: 1px solid #2E2E2B; }
-  .sobre-grid {
-    display: grid;
-    grid-template-columns: 180px 1fr;
-    gap: 40px;
-    align-items: start;
-  }
-  .foto-artista {
-    width: 180px;
-    height: 220px;
-    border-radius: 4px;
-  }
-  #sobre h2 {
-    font-size: clamp(24px, 3vw, 32px);
-    margin-bottom: 16px;
-  }
-  #sobre p { color: var(--zinco); margin-bottom: 14px; font-size: 15px; }
-  .sobre-destaque {
-    border-left: 2px solid var(--ferrugem);
-    padding-left: 20px;
-    margin: 28px 0;
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 18px;
-    color: var(--creme);
-    line-height: 1.5;
-  }
-
-  /* ── ÍNDICE DO PDF ── */
-  #indice { border-bottom: 1px solid #2E2E2B; }
-  #indice h2 {
-    font-size: clamp(28px, 4vw, 40px);
-    margin-bottom: 8px;
-  }
-  .indice-sub { color: var(--zinco); margin-bottom: 40px; }
-
-  .indice-lista {
-    list-style: none;
-    border: 1px solid #2E2E2B;
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  .indice-lista li {
-    display: flex;
-    align-items: baseline;
-    gap: 16px;
-    padding: 16px 24px;
-    border-bottom: 1px solid #252521;
-    font-size: 14px;
-  }
-  .indice-lista li:last-child { border-bottom: none; }
-  .indice-lista li:nth-child(odd) { background: #1F1F1D; }
-  .indice-lista li:nth-child(even) { background: #1C1C1A; }
-  .indice-secao {
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    color: var(--ferrugem);
-    min-width: 70px;
-    text-transform: uppercase;
-  }
-  .indice-titulo { color: var(--creme); flex: 1; }
-  .indice-pags { font-size: 12px; color: #444440; white-space: nowrap; }
-
-  /* ── PARA QUEM É ── */
-  #para-quem { border-bottom: 1px solid #2E2E2B; }
-  #para-quem h2 {
-    font-size: clamp(28px, 4vw, 40px);
-    margin-bottom: 40px;
-  }
-  .check-lista { list-style: none; display: flex; flex-direction: column; gap: 14px; }
-  .check-lista li {
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-    font-size: 15px;
-    color: var(--zinco);
-  }
-  .check-icon {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--ferrugem);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 2px;
-  }
-  .check-icon::after {
-    content: '';
-    width: 8px;
-    height: 5px;
-    border-left: 1.5px solid #fff;
-    border-bottom: 1.5px solid #fff;
-    transform: rotate(-45deg) translateY(-1px);
-    display: block;
-  }
-  .nao-lista { margin-top: 40px; }
-  .nao-lista h3 {
-    font-size: 14px;
-    letter-spacing: 0.08em;
-    color: var(--cinza-m);
-    text-transform: uppercase;
-    margin-bottom: 20px;
-  }
-  .x-lista { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-  .x-lista li {
-    font-size: 14px;
-    color: #444440;
-    padding-left: 22px;
-    position: relative;
-  }
-  .x-lista li::before {
-    content: '—';
-    position: absolute;
-    left: 0;
-    color: #333330;
-  }
-
-  /* ── CTA FINAL ── */
-  #cta-final {
-    padding: 100px 0;
-    text-align: center;
-  }
-  #cta-final h2 {
-    font-size: clamp(32px, 5vw, 52px);
-    margin-bottom: 16px;
-  }
-  #cta-final p { color: var(--zinco); margin-bottom: 48px; font-size: 16px; }
-  .cta-final-box {
-    max-width: 420px;
-    margin: 0 auto;
-  }
-
-  /* ── RODAPÉ ── */
-  footer {
-    border-top: 1px solid #2E2E2B;
-    padding: 32px 0;
-    text-align: center;
-    font-size: 12px;
-    color: #3A3A37;
-  }
-
-  /* ── RESPONSIVO ── */
-  @media (max-width: 600px) {
-    .tecnicas-grid { grid-template-columns: 1fr; }
-    .sobre-grid { grid-template-columns: 1fr; }
-    .foto-artista { width: 100%; height: 260px; }
-    .step { grid-template-columns: 1fr; }
-    .step-img { height: 100px; border-right: none; border-bottom: 1px solid #2E2E2B; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    * { transition: none !important; }
-  }
-</style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brand: { orange: '#d88800' } },
+                    fontFamily: {
+                        display: ['Playfair Display', 'serif'],
+                        sans: ['Comfortaa', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/barra-progresso.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
 
-<div class="metal-stripe"></div>
+<body class="bg-white dark:bg-black text-neutral-800 dark:text-neutral-300 antialiased transition-colors duration-300">
 
-<!-- ── HERO ── -->
-<section id="hero">
-  <div class="container">
-    <p class="eyebrow">Leo Barbosa · Hiper Realismo · Módulo I</p>
-    <h1 class="display">
-      Metálicos:<br>
-      <em>o balde de zinco</em>
-    </h1>
-    <p class="hero-sub">
-      Domine reflexo, ferrugem e textura em superfícies metálicas — com a profundidade técnica que o hiper realismo exige.
-    </p>
-
-    <div class="img-placeholder img-hero">
-      <span>📷 Foto da obra finalizada — balde de zinco em hiper realismo<br><small>substitua por sua imagem real</small></span>
-    </div>
-    <p class="img-caption">Obra original em óleo — Leo Barbosa</p>
-
-    <!-- CTA alto na página -->
-    <div class="cta-block">
-      <p class="cta-price">Acesso imediato · PDF completo</p>
-      <p class="cta-valor"><sup>R$</sup>67</p>
-      <p class="cta-desc">Pagamento único · Entregue por e-mail na hora</p>
-      <!-- Cole aqui o botão gerado pela Kiwify -->
-      <a href="SEU_LINK_KIWIFY_AQUI" class="btn-comprar">
-        Quero dominar metálicos
-      </a>
-      <p class="garantia">7 dias de garantia · Se não gostar, devolvemos tudo</p>
-    </div>
-  </div>
-</section>
-
-<!-- ── O QUE VOCÊ VAI DOMINAR ── -->
-<section id="dominar">
-  <div class="container">
-    <h2 class="display">O que você vai<br><em class="display-italic">dominar</em></h2>
-
-    <div class="tecnicas-grid">
-      <div class="tecnica-item">
-        <p class="tecnica-num">01</p>
-        <p class="tecnica-titulo">O comportamento do metal</p>
-        <p class="tecnica-desc">Por que o zinco reflete diferente do aço e do alumínio. Como a curvatura distorce o ambiente ao redor.</p>
-      </div>
-      <div class="tecnica-item">
-        <p class="tecnica-num">02</p>
-        <p class="tecnica-titulo">Reflexo em superfície curva</p>
-        <p class="tecnica-desc">A zona de luz principal, o reflexo secundário, o ponto de luz especular. Cada um com mistura e técnica própria.</p>
-      </div>
-      <div class="tecnica-item">
-        <p class="tecnica-num">03</p>
-        <p class="tecnica-titulo">Ferrugem com precisão</p>
-        <p class="tecnica-desc">Como misturar cores de ferrugem sem virar laranja chapado. Textura de descamação e integração com o metal limpo.</p>
-      </div>
-      <div class="tecnica-item">
-        <p class="tecnica-num">04</p>
-        <p class="tecnica-titulo">Detalhes que separam níveis</p>
-        <p class="tecnica-desc">Arranhados, amassados, variações sutis de tonalidade. O que transforma uma boa pintura em algo que para o olhar.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── O PROCESSO ── -->
-<section id="processo">
-  <div class="container">
-    <h2 class="display">Cada etapa,<br><em class="display-italic">fotografada</em></h2>
-    <p class="processo-intro">
-      Não é uma explicação teórica sobre o que fazer. É o processo real, do início ao fim — cada camada de tinta documentada para você entender exatamente o que acontece em cada momento.
-    </p>
-
-    <div class="processo-steps">
-      <div class="step">
-        <div class="step-img">
-          <span>📷 Foto etapa 1<br>esboço proporcional</span>
+    <!-- Header -->
+    <header
+        class="bg-white/80 dark:bg-black/80 backdrop-blur-md text-black dark:text-white border-b border-neutral-200 dark:border-neutral-900 px-6 py-6">
+        <div class="container mx-auto max-w-4xl flex items-center justify-between">
+            <a href="../index.html" class="uppercase">
+                <img src="../images/logo-black3-sbg.png" alt="Leo Barbosa"
+                    class="block w-[120px] sm:w-[150px] h-auto object-contain">
+            </a>
+            <button id="darkModeToggle"
+                class="w-10 h-10 rounded-full bg-neutral-900 dark:bg-neutral-800 bg-neutral-100 flex items-center justify-center hover:bg-neutral-800 dark:hover:bg-neutral-700 transition-colors">
+                <i id="darkModeIcon" class="fas fa-sun text-yellow-400"></i>
+            </button>
         </div>
-        <div class="step-content">
-          <p class="step-label">Etapa 1</p>
-          <p class="step-titulo">Construção base e valores</p>
-          <p class="step-desc">Esboço proporcional e primeira camada estabelecendo as grandes zonas de luz e sombra. O mapa que guia todo o restante.</p>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="container mx-auto max-w-5xl px-6 py-16">
+        <!-- Hero -->
+        <section class="text-center mb-24">
+            <div
+                class="inline-block px-4 py-1 bg-neutral-100 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-full text-sm text-neutral-600 dark:text-neutral-400 mb-6">
+                <i class="fas fa-fire text-brand-orange mr-2"></i>Vagas abertas para a turma atual
+            </div>
+            <h1 class="text-4xl md:text-6xl font-light tracking-wide text-black dark:text-white leading-tight mb-4">
+                Técnicas de Pintura Hiper Realista — com <strong class="text-brand-orange">Leo Barbosa</strong>
+            </h1>
+            <p class="text-lg uppercase tracking-[0.25em] text-brand-orange mb-6">Domine o Efeito Metálico em sua
+                Pintura</p>
+            <p class="text-xl text-neutral-600 dark:text-neutral-400 font-light max-w-3xl mx-auto mb-10">
+                Hiper-realismo não é sobre pintar cada detalhe — é sobre entender a luz que faz esses detalhes
+                existirem. É ela que constrói volume, profundidade e a sensação de que a tela respira. Este é o método
+                que vou usar para te mostrar exatamente como ler e reproduzir essa luz, do zero ao olho treinado.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#cta"
+                    class="inline-block bg-black dark:bg-white text-white dark:text-black px-10 py-5 uppercase tracking-[0.2em] text-sm hover:bg-neutral-800 dark:hover:bg-neutral-200 transition font-medium">
+                    Quero Começar Agora
+                </a>
+                <a href="#sobre"
+                    class="inline-block border border-neutral-400 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 px-10 py-5 uppercase tracking-[0.2em] text-sm hover:border-neutral-600 dark:hover:border-neutral-500 transition">
+                    Entenda o Método
+                </a>
+            </div>
+        </section>
+
+        <!-- Sobre -->
+        <section id="sobre" class="mb-24">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div
+                        class="aspect-[3/4] bg-neutral-100 dark:bg-neutral-900 rounded-lg shadow-2xl flex items-center justify-center border border-neutral-300 dark:border-neutral-800 overflow-hidden">
+                        <img src="../images/e-book-efeito-metálico.png"
+                            alt="Técnicas de Pintura Hiper Realista — Leo Barbosa"
+                            class="w-full h-full object-contain p-8">
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-light text-black dark:text-white mb-6">Eu Tive Que Aprender a Ver a Luz
+                    </h2>
+                    <p class="text-neutral-600 dark:text-neutral-400 mb-6 leading-relaxed">
+                        Antes de entender luz, eu copiava cor. Olhava a referência, via "cinza" e pintava cinza —
+                        e a tela continuava parecendo plana, morta, sem volume. O problema nunca foi a minha mão.
+                        Era o que eu estava olhando.
+                    </p>
+                    <p class="text-neutral-600 dark:text-neutral-400 mb-8 leading-relaxed">
+                        <span class="text-black dark:text-white font-medium">Técnicas de Pintura Hiper Realista</span> é
+                        o método
+                        que organiza tudo o que eu queria ter aprendido no início: como a luz se comporta, como ela
+                        constrói volume e profundidade, e como transformar isso em decisões concretas no seu pincel —
+                        sem depender de sorte ou talento "nato".
+                    </p>
+                    <div class="flex items-center gap-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-light text-black dark:text-white">Método</div>
+                            <div class="text-sm text-neutral-400 dark:text-neutral-500">Passo a passo, não teoria solta
+                            </div>
+                        </div>
+                        <div class="w-px h-12 bg-neutral-300 dark:bg-neutral-800"></div>
+                        <div class="text-center">
+                            <div class="text-3xl font-light text-black dark:text-white">Prático</div>
+                            <div class="text-sm text-neutral-400 dark:text-neutral-500">Aplicável na próxima tela</div>
+                        </div>
+                        <div class="w-px h-12 bg-neutral-800 dark:bg-neutral-800 bg-neutral-300"></div>
+                        <div class="text-center">
+                            <div class="text-3xl font-light text-black dark:text-white">Acesso</div>
+                            <div class="text-sm text-neutral-400 dark:text-neutral-500">Vitalício, no seu ritmo</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- O Que Você Vai Aprender -->
+        <section class="mb-24">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-light text-black dark:text-white mb-4">O que muda na sua pintura</h2>
+                <p class="text-neutral-600 dark:text-neutral-400">Não são truques isolados — é um jeito novo de olhar
+                    para a tela</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div
+                    class="bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 p-8 rounded-lg">
+                    <div
+                        class="w-12 h-12 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-lightbulb text-brand-orange text-xl"></i>
+                    </div>
+                    <h3 class="text-xl text-black dark:text-white font-light mb-4">Ler a luz antes de pintar</h3>
+                    <p class="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed">
+                        Você para de adivinhar tons e começa a entender por que a luz cai assim — e como reproduzir
+                        isso com intenção, não por acaso.
+                    </p>
+                </div>
+                <div
+                    class="bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 p-8 rounded-lg">
+                    <div
+                        class="w-12 h-12 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-palette text-brand-orange text-xl"></i>
+                    </div>
+                    <h3 class="text-xl text-black dark:text-white font-light mb-4">Misturar com intenção</h3>
+                    <p class="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed">
+                        Cada mistura passa a ter um motivo. Você chega ao tom certo mais rápido, com menos tentativa e
+                        erro na paleta.
+                    </p>
+                </div>
+                <div
+                    class="bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 p-8 rounded-lg">
+                    <div
+                        class="w-12 h-12 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-cube text-brand-orange text-xl"></i>
+                    </div>
+                    <h3 class="text-xl text-black dark:text-white font-light mb-4">Construir superfícies difíceis</h3>
+                    <p class="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed">
+                        O passo a passo do efeito metálico — uma das superfícies que mais travam quem busca
+                        hiper-realismo — explicado em camadas, do reflexo ao brilho.
+                    </p>
+                </div>
+                <div
+                    class="bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 p-8 rounded-lg">
+                    <div
+                        class="w-12 h-12 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-eye text-brand-orange text-xl"></i>
+                    </div>
+                    <h3 class="text-xl text-black dark:text-white font-light mb-4">Treinar o olho</h3>
+                    <p class="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed">
+                        Você desenvolve a capacidade de notar o detalhe que separa "bom" de "impressionante" — antes
+                        mesmo de pegar no pincel.
+                    </p>
+                </div>
+                <div
+                    class="bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 p-8 rounded-lg">
+                    <div
+                        class="w-12 h-12 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-layer-group text-brand-orange text-xl"></i>
+                    </div>
+                    <h3 class="text-xl text-black dark:text-white font-light mb-4">Pensar em valores, não em cor</h3>
+                    <p class="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed">
+                        A escala monocromática como ferramenta: resolva o volume primeiro, e a cor para de ser um
+                        obstáculo.
+                    </p>
+                </div>
+                <div
+                    class="bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 p-8 rounded-lg">
+                    <div
+                        class="w-12 h-12 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mb-6">
+                        <i class="fas fa-rocket text-brand-orange text-xl"></i>
+                    </div>
+                    <h3 class="text-xl text-black dark:text-white font-light mb-4">Encurtar o caminho</h3>
+                    <p class="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed">
+                        O que me levou anos de tentativa e erro, organizado para você aplicar nas próximas telas —
+                        não nos próximos anos.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Para Quem É -->
+        <section class="mb-24">
+            <div
+                class="bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 p-8 md:p-12 rounded-lg">
+                <h2 class="text-3xl font-light text-black dark:text-white mb-8 text-center">Isso é para você, se...</h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="flex gap-4">
+                        <div
+                            class="w-8 h-8 bg-brand-orange/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="fas fa-check text-brand-orange text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-black dark:text-white font-light mb-2">Você está começando</h3>
+                            <p class="text-neutral-600 dark:text-neutral-400 text-sm">E quer construir uma base sólida
+                                em luz e forma, em vez de aprender truques soltos que não se conectam.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div
+                            class="w-8 h-8 bg-brand-orange/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="fas fa-check text-brand-orange text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-black dark:text-white font-light mb-2">Você sente que estagnou</h3>
+                            <p class="text-neutral-600 dark:text-neutral-400 text-sm">Suas pinturas têm técnica, mas
+                                falta aquele "algo" que faz a tela parecer real — e você não consegue nomear o que é.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div
+                            class="w-8 h-8 bg-brand-orange/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="fas fa-check text-brand-orange text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-black dark:text-white font-light mb-2">Você quer ir além do óbvio</h3>
+                            <p class="text-neutral-600 dark:text-neutral-400 text-sm">Já domina o básico e busca
+                                técnicas específicas, como superfícies metálicas e reflexos complexos.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div
+                            class="w-8 h-8 bg-brand-orange/20 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="fas fa-check text-brand-orange text-sm"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-black dark:text-white font-light mb-2">Você busca o hiper-realismo</h3>
+                            <p class="text-neutral-600 dark:text-neutral-400 text-sm">E quer parar de imitar resultados
+                                e começar a entender o raciocínio por trás deles.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Depoimentos -->
+        <!-- AJUSTE: substitua nomes e textos pelos depoimentos reais dos seus alunos -->
+        <section class="mb-24">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-light text-black dark:text-white mb-4">Quem aplicou, sentiu a diferença</h2>
+                <p class="text-neutral-600 dark:text-neutral-400">Não é sobre o material — é sobre o que ele muda na sua
+                    tela</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div
+                    class="bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 p-8 rounded-lg">
+                    <div class="flex gap-1 mb-6">
+                        <i class="fas fa-star text-brand-orange"></i>
+                        <i class="fas fa-star text-brand-orange"></i>
+                        <i class="fas fa-star text-brand-orange"></i>
+                        <i class="fas fa-star text-brand-orange"></i>
+                        <i class="fas fa-star text-brand-orange"></i>
+                    </div>
+                    <p class="text-neutral-600 dark:text-neutral-400 italic mb-6 leading-relaxed">
+                        "Eu pintava há anos e nunca tinha entendido luz de verdade. Depois desse método, finalmente
+                        consigo explicar por que uma pintura funciona — e a minha começou a funcionar também."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-neutral-200 dark:bg-neutral-800 rounded-full"></div>
+                        <div>
+                            <div class="text-black dark:text-white font-light">[Nome do aluno]</div>
+                            <div class="text-sm text-neutral-400 dark:text-neutral-500">[Cidade]</div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 p-8 rounded-lg">
+                    <div class="flex gap-1 mb-6">
+                        <i class="fas fa-star text-brand-orange"></i>
+                        <i class="fas fa-star text-brand-orange"></i>
+                        <i class="fas fa-star text-brand-orange"></i>
+                        <i class="fas fa-star text-brand-orange"></i>
+                        <i class="fas fa-star text-brand-orange"></i>
+                    </div>
+                    <p class="text-neutral-600 dark:text-neutral-400 italic mb-6 leading-relaxed">
+                        "O passo a passo do efeito metálico resolveu algo que eu travava há meses. Direto ao ponto,
+                        sem enrolação — aplicável já na primeira tentativa."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-neutral-200 dark:bg-neutral-800 rounded-full"></div>
+                        <div>
+                            <div class="text-black dark:text-white font-light">[Nome do aluno]</div>
+                            <div class="text-sm text-neutral-400 dark:text-neutral-500">[Cidade]</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Garantia -->
+        <section class="mb-24">
+            <div
+                class="bg-neutral-50 dark:bg-neutral-900/50 border border-brand-orange/30 p-8 md:p-12 rounded-lg text-center">
+                <div class="w-16 h-16 bg-brand-orange/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-shield-alt text-brand-orange text-2xl"></i>
+                </div>
+                <h2 class="text-3xl font-light text-black dark:text-white mb-6">Risco zero pra você</h2>
+                <p class="text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto mb-8 leading-relaxed">
+                    Confio tanto neste método que assumo o risco por você: se sentir que não é o que esperava,
+                    é só me chamar. Você não fica sozinho do outro lado da tela.
+                </p>
+                <div
+                    class="inline-block px-6 py-2 bg-brand-orange/10 border border-brand-orange/30 rounded-full text-brand-orange font-light">
+                    Compromisso real com o seu progresso
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Final -->
+        <section id="cta" class="mb-16">
+            <div
+                class="bg-gradient-to-br from-white to-neutral-100 dark:from-neutral-900 dark:to-neutral-950 border border-neutral-300 dark:border-neutral-800 p-10 md:p-16 rounded-lg text-center">
+                <h2 class="text-3xl md:text-4xl font-light text-black dark:text-white mb-6">A próxima tela pode ser a
+                    primeira em que a luz finalmente faz sentido</h2>
+                <p class="text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+                    Comece agora e tenha acesso imediato ao método completo, no seu ritmo, para sempre.
+                </p>
+                <a href="https://www.asaas.com/c/i8snajem64ctilre" target="_blank"
+                    class="inline-block bg-black dark:bg-white text-white dark:text-black px-12 py-6 uppercase tracking-[0.2em] text-sm hover:bg-neutral-800 dark:hover:bg-neutral-200 transition font-medium">
+                    Quero começar agora
+                </a>
+                <p class="text-neutral-400 dark:text-neutral-500 text-sm mt-6">
+                    <i class="fas fa-lock mr-2"></i>Pagamento seguro · Acesso vitalício
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-100 dark:border-zinc-800 border-neutral-200 py-12 opacity-60">
+        <div
+            class="relative max-w-7xl mx-auto px-6 flex flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
+            <p class="text-sm text-neutral-800 dark:text-neutral-300">&copy; 2026 Leo Barbosa - por lbseven7</p>
+            <div class="flex items-center gap-6 text-xl md:ml-auto">
+                <a href="https://www.instagram.com/leob_pinturas/" target="_blank" aria-label="Instagram"
+                    class="text-neutral-800 dark:text-neutral-300 hover:text-brand-orange transition"><i
+                        class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.youtube.com/@leobarbosa-art-studio" target="_blank" aria-label="YouTube"
+                    class="text-neutral-800 dark:text-neutral-300 hover:text-brand-orange transition"><i
+                        class="fa-brands fa-youtube"></i></a>
+            </div>
         </div>
-      </div>
+    </footer>
+    <script>
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeIcon = document.getElementById('darkModeIcon');
+        const html = document.documentElement;
 
-      <div class="step">
-        <div class="step-img">
-          <span>📷 Foto etapa 2<br>desenvolvimento do reflexo</span>
-        </div>
-        <div class="step-content">
-          <p class="step-label">Etapa 2</p>
-          <p class="step-titulo">Desenvolvendo o reflexo</p>
-          <p class="step-desc">A curva lateral, o fundo plano, o aro e a alça — cada superfície tratada com a mistura de cor específica que ela exige.</p>
-        </div>
-      </div>
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-      <div class="step">
-        <div class="step-img">
-          <span>📷 Foto etapa 3<br>ferrugem e textura</span>
-        </div>
-        <div class="step-content">
-          <p class="step-label">Etapa 3</p>
-          <p class="step-titulo">Ferrugem e envelhecimento</p>
-          <p class="step-desc">A parte que mais intimida e mais impressiona. Técnica de mistura, aplicação em camadas e integração com o metal limpo.</p>
-        </div>
-      </div>
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            html.classList.add('dark');
+            darkModeIcon.classList.remove('fa-sun', 'text-yellow-400');
+            darkModeIcon.classList.add('fa-moon', 'text-blue-300');
+        }
 
-      <div class="step">
-        <div class="step-img">
-          <span>📷 Foto etapa 4<br>obra finalizada</span>
-        </div>
-        <div class="step-content">
-          <p class="step-label">Etapa 4</p>
-          <p class="step-titulo">Acabamento e detalhes finais</p>
-          <p class="step-desc">Arranhados, imperfeições controladas, verificação de coesão. O que a maioria ignora — e que faz toda a diferença.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+        darkModeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            const isDark = html.classList.contains('dark');
 
-<!-- ── SOBRE LEO BARBOSA ── -->
-<section id="sobre">
-  <div class="container">
-    <div class="sobre-grid">
-      <div class="img-placeholder foto-artista">
-        <span style="font-size:11px; text-align:center; padding:12px;">📷 Foto<br>Leo Barbosa</span>
-      </div>
-      <div>
-        <h2 class="display">Leo Barbosa</h2>
-        <p>25 anos pintando o interior da Bahia em hiper realismo. Autodidata — cada técnica construída na prática, erro por erro, camada por camada.</p>
-        <p>Não aprendi em escola de arte. Aprendi olhando, errando e insistindo até entender o que o material estava me dizendo.</p>
-        <blockquote class="sobre-destaque">
-          "O metal não mente. Ele mostra exatamente o que o pintor entende de luz — ou não entende."
-        </blockquote>
-        <p>Esses mini-cursos são a destilação do que levei anos para descobrir. Cada módulo é uma técnica que eu precisei resolver sozinho — e que você vai ter documentada do zero ao fim.</p>
-      </div>
-    </div>
-  </div>
-</section>
+            if (isDark) {
+                localStorage.setItem('theme', 'dark');
+                darkModeIcon.classList.remove('fa-sun', 'text-yellow-400');
+                darkModeIcon.classList.add('fa-moon', 'text-blue-300');
+            } else {
+                localStorage.setItem('theme', 'light');
+                darkModeIcon.classList.remove('fa-moon', 'text-blue-300');
+                darkModeIcon.classList.add('fa-sun', 'text-yellow-400');
+            }
+        });
 
-<!-- ── ÍNDICE DO PDF ── -->
-<section id="indice">
-  <div class="container">
-    <h2 class="display">O que está<br><em class="display-italic">dentro do PDF</em></h2>
-    <p class="indice-sub">35 páginas · Mais de 20 fotos do processo · Alta resolução</p>
-
-    <ul class="indice-lista">
-      <li>
-        <span class="indice-secao">Seção 1</span>
-        <span class="indice-titulo">O comportamento da luz no zinco — teoria visual</span>
-        <span class="indice-pags">3 págs.</span>
-      </li>
-      <li>
-        <span class="indice-secao">Seção 2</span>
-        <span class="indice-titulo">Materiais, misturas e preparação da referência</span>
-        <span class="indice-pags">2 págs.</span>
-      </li>
-      <li>
-        <span class="indice-secao">Seção 3</span>
-        <span class="indice-titulo">Construção base — esboço e primeiros valores</span>
-        <span class="indice-pags">5 págs.</span>
-      </li>
-      <li>
-        <span class="indice-secao">Seção 4</span>
-        <span class="indice-titulo">Desenvolvendo o reflexo — curva, plano, aro e alça</span>
-        <span class="indice-pags">8 págs.</span>
-      </li>
-      <li>
-        <span class="indice-secao">Seção 5</span>
-        <span class="indice-titulo">Ferrugem e envelhecimento — mistura, textura, integração</span>
-        <span class="indice-pags">5 págs.</span>
-      </li>
-      <li>
-        <span class="indice-secao">Seção 6</span>
-        <span class="indice-titulo">Acabamento e detalhes finais — o que separa níveis</span>
-        <span class="indice-pags">3 págs.</span>
-      </li>
-      <li>
-        <span class="indice-secao">Bônus</span>
-        <span class="indice-titulo">Lista de materiais com marcas e onde encontrar</span>
-        <span class="indice-pags">1 pág.</span>
-      </li>
-    </ul>
-  </div>
-</section>
-
-<!-- ── PARA QUEM É ── -->
-<section id="para-quem">
-  <div class="container">
-    <h2 class="display">Este módulo<br><em class="display-italic">é para você</em></h2>
-
-    <ul class="check-lista">
-      <li>
-        <span class="check-icon"></span>
-        <span>Você já pinta há algum tempo e quer dar um salto de qualidade no hiper realismo</span>
-      </li>
-      <li>
-        <span class="check-icon"></span>
-        <span>Tentou pintar metálicos antes e ficou insatisfeito com o resultado — parecia plástico, não metal</span>
-      </li>
-      <li>
-        <span class="check-icon"></span>
-        <span>Quer entender o porquê de cada decisão, não só copiar passos</span>
-      </li>
-      <li>
-        <span class="check-icon"></span>
-        <span>Trabalha com óleo ou acrílica e quer dominar superfícies complexas</span>
-      </li>
-      <li>
-        <span class="check-icon"></span>
-        <span>Prefere aprender no seu ritmo, com material que pode consultar sempre</span>
-      </li>
-    </ul>
-
-    <div class="nao-lista">
-      <h3>Não é para você se</h3>
-      <ul class="x-lista">
-        <li>Está começando agora e ainda não tem controle básico de pintura</li>
-        <li>Busca tutoriais rápidos sem aprofundamento técnico</li>
-        <li>Trabalha exclusivamente com aquarela ou técnicas digitais</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- ── CTA FINAL ── -->
-<section id="cta-final">
-  <div class="container">
-    <h2 class="display">Pronto para dominar<br><em class="display-italic">o metal?</em></h2>
-    <p>Um único pagamento. Acesso imediato. Sem mensalidade.</p>
-
-    <div class="cta-final-box">
-      <div class="cta-block">
-        <p class="cta-price">Acesso imediato · PDF completo</p>
-        <p class="cta-valor"><sup>R$</sup>67</p>
-        <p class="cta-desc">Pagamento único · Entregue por e-mail na hora</p>
-        <!-- Cole aqui o botão gerado pela Kiwify -->
-        <a href="SEU_LINK_KIWIFY_AQUI" class="btn-comprar">
-          Quero dominar metálicos
-        </a>
-        <p class="garantia">7 dias de garantia · Se não gostar, devolvemos tudo</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="metal-stripe"></div>
-
-<footer>
-  <div class="container">
-    <p>© 2025 Leo Barbosa · Todos os direitos reservados</p>
-    <p style="margin-top:6px;">Dúvidas? <a href="mailto:SEU_EMAIL_AQUI" style="color:var(--zinco); text-decoration:none;">SEU_EMAIL_AQUI</a></p>
-  </div>
-</footer>
-
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
 </body>
+
 </html>
