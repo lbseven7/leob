@@ -15,7 +15,7 @@ const obras = [
         categoria: "disponível",
         restante: 10,
         total: 10,
-        linkPayment: "https://www.asaas.com/c/p2g0km0bu46pecvw",
+        linkPayment: null,
         pt: {
             titulo: "Casa de Vaqueiro",
             tecnica: "Papel Algodão 100%",
@@ -47,24 +47,6 @@ const obras = [
     }
 ];
 
-// NOVO REPOSITÓRIO DE POSTS DO DIÁRIO DE ESTÚDIO
-const postsBlog = [
-    {
-        id: "casa-do-vaqueiro-post",
-        thumb: "images/casa-do-vaqueiro.jpg",
-        data: "Jun 2026",
-        pt: {
-            categoria: "Processo Criativo",
-            titulo: "A Luz Oculta na Casa de Vaqueiro",
-            descricao: "Um local que tem muitas coisas pra contar..."
-        },
-        en: {
-            categoria: "Creative Process",
-            titulo: "Many Families Live Here",
-            descricao: "A detailed analysis of using contrast and textures to recreate the atmosphere of the Bahian countryside on cotton paper."
-        }
-    }
-];
 const bastidores = [
     {
         imagem: "../images/leo-pintando-2.jpg", 
@@ -100,7 +82,6 @@ const eventos = [
 
 const galleryGrid = document.getElementById('gallery-grid');
 const eventsGrid = document.getElementById('events-grid');
-const blogGrid = document.getElementById('blog-grid');
 
 // Adicione este array no seu script.js
 const palestras = [
@@ -203,35 +184,6 @@ function renderGallery(filter = 'todos') {
     updateCursorEvents();
 }
 
-// RENDERIZAÇÃO DA NOVA SEÇÃO DO BLOG DE FORMA BILÍNGUE
-function renderBlog() {
-    if (!blogGrid) return;
-    blogGrid.innerHTML = '';
-
-    postsBlog.forEach(post => {
-        const content = post[currentLang];
-        const card = document.createElement('article');
-        card.className = 'fade-in group overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 transition-all hover:shadow-xl';
-
-        card.innerHTML = `
-                    <div class="relative aspect-[16/10] overflow-hidden bg-zinc-100 dark:bg-zinc-900">
-                        <img src="${post.thumb}" alt="${content.titulo}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                        <span class="absolute top-4 left-4 bg-black/75 text-white text-[9px] font-bold px-3 py-1 uppercase tracking-[0.2em]">${content.categoria}</span>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-[10px] uppercase tracking-[0.25em] text-brand-orange mb-2">${post.data}</p>
-                        <h3 class="text-xl font-medium mb-3 group-hover:text-brand-orange transition serif leading-tight">${content.titulo}</h3>
-                        <p class="text-sm text-gray-600 dark:text-zinc-400 leading-relaxed mb-4">${content.descricao}</p>
-                        <a href="../pages/blog/${post.id}" class="text-xs font-bold uppercase tracking-wider text-black dark:text-white hover:text-brand-orange dark:hover:text-brand-orange transition">
-                            ${currentLang === 'pt' ? 'Ler Artigo →' : 'Read Article →'}
-                        </a>
-                    </div>
-                `;
-        blogGrid.appendChild(card);
-        setTimeout(() => card.classList.add('visible'), 50);
-    });
-}
-
 function filterGallery(category) {
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
     const eventTarget = window.event ? window.event.currentTarget : null;
@@ -283,19 +235,12 @@ function openModal(obra) {
         }
         badge.className = obra.restante <= 3 ? 'inline-block px-2 py-1 bg-brand-orange text-white text-[10px] font-bold tracking-tighter mb-4 w-fit' : 'inline-block px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold tracking-tighter mb-4 w-fit';
 
-        if (obra.linkPayment) {
+        obra.linkPayment
             helper.innerText = currentLang === 'pt' ? 'Você será direcionado para uma página segura para iniciar sua reserva.' : 'You will be redirected to a secure checkout page to begin your order.';
-            btnPayment.innerText = currentLang === 'pt' ? 'Adquirir Obra' : 'Acquire Artwork';
-            btnPayment.href = `obrigado.html?paymentUrl=${encodeURIComponent(obra.linkPayment)}&titulo=${encodeURIComponent(content.titulo)}&img=${encodeURIComponent(obra.img)}`;
-            btnPayment.className = 'inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300 shadow-md';
-            btnPayment.removeAttribute('target');
-        } else {
-            helper.innerText = currentLang === 'pt' ? 'Fale comigo no WhatsApp para consultar disponibilidade e próximos passos.' : 'Contact me via WhatsApp to check availability and international shipping steps.';
             btnPayment.innerText = currentLang === 'pt' ? 'Verificar Disponibilidade' : 'Check Availability';
             btnPayment.href = `https://wa.me/5573991182932?text=${encodeURIComponent(disponibilidadeMsg)}`;
-            btnPayment.className = 'inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300';
+            btnPayment.className = 'inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300 shadow-md';
             btnPayment.setAttribute('target', '_blank');
-        }
     }
 
     const modal = document.getElementById('modal-overlay');
@@ -325,7 +270,6 @@ function changeLanguage(lang) {
 
         // Header & Nav
         document.getElementById('nav-catalogo').innerText = "Catalogue";
-        document.getElementById('nav-blog').innerText = "Studio Diary";
         document.getElementById('nav-eventos').innerText = "Events";
         document.getElementById('nav-sobre').innerText = "About";
 
@@ -335,9 +279,6 @@ function changeLanguage(lang) {
         document.getElementById('filter-all').innerText = "All";
         document.getElementById('filter-available').innerText = "Available";
         document.getElementById('filter-urgent').innerText = "Low Stock";
-
-        document.getElementById('blog-title').innerText = "Studio Diary";
-        document.getElementById('blog-subtitle').innerText = "Conceptual reflections, technical analyses, and the philosophy behind each monochromatic painting.";
 
         document.getElementById('events-heading').innerText = "Events & Records";
         document.getElementById('events-subtitle').innerText = "Short videos, posts, and snapshots of leob.'s journey in exhibitions, behind the scenes, and gatherings.";
@@ -354,7 +295,6 @@ function changeLanguage(lang) {
         document.getElementById('lang-en').className = 'text-zinc-400 hover:text-black dark:hover:text-white transition';
 
         document.getElementById('nav-catalogo').innerText = "Catálogo";
-        document.getElementById('nav-blog').innerText = "Diário de Estúdio";
         document.getElementById('nav-eventos').innerText = "Eventos";
         document.getElementById('nav-sobre').innerText = "Sobre";
 
@@ -363,9 +303,6 @@ function changeLanguage(lang) {
         document.getElementById('filter-all').innerText = "Todos";
         document.getElementById('filter-available').innerText = "Disponíveis";
         document.getElementById('filter-urgent').innerText = "Últimas Unidades";
-
-        document.getElementById('blog-title').innerText = "Diário de Estúdio";
-        document.getElementById('blog-subtitle').innerText = "Reflexões conceituais, análises técnicas e a filosofia por trás de cada pintura monocromática.";
 
         document.getElementById('events-heading').innerText = "Eventos & Registros";
         document.getElementById('events-subtitle').innerText = "Pequenos vídeos, posts e momentos da trajetória da leob. em exposições, bastidores e encontros.";
@@ -379,7 +316,6 @@ function changeLanguage(lang) {
     }
 
     renderGallery();
-    renderBlog();
 }
 
 // Custom Cursor
@@ -464,10 +400,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (document.getElementById('gallery-grid')) {
         renderGallery(); // Renderiza galeria apenas se o grid existir nesta página
-    }
-    
-    if (document.getElementById('blog-grid')) {
-        renderBlog();
     }
 });
 
