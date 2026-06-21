@@ -82,7 +82,7 @@
             width: 520px;
             height: 520px;
             object-fit: contain;
-            opacity: 0.05;
+            /* opacity: 0.1; */
             pointer-events: none;
             z-index: 0;
         }
@@ -199,7 +199,7 @@
         }
 
         .selo-img {
-            width: 110px;
+            width: 200px;
             height: auto;
             display: block;
             object-fit: contain;
@@ -288,22 +288,18 @@
     <div class="controles">
         <a href="index.html">← Voltar Galeria</a>
         <button class="btn-pdf" onclick="gerarPDF()">⬇ Baixar Certificado (PDF)</button>
+        <button class="btn-pdf" onclick="gerarPNG()" style="background:#1a1a1a;">⬇ Exportar PNG (p/
+            Verificação)</button>
     </div>
 
     <div class="certificado-wrapper">
         <div id="certificado-area">
-            <img src="../images/selo-transp.png" class="marca-dagua" alt="">
+            <!-- <img src="../images/selo-transp.png" class="marca-dagua" alt=""> -->
             <div class="col-esq">
                 <div class="logo">
                     <img src="../images/logo-white (1).png" alt="Logo">
                 </div>
-                <div class="dados-obra">
-                     <div class="secao-titulo">INFORMAÇÕES DA OBRA</div>
-                    ARTISTA: <span class="val">LEO BARBOSA</span><br>
-                    TÍTULO DA OBRA: <span id="d-titulo" class="val">A CASA DE VAQUEIRO</span><br>
-                    ANO DE EXECUÇÃO: <span id="d-ano" class="val">2026</span><br>
-                    NÚMERO DE SÉRIE: <span id="d-serie" class="val">CV_lb-2026-001</span>
-                </div>
+
                 <div class="secao-titulo">Descrição Técnica</div>
                 <div class="secao-corpo">
                     DIMENSÕES: <span id="d-dimensoes" class="val">29,7 X 42 CM</span><br>
@@ -333,7 +329,8 @@
             <div class="col-dir">
                 <div class="titulo-cert">Certificado de Autenticidade</div>
                 <p class="declaracao">
-                    Eu, <STRONG>LEO BARBOSA</STRONG>, artista autodidata, DECLARO que a obra supracitada é original e de minha autoria.
+                    Eu, <STRONG>LEO BARBOSA</STRONG>, artista autodidata, DECLARO que a obra supracitada é original e de
+                    minha autoria.
                     Este certificado atesta a qualidade dos materiais utilizados e a procedência da peça, garantindo sua
                     integridade para colecionadores e apreciadores de arte.
                     <br>
@@ -353,11 +350,45 @@
     </div>
 
     <script>
-        const obras = [
-            { id: 1, titulo: "A CASA DE VAQUEIRO", tecnica: "TINTA PIGMENTADA", suporte: "IMPRESSÃO EM PAPEL SMOOTH ULTRA", dimensoes: "29,7 X 42 CM", img: "../qrcode/CASA-DE-VAQUEIRO/qrcode_lb-2026-CV-001.png", serie: "01", ano: "2026" },
-            { id: 2, titulo: "ELA E SEU CAVALO", tecnica: "TINTA PIGMENTADA", suporte: "IMPRESSÃO EM PAPEL SMOOTH ULTRA", dimensoes: "29,7 X 42 CM", img: "../qrcode/ELA-E-SEU-CAVALO/qrcode_lb-2026-ESC-001.png", serie: "02", ano: "2026" },
-        ];
-        const obra = obras[0];
+        // ====== EDITE SÓ ISTO PARA CADA CERTIFICADO NOVO ======
+        const CONFIG = {
+            artistaSigla: "lb",        // sigla do artista (fixo)
+            obraSigla: "ESC",           // sigla da obra (você escolhe, ex: CV = Casa de Vaqueiro)
+            ano: 2026,                 // ano de execução/emissão
+            numero: 1,                 // número sequencial dessa obra (1, 2, 3...)
+
+            titulo: "ELA E SEU CAVALO",
+            dimensoes: "29,7 X 42 CM",
+            suporte: "IMPRESSÃO EM PAPEL SMOOTH ULTRA",
+            tecnica: "TINTA PIGMENTADA",
+
+            imagemObra: "../images/ela-e-seu-cavalo.jpeg",
+            qrcodeImg: "../qrcode/ELA-SEU-CAVALO/ESC_lb-2026-001.png"
+        };
+        // ====== NÃO PRECISA EDITAR DAQUI PRA BAIXO ======
+
+        function gerarCodigoSerie(cfg) {
+            const num = String(cfg.numero).padStart(3, '0');
+            return `${cfg.obraSigla}_${cfg.artistaSigla}-${cfg.ano}-${num}`;
+        }
+
+        function preencherCertificado(cfg) {
+            const codigo = gerarCodigoSerie(cfg);
+
+            document.getElementById('d-titulo').textContent = cfg.titulo;
+            document.getElementById('d-ano').textContent = cfg.ano;
+            document.getElementById('d-serie').textContent = codigo;
+            document.getElementById('d-dimensoes').textContent = cfg.dimensoes;
+            document.getElementById('d-suporte').textContent = cfg.suporte;
+            document.getElementById('d-tecnica').textContent = cfg.tecnica;
+
+            document.getElementById('obra-img').src = cfg.imagemObra;
+            document.getElementById('qrcode-img').src = cfg.qrcodeImg;
+
+            // guarda pro nome do PDF depois
+            window.__codigoCertificado = codigo;
+            window.__tituloObra = cfg.titulo;
+        }
 
         function ajustarEscala() {
             const wrapper = document.querySelector('.certificado-wrapper');
@@ -367,16 +398,13 @@
             wrapper.style.height = (750 * escala) + 'px';
         }
 
-        window.addEventListener('resize', ajustarEscala);
-        ajustarEscala();
-
         function gerarPDF() {
             const el = document.getElementById('certificado-area');
             el.style.transform = 'scale(1)';
 
             const opt = {
                 margin: 0,
-                filename: 'Certificado-' + obra.titulo + '.pdf',
+                filename: 'Certificado-' + window.__codigoCertificado + '.pdf',
                 image: { type: 'jpeg', quality: 1 },
                 html2canvas: { scale: 2, useCORS: true, logging: false, width: 1060, height: 750 },
                 jsPDF: { unit: 'px', format: [1060, 750], orientation: 'landscape' }
@@ -384,6 +412,10 @@
 
             html2pdf().set(opt).from(el).save().then(ajustarEscala);
         }
+
+        preencherCertificado(CONFIG);
+        window.addEventListener('resize', ajustarEscala);
+        ajustarEscala();
     </script>
     <!-- pegando data atual -->
     <script>
@@ -401,6 +433,45 @@
             document.getElementById("data-certificado").innerText =
                 `Itaquara, ${dia} de ${mes} de ${ano}.`;
         });
+    </script>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const tokenBruto = params.get('token');
+        const imgElement = document.getElementById('certificado-imagem');
+
+        function mostrarErro(mensagem) {
+            document.body.innerHTML = `
+            <h1 style="color:#c0392b; font-family:Montserrat,sans-serif; text-align:center; padding:40px 20px;">
+                ⚠ Erro: Certificado não encontrado.
+                <br>
+                <span style="font-size:16px; font-weight:normal; color:#555;">
+                    ${mensagem}<br>Por favor, tente escanear o QR Code novamente ou
+                    entre em contato com o artista.
+                </span>
+            </h1>`;
+        }
+
+        // valida formato esperado, ex: CV_lb-2026-001
+        const formatoValido = /^[A-Za-z]{2,6}_[a-z]{2,4}-\d{4}-\d{3}$/;
+
+        if (!tokenBruto) {
+            mostrarErro("Nenhum código de certificado foi informado na URL.");
+        } else if (!formatoValido.test(tokenBruto)) {
+            mostrarErro("O código informado está em um formato inválido.");
+        } else {
+            // sanitiza: só permite letras, números, hífen e underscore
+            const token = tokenBruto.replace(/[^A-Za-z0-9_-]/g, '');
+
+            imgElement.src = `../images/certificados/${token}.png`;
+            imgElement.alt = `Certificado Autêntico - Obra ${token}`;
+            document.title = `Certificado - Obra ${token} | Léo Barbosa`;
+
+            // se a imagem não existir no servidor, cai aqui
+            imgElement.onerror = function () {
+                mostrarErro("Não localizamos esse certificado em nossa base.");
+            };
+        }
     </script>
 </body>
 
