@@ -11,7 +11,7 @@ function toggleTheme() {
 const obras = [
     {
         id: 1,
-        token: "CV_lb-2026-001",
+        token: "CV_lb-2026-?",
         img: "images/casa-do-vaqueiro.jpg",
         categoria: "disponível",
         restante: 30,
@@ -30,7 +30,7 @@ const obras = [
     },
     {
         id: 2,
-        token: "ESC_lb-2026-001",
+        token: "ESC_lb-2026-?",
         img: "images/ela-e-seu-cavalo.jpg",
         categoria: "disponível",
         restante: 30,
