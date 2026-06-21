@@ -331,8 +331,8 @@
                 <div class="rodape-esq">
                     <div>
                         <div class="qr-label">Verificar Certificado</div>
-                        <img id="qrcode-img" src="../images/qrcode_lb-2026-001.png" alt="QR">
-                        <p class="token">lb-2026-001</p>
+                        <img id="qrcode-img" src="../qrcode/CASA-DE-VAQUEIRO/CV_lb-2026-001.png" alt="QR">
+                        <p class="token">CV_lb-2026-001</p>
                     </div>
                     <div class="selo">
                         <img src="../images/Gemini_Generated_Image_8w91vi8w91vi8w91-remove-bg-io.png" class="selo-img"
@@ -359,7 +359,8 @@
 
     <script>
         const obras = [
-            { id: 1, titulo: "A CASA DE VAQUEIRO", tecnica: "TINTA PIGMENTADA", suporte: "IMPRESSÃO EM PAPEL SMOOTH ULTRA", dimensoes: "29,7 X 42 CM", img: "../images/certificado.jpeg", serie: "01", ano: "2024" }
+            { id: 1, titulo: "A CASA DE VAQUEIRO", tecnica: "TINTA PIGMENTADA", suporte: "IMPRESSÃO EM PAPEL SMOOTH ULTRA", dimensoes: "29,7 X 42 CM", img: "../qrcode/CASA-DE-VAQUEIRO/qrcode_lb-2026-CV-001.png", serie: "01", ano: "2026" },
+            { id: 2, titulo: "ELA E SEU CAVALO", tecnica: "TINTA PIGMENTADA", suporte: "IMPRESSÃO EM PAPEL SMOOTH ULTRA", dimensoes: "29,7 X 42 CM", img: "../qrcode/ELA-E-SEU-CAVALO/qrcode_lb-2026-ESC-001.png", serie: "02", ano: "2026" },
         ];
         const obra = obras[0];
 
@@ -389,7 +390,7 @@
             html2pdf().set(opt).from(el).save().then(ajustarEscala);
         }
     </script>
-
+    <!-- pegando data atual -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const meses = [
