@@ -11,6 +11,7 @@ function toggleTheme() {
 const obras = [
     {
         id: 1,
+        token: "CV_lb-2026-001",
         img: "images/casa-do-vaqueiro.jpg",
         categoria: "disponível",
         restante: 30,
@@ -29,6 +30,7 @@ const obras = [
     },
     {
         id: 2,
+        token: "ESC_lb-2026-001",
         img: "images/ela-e-seu-cavalo.jpg",
         categoria: "disponível",
         restante: 30,
@@ -49,7 +51,7 @@ const obras = [
 
 const bastidores = [
     {
-        imagem: "../images/leo-pintando-2.jpg", 
+        imagem: "../images/leo-pintando-2.jpg",
         tipo: "Bastidores",
         titulo: "Pintando 'Farinha'.",
         data: "Jun 2026"
@@ -212,8 +214,8 @@ function openModal(obra) {
     const btnPayment = document.getElementById('payment-link');
     const helper = document.getElementById('payment-helper');
 
-    const msgPT = `Olá Leo! Gostaria de consultar a disponibilidade da obra "${content.titulo}".`;
-    const msgEN = `Hello Leo! I would like to inquire about the availability of the artwork "${content.titulo}".`;
+    const msgPT = `Olá Leo! Gostaria de consultar a disponibilidade da obra "${content.titulo}", com o token ${obra.token}.`;
+    const msgEN = `Hello Leo! I would like to inquire about the availability of the artwork "${content.titulo}", with the token ${obra.token}.`;
     const disponibilidadeMsg = currentLang === 'pt' ? msgPT : msgEN;
 
     btnPayment.style.pointerEvents = 'auto';
@@ -236,11 +238,11 @@ function openModal(obra) {
         badge.className = obra.restante <= 3 ? 'inline-block px-2 py-1 bg-brand-orange text-white text-[10px] font-bold tracking-tighter mb-4 w-fit' : 'inline-block px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold tracking-tighter mb-4 w-fit';
 
         obra.linkPayment
-            helper.innerText = currentLang === 'pt' ? 'Você será direcionado para uma página segura para iniciar sua reserva.' : 'You will be redirected to a secure checkout page to begin your order.';
-            btnPayment.innerText = currentLang === 'pt' ? 'Verificar Disponibilidade' : 'Check Availability';
-            btnPayment.href = `https://wa.me/5573991182932?text=${encodeURIComponent(disponibilidadeMsg)}`;
-            btnPayment.className = 'inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300 shadow-md';
-            btnPayment.setAttribute('target', '_blank');
+        helper.innerText = currentLang === 'pt' ? 'Você será direcionado para uma página segura para iniciar sua reserva.' : 'You will be redirected to a secure checkout page to begin your order.';
+        btnPayment.innerText = currentLang === 'pt' ? 'Verificar Disponibilidade' : 'Check Availability';
+        btnPayment.href = `https://wa.me/5573991182932?text=${encodeURIComponent(disponibilidadeMsg)}`;
+        btnPayment.className = 'inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300 shadow-md';
+        btnPayment.setAttribute('target', '_blank');
     }
 
     const modal = document.getElementById('modal-overlay');
@@ -393,11 +395,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. Renderização Inteligente baseada na página atual
     // Verifica a existência do elemento no DOM antes de executar a função
-    
+
     if (document.getElementById('events-grid')) {
         renderEvents();
     }
-    
+
     if (document.getElementById('gallery-grid')) {
         renderGallery(); // Renderiza galeria apenas se o grid existir nesta página
     }
