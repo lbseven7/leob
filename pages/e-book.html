@@ -49,7 +49,7 @@
         <section class="text-center mb-24">
             <div
                 class="inline-block px-4 py-1 bg-neutral-100 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-800 rounded-full text-sm text-neutral-600 dark:text-neutral-400 mb-6">
-                <i class="fas fa-fire text-brand-orange mr-2"></i>Vagas abertas para a turma atual
+                <i class="fas fa-fire text-brand-orange mr-2"></i>Vagas abrem em breve
             </div>
             <h1 class="text-4xl md:text-6xl font-light tracking-wide text-black dark:text-white leading-tight mb-4">
                 Técnicas de Pintura Hiper Realista — com <strong class="text-brand-orange">Leo Barbosa</strong>
@@ -62,14 +62,56 @@
                 que vou usar para te mostrar exatamente como ler e reproduzir essa luz, do zero ao olho treinado.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#cta"
+                <a href="#lista-espera"
                     class="inline-block bg-black dark:bg-white text-white dark:text-black px-10 py-5 uppercase tracking-[0.2em] text-sm hover:bg-neutral-800 dark:hover:bg-neutral-200 transition font-medium">
-                    Quero Começar Agora
+                    Quero Ser Avisado
                 </a>
                 <a href="#sobre"
                     class="inline-block border border-neutral-400 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 px-10 py-5 uppercase tracking-[0.2em] text-sm hover:border-neutral-600 dark:hover:border-neutral-500 transition">
                     Entenda o Método
                 </a>
+            </div>
+        </section>
+
+        <!-- Lista de Espera (pré-lançamento) -->
+        <!-- AJUSTE: troque o número de WhatsApp pelo seu (formato 5599999999999, com DDI 55) -->
+        <section id="lista-espera" class="mb-24">
+            <div class="max-w-2xl mx-auto bg-white dark:bg-neutral-900 border border-brand-orange/30 p-8 md:p-12 rounded-lg text-center">
+                <div class="inline-block px-4 py-1 bg-brand-orange/10 border border-brand-orange/30 rounded-full text-sm text-brand-orange mb-6">
+                    Vagas abrem em breve
+                </div>
+                <h2 class="text-2xl md:text-3xl font-light text-black dark:text-white mb-4">Entre na lista de espera</h2>
+                <p class="text-neutral-600 dark:text-neutral-400 mb-8 leading-relaxed">
+                    As vagas ainda não abriram. Deixe seu contato e você será avisado primeiro, antes de qualquer
+                    anúncio público — com prioridade na janela de lançamento.
+                </p>
+
+                <!-- Captura por e-mail via Formspree -->
+                <form action="https://formspree.io/f/xvzjpjjw" method="POST" class="flex flex-col sm:flex-row gap-3 mb-6">
+                    <input type="email" name="email" required placeholder="Seu melhor e-mail"
+                        class="flex-1 px-5 py-4 rounded-md bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-black dark:text-white placeholder-neutral-500 focus:outline-none focus:border-brand-orange transition">
+                    <button type="submit"
+                        class="bg-black dark:bg-white text-white dark:text-black px-8 py-4 uppercase tracking-[0.15em] text-sm hover:bg-neutral-800 dark:hover:bg-neutral-200 transition font-medium whitespace-nowrap">
+                        Quero ser avisado
+                    </button>
+                </form>
+
+                <div class="flex items-center gap-3 my-6">
+                    <div class="flex-1 h-px bg-neutral-200 dark:bg-neutral-800"></div>
+                    <span class="text-xs text-neutral-400 uppercase tracking-widest">ou</span>
+                    <div class="flex-1 h-px bg-neutral-200 dark:bg-neutral-800"></div>
+                </div>
+
+                <!-- Captura via WhatsApp (click-to-chat, sem nenhuma ferramenta externa) -->
+                <a href="https://wa.me/5573991182932?text=Oi%20Leo!%20Quero%20entrar%20na%20lista%20de%20espera%20do%20m%C3%A9todo%20de%20pintura%20hiper%20realista"
+                   target="_blank"
+                   class="inline-flex items-center gap-2 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 px-8 py-4 uppercase tracking-[0.15em] text-sm hover:border-brand-orange hover:text-brand-orange transition">
+                    <i class="fa-brands fa-whatsapp"></i> Avisar pelo WhatsApp
+                </a>
+
+                <p class="text-neutral-400 dark:text-neutral-500 text-xs mt-6">
+                    Sem spam. Você só recebe novidades sobre o lançamento.
+                </p>
             </div>
         </section>
 
