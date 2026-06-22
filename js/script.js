@@ -1,4 +1,3 @@
-
 // GERENCIAMENTO DE IDIOMA GLOBAL
 let currentLang = localStorage.getItem('lang') || 'pt';
 
@@ -149,10 +148,9 @@ function openModal(obra) {
         }
         badge.className = obra.restante <= 3 ? 'inline-block px-2 py-1 bg-brand-orange text-white text-[10px] font-bold tracking-tighter mb-4 w-fit' : 'inline-block px-2 py-1 bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold tracking-tighter mb-4 w-fit';
 
-        obra.linkPayment
         helper.innerText = currentLang === 'pt' ? 'Você será direcionado para uma página segura para iniciar sua reserva.' : 'You will be redirected to a secure checkout page to begin your order.';
         btnPayment.innerText = currentLang === 'pt' ? 'Verificar Disponibilidade' : 'Check Availability';
-        btnPayment.href = `https://wa.me/5573991182932?text=${encodeURIComponent(disponibilidadeMsg)}`;
+        btnPayment.href = `https://wa.me/5573988279832?text=${encodeURIComponent(disponibilidadeMsg)}`;
         btnPayment.className = 'inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300 shadow-md';
         btnPayment.setAttribute('target', '_blank');
     }
@@ -184,17 +182,15 @@ function changeLanguage(lang) {
 
         // Header & Nav
         document.getElementById('nav-catalogo').innerText = "Catalogue";
-        document.getElementById('nav-eventos').innerText = "Events";
+        const navEventosEl = document.getElementById('nav-eventos');
+        if (navEventosEl) navEventosEl.innerText = "Events";
         document.getElementById('nav-sobre').innerText = "About";
 
         // Elementos da página
-        // document.getElementById('inspiration-title').innerText = "The Artist's Inspiration";
         document.getElementById('catalog-heading').innerText = "Fine Art Limited Series";
         document.getElementById('filter-all').innerText = "All";
         document.getElementById('filter-available').innerText = "Available";
         document.getElementById('filter-urgent').innerText = "Low Stock";
-
-
 
         const aboutHeadingEl = document.getElementById('about-heading');
         const aboutTextEl = document.getElementById('about-text');
@@ -210,21 +206,19 @@ function changeLanguage(lang) {
         document.getElementById('lang-en').className = 'text-zinc-400 hover:text-black dark:hover:text-white transition';
 
         document.getElementById('nav-catalogo').innerText = "Catálogo";
-        document.getElementById('nav-eventos').innerText = "Eventos";
+        const navEventosElPt = document.getElementById('nav-eventos');
+        if (navEventosElPt) navEventosElPt.innerText = "Eventos";
         document.getElementById('nav-sobre').innerText = "Sobre";
 
-        // document.getElementById('inspiration-title').innerText = "A Inspiração do Artista";
         document.getElementById('catalog-heading').innerText = "Séries Limitadas Fine Art";
         document.getElementById('filter-all').innerText = "Todos";
         document.getElementById('filter-available').innerText = "Disponíveis";
         document.getElementById('filter-urgent').innerText = "Últimas Unidades";
 
-
-
         const aboutHeadingElPt = document.getElementById('about-heading');
         const aboutTextElPt = document.getElementById('about-text');
         if (aboutHeadingElPt) aboutHeadingElPt.innerText = "Sobre o Artista";
-        if (aboutTextElPt) aboutTextElPt.innerHTML = "Nascido em Jequié e forjado pelas ruas de São Paulo, minha jornada artística começou com um simples desenho de figurinhas de bala nos anos 90. Entre o grafite da metrópole e a calmaria do campo em Jaguaquara, aprendi que a arte é a tradução da alma. Com 20 anos de experiência, hoje utilizo o hiper-realismo para capturar mais do que imagens: capturo histórias, luzes e memórias rurais. Como artista, designer e desenvolvedor web, uno o rigor técnico à emoção, acreditando que uma casa à beira da estrada tem tanto a dizer quanto a paisagem que a envolve. Meu objetivo é simples: levar paz e reflexão a quem observa o que meus pincéis puderam registrar."
+        if (aboutTextElPt) aboutTextElPt.innerHTML = "Nascido em Jequié e forjado pelas ruas de São Paulo, minha jornada artística começou com um simples desenho de figurinhas de bala nos anos 90. Entre o grafite da metrópole e a calmaria do campo em Jaguaquara, aprendi que a arte é a tradução da alma. Com 20 anos de experiência, hoje utilizo o hiper-realismo para capturar mais do que imagens: capturo histórias, luzes e memórias rurais. Como artista, designer e desenvolvedor web, uno o rigor técnico à emoção, acreditando que uma casa à beira da estrada tem tanto a dizer quanto a paisagem que a envolve. Meu objetivo é simples: levar paz e reflexão a quem observa o que meus pincéis puderam registrar.";
 
         document.getElementById('modal-label-support').innerText = "Suporte";
         document.getElementById('modal-label-dimensions').innerText = "Dimensões";
@@ -267,31 +261,6 @@ function updateProgressBar() {
     const progressBar = document.getElementById('progress-bar');
     if (progressBar) progressBar.style.width = `${progress}%`;
 
-    const heroSection = document.querySelector('section.hero-height');
-    const heroHeight = heroSection ? heroSection.offsetHeight : window.innerHeight * 0.7;
-    const headerLogo = document.getElementById('header-logo');
-
-    if (headerLogo) {
-        if (scrollTop >= (heroHeight - 80)) {
-            headerLogo.classList.remove('opacity-0', 'pointer-events-none');
-            headerLogo.classList.add('opacity-100');
-        } else {
-            headerLogo.classList.remove('opacity-100');
-            headerLogo.classList.add('opacity-0', 'pointer-events-none');
-        }
-    }
-
-    document.querySelector('header')?.classList.toggle('scrolled', scrollTop > 24);
-}
-
-function updateProgressBar() {
-    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
-
-    const progressBar = document.getElementById('progress-bar');
-    if (progressBar) progressBar.style.width = `${progress}%`;
-
     const headerLogo = document.getElementById('header-logo');
     if (headerLogo) {
         if (scrollTop >= 80) {
@@ -318,12 +287,6 @@ mainNav?.querySelectorAll('a').forEach(link => {
 if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
     document.documentElement.classList.add('dark');
 }
-
-// CARREGAMENTO INICIAL DA APLICAÇÃO
-// document.addEventListener('DOMContentLoaded', () => {
-//     changeLanguage(currentLang);
-//     renderEvents();
-// });
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Aplica o idioma inicial
