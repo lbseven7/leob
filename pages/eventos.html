@@ -1,59 +1,95 @@
 <!DOCTYPE html>
 <html lang="pt-br" class="dark">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eventos do Artista</title>
+    <title>Galeria | Leo Barbosa</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brand: { orange: '#d88800' } },
+                    fontFamily: {
+                        display: ['Playfair Display', 'serif'],
+                        sans: ['Comfortaa', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="stylesheet" href="css/barra-progresso.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
 </head>
 
-<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
-
-    <header
-        class="fixed w-full top-0 z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
-        <nav class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <a href="../index.html"
-                class="text-xl font-bold uppercase tracking-widest hover:text-orange-500 transition">
-                <img id="header-logo" src="../images/logo-black3-sbg.png" alt="Logo"
-                    class="max-w-[132px] sm:max-w-[140px] h-auto opacity-0  duration-300">
+<body class="bg-white dark:bg-black text-zinc-800 dark:text-zinc-100 antialiased transition-colors duration-300">
+    <header class="fixed w-full top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="../index.html" class="text-xl font-bold uppercase tracking-widest hover:text-brand-orange transition">
+                <img src="../images/logo-black3-sbg.png" alt="Logo" class="max-w-[132px] sm:max-w-[140px] h-auto">
             </a>
-            <ul class="flex items-center gap-8 text-[12px] uppercase tracking-[0.2em]">
-                <li><a href="../index.html" class="hover:text-orange-500 transition">Voltar</a></li>
-                <li><a href="../index.html#catalogo" class="hover:text-orange-500 transition">Catálogo</a></li>
-                <li><a href="../pages/eventos.html" class="text-orange-500 font-bold">Eventos</a></li>
-            </ul>
-        </nav>
+            <div class="flex items-center gap-6">
+                <nav class="hidden md:flex items-center gap-6 text-[12px] uppercase tracking-[0.2em]">
+                    <a href="../index.html" class="hover:text-brand-orange transition">Início</a>
+                    <a href="../index.html#catalogo" class="hover:text-brand-orange transition">Catálogo</a>
+                    <a href="../pages/eventos.html" class="hover:text-brand-orange transition">Eventos</a>
+                    <a href="../pages/galeria.html" class="text-brand-orange font-bold">Galeria</a>
+                    <a href="../pages/sobre.html" class="hover:text-brand-orange transition">Sobre</a>
+                </nav>
+                <button id="darkModeToggle" class="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
+                    <i id="darkModeIcon" class="fas fa-sun text-yellow-500"></i>
+                </button>
+            </div>
+        </div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-6 pt-32 pb-20">
+    <main class="max-w-5xl mx-auto px-6 pt-32 pb-20">
+        <section class="text-center mb-16">
+            <div class="inline-block px-4 py-1 bg-brand-orange/10 border border-brand-orange/30 rounded-full text-sm text-brand-orange mb-6 uppercase tracking-widest">
+                <i class="fas fa-images mr-2"></i>Bastidores e Mais
+            </div>
+            <h1 class="text-4xl md:text-5xl font-light mb-6">Galeria de Fotos</h1>
+            <p class="text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
+                Momentos capturados durante o processo criativo, eventos e bastidores do ateliê.
+            </p>
+        </section>
 
-        <div id="container-fotos" class="flex flex-col gap-16"></div>
-
- <script src="../js/script.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const container = document.getElementById('container-fotos');
-        
-        // Agora usamos o array 'palestras' que criamos no script.js
-        if (container && typeof palestras !== 'undefined') {
-            container.innerHTML = palestras.map(item => `
-                <article class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
-                    <div class="w-full">
-                        <img src="${item.imagem}" alt="${item.titulo}" class="w-full h-auto object-contain">
-                        <span class="inline-block mt-4 bg-zinc-100 dark:bg-zinc-800 text-[10px] px-3 py-1 uppercase tracking-[0.25em]">${item.tipo}</span>
-                    </div>
-                  
-                </article>
-            `).join('');
-        }
-    });
-</script>
+        <div id="container-fotos" class="grid md:grid-cols-2 gap-10"></div>
     </main>
 
-</body>
+    <footer class="border-t border-zinc-200 dark:border-zinc-800 py-12 opacity-60">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
+            <p class="text-sm">&copy; 2026 Leo Barbosa</p>
+            <div class="flex items-center gap-6 text-xl md:ml-auto">
+                <a href="https://wa.me/5573988279832" target="_blank" aria-label="WhatsApp" class="hover:text-brand-orange transition"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="https://www.instagram.com/leob_pinturas/" target="_blank" aria-label="Instagram" class="hover:text-brand-orange transition"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.youtube.com/@leobarbosa-art-studio" target="_blank" aria-label="YouTube" class="hover:text-brand-orange transition"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
 
+    <script src="../js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('container-fotos');
+            if (container && typeof bastidores !== 'undefined') {
+                container.innerHTML = bastidores.map(item => `
+                    <article class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl">
+                        <div class="aspect-video overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                            <img src="${item.imagem}" alt="${item.titulo}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105">
+                        </div>
+                        <div class="p-6">
+                            <span class="inline-block mb-3 bg-zinc-100 dark:bg-zinc-800 text-[10px] px-3 py-1 uppercase tracking-[0.25em] text-brand-orange font-medium">${item.tipo}</span>
+                            <h3 class="text-xl font-medium mb-3">${item.titulo}</h3>
+                            <div class="pt-4 border-t border-zinc-200 dark:border-zinc-800">
+                                <span class="text-xs text-zinc-500"><i class="fas fa-calendar mr-1"></i>${item.data}</span>
+                            </div>
+                        </div>
+                    </article>
+                `).join('');
+            }
+        });
+    </script>
+</body>
 </html>

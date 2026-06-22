@@ -48,6 +48,98 @@ const obras = [
 
 const galleryGrid = document.getElementById('gallery-grid');
 
+// Array de eventos
+const eventos = [
+    {
+        tipo: "Palestras",
+        titulo: "Colégio Monteiro Lobato",
+        descricao: "Falar sobre arte é sempre muito bom! Compartilhei minha experiência e técnicas com os alunos.",
+        data: "Nov 2025",
+        thumb: "../images/ccvolpe-foto.jpg",
+        link: "galeria.html"
+    },
+    {
+        tipo: "Fotos do Artista",
+        titulo: "Processo Criativo e Bastidores",
+        descricao: "Um olhar por trás das telas: momentos de criação, preparação e inspiração no ateliê.",
+        data: "Mar 2026",
+        thumb: "../images/leo-cavalete.jpg",
+        link: "galeria.html"
+    }
+];
+
+// Array de palestras/galeria
+const palestras = [
+    {
+        titulo: "Colégio Monteiro Lobato",
+        descricao: "Falar sobre arte é sempre muito bom!",
+        data: "Nov 2025",
+        imagem: "../images/monteiro-lobato-turma.JPG",
+        tipo: "Palestras"
+    },
+    {
+        titulo: "Colégio Monteiro Lobato",
+        descricao: "Falar sobre arte é sempre muito bom!",
+        data: "Nov 2025",
+        imagem: "../images/monteiro-lobato-leo-tela2.JPG",
+        tipo: "Palestras"
+    }
+];
+
+// Array de bastidores (para a página galeria)
+const bastidores = [
+    {
+        imagem: "../images/leo-pintando-2.jpg",
+        tipo: "Bastidores",
+        titulo: "Pintando 'Farinha'",
+        data: "Jun 2026"
+    },
+    {
+        imagem: "../images/registrando.jpg",
+        tipo: "Bastidores",
+        titulo: "Momentos e Modelos",
+        data: "Jun 2026"
+    },
+    {
+        imagem: "../images/em-baixo-do-pau-brasil.jpg",
+        tipo: "Bastidores",
+        titulo: "À Sombra do Pau Brasil",
+        data: "Jun 2026"
+    },
+    {
+        imagem: "../images/cavalo-cinza.jpg",
+        tipo: "Bastidores",
+        titulo: "Baruque em Destaque",
+        data: "Mai 2026"
+    }
+];
+
+// Dark Mode Toggle (compatível com todas as páginas)
+const darkModeToggle = document.getElementById('darkModeToggle');
+const darkModeIcon = document.getElementById('darkModeIcon');
+if (darkModeToggle) {
+    darkModeToggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        const isDark = document.documentElement.classList.contains('dark');
+        if (darkModeIcon) {
+            darkModeIcon.className = isDark ? 'fas fa-moon text-blue-300' : 'fas fa-sun text-yellow-500';
+        }
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+}
+
+// Aplicar tema salvo
+if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+    if (darkModeIcon) {
+        darkModeIcon.className = 'fas fa-moon text-blue-300';
+    }
+} else {
+    if (darkModeIcon) {
+        darkModeIcon.className = 'fas fa-sun text-yellow-500';
+    }
+}
+
 function renderGallery(filter = 'todos') {
     if (!galleryGrid) return;
     galleryGrid.innerHTML = '';
@@ -283,10 +375,6 @@ mobileMenuBtn?.addEventListener('click', () => mainNav.classList.toggle('hidden'
 mainNav?.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', () => mainNav.classList.add('hidden'));
 });
-
-if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.documentElement.classList.add('dark');
-}
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Aplica o idioma inicial
