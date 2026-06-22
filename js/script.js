@@ -47,93 +47,7 @@ const obras = [
     }
 ];
 
-const bastidores = [
-    {
-        imagem: "../images/leo-pintando-2.jpg",
-        tipo: "Bastidores",
-        titulo: "Pintando 'Farinha'.",
-        data: "Jun 2026"
-    },
-    {
-        imagem: "../images/registrando.jpg",
-        tipo: "Bastidores",
-        titulo: "Momentos e Modelos.",
-        data: "Jun 2026"
-    },
-    {
-        imagem: "../images/em-baixo-do-pau-brasil.jpg",
-        tipo: "Bastidores",
-        titulo: "À Sombra do Pau Brasil.",
-        data: "Jun 2026"
-    },
-    {
-        imagem: "../images/cavalo-cinza.jpg",
-        tipo: "Bastidores",
-        titulo: "Baruque em Destaque.",
-        data: "Mai 2026"
-    }
-];
-
-const eventos = [
-    // { tipo: "Vídeo", titulo: "Cláudio Colavolpe Photo Art", descricao: "Registro em vídeo da visita ao espaço e da experiência no local.", data: "Mai 2026", thumb: "images/ccvolpe.jpg", video: null },
-    { tipo: "Palestras", titulo: "Colégio Monteiro Lobato", descricao: "Falar sobre arte é sempre muito bom!", data: "Nov 2025", thumb: "images/ccvolpe-foto.jpg", link: "/pages/eventos.html" },
-    { tipo: "Fotos do Artista", titulo: "Fotos do Artista", descricao: "Processo Criativo e Bastidores.", data: "Mar 2026", thumb: "./images/leo-cavalete.jpg", link: "/pages/galeria.html" }
-];
-
 const galleryGrid = document.getElementById('gallery-grid');
-const eventsGrid = document.getElementById('events-grid');
-
-// Adicione este array no seu script.js
-const palestras = [
-    {
-        titulo: "Colégio Monteiro Lobato",
-        descricao: "Falar sobre arte é sempre muito bom!",
-        data: "Nov 2025",
-        imagem: "../images/monteiro-lobato-turma.JPG",
-        tipo: "Palestras"
-    },
-    {
-        titulo: "Colégio Monteiro Lobato",
-        descricao: "Falar sobre arte é sempre muito bom!",
-        data: "Nov 2025",
-        imagem: "../images/monteiro-lobato-leo-tela2.JPG",
-        tipo: "Palestras"
-    },
-    // Adicione mais palestras aqui conforme necessário
-];
-
-function renderEvents() {
-    if (!eventsGrid) return;
-    eventsGrid.innerHTML = '';
-    eventos.forEach(evento => {
-        const item = document.createElement('article');
-        item.className = 'fade-in group overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950';
-        const media = evento.video
-            ? `<div class="relative aspect-video overflow-hidden bg-zinc-100 dark:bg-zinc-900">
-                            <video class="w-full h-full object-cover" controls preload="metadata" playsinline poster="${evento.thumb}">
-                                <source src="${evento.video}" type="video/mp4">
-                                Seu navegador não suporta vídeo.
-                            </video>
-                            <span class="absolute top-4 left-4 bg-black/75 text-white text-[10px] px-3 py-1 uppercase tracking-[0.2em] pointer-events-none">${evento.tipo}</span>
-                       </div>`
-            : `<a href="${evento.link}" class="block">
-                            <div class="relative aspect-video overflow-hidden bg-zinc-100 dark:bg-zinc-900">
-                                <img src="${evento.thumb}" alt="${evento.titulo}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                                <span class="absolute top-4 left-4 bg-black/75 text-white text-[10px] px-3 py-1 uppercase tracking-[0.2em]">${evento.tipo}</span>
-                            </div>
-                       </a>`;
-        item.innerHTML = `
-                    ${media}
-                    <div class="p-5 sm:p-6">
-                        <p class="text-[10px] uppercase tracking-[0.25em] text-brand-orange mb-3">${evento.data}</p>
-                        <h3 class="text-lg font-medium mb-3 group-hover:text-brand-orange transition">${evento.titulo}</h3>
-                        <p class="text-sm text-gray-600 dark:text-zinc-400 leading-relaxed">${evento.descricao}</p>
-                    </div>`;
-        eventsGrid.appendChild(item);
-        setTimeout(() => item.classList.add('visible'), 50);
-    });
-    updateCursorEvents();
-}
 
 function renderGallery(filter = 'todos') {
     if (!galleryGrid) return;
@@ -280,11 +194,12 @@ function changeLanguage(lang) {
         document.getElementById('filter-available').innerText = "Available";
         document.getElementById('filter-urgent').innerText = "Low Stock";
 
-        document.getElementById('events-heading').innerText = "Events & Records";
-        document.getElementById('events-subtitle').innerText = "Short videos, posts, and snapshots of Leo Barbosa's journey in exhibitions, behind the scenes, and gatherings.";
 
-        document.getElementById('about-heading').innerText = "About the Artist";
-        document.getElementById('about-text').innerHTML = "Born in Jequié and forged by the streets of São Paulo, my artistic journey began with a simple drawing of candy wrapper stickers in the 90s. Between the graffiti of the metropolis and the tranquility of the countryside in Jaguaquara, I learned that art is the translation of the soul. With 20 years of experience, today I use hyperrealism to capture more than images: I capture stories, lights, and rural memories. As an artist, designer, and web developer, I combine technical rigor with emotion, believing that a house by the roadside has as much to say as the landscape that surrounds it. My goal is simple: to bring peace and reflection to those who observe what my brushes have been able to record.";
+
+        const aboutHeadingEl = document.getElementById('about-heading');
+        const aboutTextEl = document.getElementById('about-text');
+        if (aboutHeadingEl) aboutHeadingEl.innerText = "About the Artist";
+        if (aboutTextEl) aboutTextEl.innerHTML = "Born in Jequié and forged by the streets of São Paulo, my artistic journey began with a simple drawing of candy wrapper stickers in the 90s. Between the graffiti of the metropolis and the tranquility of the countryside in Jaguaquara, I learned that art is the translation of the soul. With 20 years of experience, today I use hyperrealism to capture more than images: I capture stories, lights, and rural memories. As an artist, designer, and web developer, I combine technical rigor with emotion, believing that a house by the roadside has as much to say as the landscape that surrounds it. My goal is simple: to bring peace and reflection to those who observe what my brushes have been able to record.";
 
         // Modals
         document.getElementById('modal-label-support').innerText = "Support";
@@ -304,11 +219,12 @@ function changeLanguage(lang) {
         document.getElementById('filter-available').innerText = "Disponíveis";
         document.getElementById('filter-urgent').innerText = "Últimas Unidades";
 
-        document.getElementById('events-heading').innerText = "Eventos & Registros";
-        document.getElementById('events-subtitle').innerText = "Pequenos vídeos, posts e momentos da trajetória de Leo Barbosa em exposições, bastidores e encontros.";
 
-        document.getElementById('about-heading').innerText = "Sobre o Artista";
-        document.getElementById('about-text').innerHTML = "Nascido em Jequié e forjado pelas ruas de São Paulo, minha jornada artística começou com um simples desenho de figurinhas de bala nos anos 90. Entre o grafite da metrópole e a calmaria do campo em Jaguaquara, aprendi que a arte é a tradução da alma. Com 20 anos de experiência, hoje utilizo o hiper-realismo para capturar mais do que imagens: capturo histórias, luzes e memórias rurais. Como artista, designer e desenvolvedor web, uno o rigor técnico à emoção, acreditando que uma casa à beira da estrada tem tanto a dizer quanto a paisagem que a envolve. Meu objetivo é simples: levar paz e reflexão a quem observa o que meus pincéis puderam registrar."
+
+        const aboutHeadingElPt = document.getElementById('about-heading');
+        const aboutTextElPt = document.getElementById('about-text');
+        if (aboutHeadingElPt) aboutHeadingElPt.innerText = "Sobre o Artista";
+        if (aboutTextElPt) aboutTextElPt.innerHTML = "Nascido em Jequié e forjado pelas ruas de São Paulo, minha jornada artística começou com um simples desenho de figurinhas de bala nos anos 90. Entre o grafite da metrópole e a calmaria do campo em Jaguaquara, aprendi que a arte é a tradução da alma. Com 20 anos de experiência, hoje utilizo o hiper-realismo para capturar mais do que imagens: capturo histórias, luzes e memórias rurais. Como artista, designer e desenvolvedor web, uno o rigor técnico à emoção, acreditando que uma casa à beira da estrada tem tanto a dizer quanto a paisagem que a envolve. Meu objetivo é simples: levar paz e reflexão a quem observa o que meus pincéis puderam registrar."
 
         document.getElementById('modal-label-support').innerText = "Suporte";
         document.getElementById('modal-label-dimensions').innerText = "Dimensões";
@@ -368,6 +284,28 @@ function updateProgressBar() {
     document.querySelector('header')?.classList.toggle('scrolled', scrollTop > 24);
 }
 
+function updateProgressBar() {
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+
+    const progressBar = document.getElementById('progress-bar');
+    if (progressBar) progressBar.style.width = `${progress}%`;
+
+    const headerLogo = document.getElementById('header-logo');
+    if (headerLogo) {
+        if (scrollTop >= 80) {
+            headerLogo.classList.remove('opacity-0', 'pointer-events-none');
+            headerLogo.classList.add('opacity-100');
+        } else {
+            headerLogo.classList.remove('opacity-100');
+            headerLogo.classList.add('opacity-0', 'pointer-events-none');
+        }
+    }
+
+    document.querySelector('header')?.classList.toggle('scrolled', scrollTop > 24);
+}
+
 window.addEventListener('scroll', updateProgressBar);
 
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -392,26 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
     changeLanguage(currentLang);
 
     // 2. Renderização Inteligente baseada na página atual
-    // Verifica a existência do elemento no DOM antes de executar a função
-
-    if (document.getElementById('events-grid')) {
-        renderEvents();
-    }
-
     if (document.getElementById('gallery-grid')) {
         renderGallery(); // Renderiza galeria apenas se o grid existir nesta página
     }
 });
-
-function toggleVideoModal(show) {
-    const modal = document.getElementById('video-lightbox');
-    const player = document.getElementById('modal-player');
-    if (show) {
-        modal.classList.remove('hidden');
-        player.play();
-    } else {
-        modal.classList.add('hidden');
-        player.pause();
-        player.currentTime = 0;
-    }
-}
