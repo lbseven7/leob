@@ -106,7 +106,14 @@
             icon.className = isDark ? 'fas fa-moon text-blue-300' : 'fas fa-sun text-yellow-500';
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         });
-        if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+        // Aplica dark mode por padrão, ou a preferência salva do usuário
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            icon.className = 'fas fa-sun text-yellow-500';
+        } else {
+            document.documentElement.classList.add('dark');
+            icon.className = 'fas fa-moon text-blue-300';
+        }
     </script>
 </body>
 
