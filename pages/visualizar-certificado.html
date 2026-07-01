@@ -72,18 +72,45 @@
     </div>
 
     <script>
-        // Lógica simples para pegar o token da URL e exibir a imagem correspondente
+        // Lógica para pegar o token da URL e exibir a imagem correspondente
         const params = new URLSearchParams(window.location.search);
         const token = params.get('token');
         const imgElement = document.getElementById('certificado-imagem');
+        const statusElement = document.querySelector('.status-rodape p');
 
-        // Se houver um token, carrega a imagem correspondente
         if (token) {
-            imgElement.src = `../images/certificados/${token}.png`;
+            // Anti-cache SUPER FORTE: timestamp + random number
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 10);
+            const caminhoImagem = `../images/certificados/${token}.png?t=${timestamp}&r=${random}`;
+            
+            console.log('Tentando carregar:', caminhoImagem);
+            console.log('Token:', token);
+            
             imgElement.alt = `Certificado Autêntico - Obra ${token}`;
-            document.title = `Certificado - Obra ${token} | Léo Barbosa`;
+            document.title = `Certificado - Obra ${token} | Leo Barbosa`;
+            
+            // Resetar a imagem para forçar recarregamento
+            imgElement.src = '';
+            imgElement.removeAttribute('srcset');
+            
+            // Tratar erro de carregamento
+            imgElement.onerror = function() {
+                statusElement.textContent = 'Erro: Não foi possível carregar o certificado';
+                statusElement.style.color = '#c0392b';
+                console.error('Falha ao carregar:', caminhoImagem);
+            };
+            
+            imgElement.onload = function() {
+                statusElement.textContent = 'Certificado Autêntico Validado';
+                statusElement.style.color = '#777';
+            };
+            
+            // Carregar a imagem
+            setTimeout(() => {
+                imgElement.src = caminhoImagem;
+            }, 100);
         } else {
-            // Exibe mensagem de erro caso não haja token na URL ex.: www.leob.com.br/pages/visualizar-certificado.html?token=lb-2026-001
             document.body.innerHTML = "<h1 style='color:#c0392b; font-family:Montserrat,sans-serif; text-align:center;'>⚠ Erro: Certificado não encontrado.<br><span style='font-size:16px; font-weight:normal; color:#555;'>Por favor, tente escanear o QR Code novamente.</span></h1>";
         }
     </script>

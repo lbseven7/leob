@@ -1,11 +1,13 @@
 import qrcode
+import os
 from PIL import Image   
 
-def gerar_qr_obra(token):
-    # O link usa o token passado no argumento da função
-    url = f"https://www.leob.com.br/pages/visualizar-certificado.html?token={token}"
+def gerar_qr_obra(token_com_prefixo, pasta_destino):
+    """Gera QR Code para um token com prefixo e salva na pasta correta."""
+    # URL do certificado (token completo com prefixo)
+    url = f"https://www.leob.com.br/pages/visualizar-certificado.html?token={token_com_prefixo}"
     
-    # Criando um QR Code com mais qualidade
+    # Criar QR Code com alta qualidade
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_H,
@@ -15,46 +17,50 @@ def gerar_qr_obra(token):
     qr.add_data(url)
     qr.make(fit=True)
 
-    # Salvando a imagem
-    img = qr.make_image(fill_color="black", back_color="white")
-    nome_arquivo = f"CV_{token}.png"
-    # nome_arquivo = f"ESC_{token}.png"
-    img.save(nome_arquivo)
-    print(f"QR Code para {token} gerado com sucesso: {nome_arquivo}")
+    # Criar pasta se não existir
+    if not os.path.exists(pasta_destino):
+        os.makedirs(pasta_destino)
 
-# Agora, para gerar, basta chamar assim:
-token_atual = [
-"lb-2026-001",
-"lb-2026-002",
-"lb-2026-003",
-"lb-2026-004",
-"lb-2026-005",
-"lb-2026-006",
-"lb-2026-007",
-"lb-2026-008",
-"lb-2026-009",
-"lb-2026-010",
-"lb-2026-011",
-"lb-2026-012",
-"lb-2026-013",
-"lb-2026-014",
-"lb-2026-015",
-"lb-2026-016",
-"lb-2026-017",
-"lb-2026-018",
-"lb-2026-019",
-"lb-2026-020",
-"lb-2026-021",
-"lb-2026-022",
-"lb-2026-023",
-"lb-2026-024",
-"lb-2026-025",
-"lb-2026-026",
-"lb-2026-027",
-"lb-2026-028",
-"lb-2026-029",
-"lb-2026-030",
-]
-for token in token_atual:
-    gerar_qr_obra(token)
+    # Gerar e salvar imagem
+    img = qr.make_image(fill_color="black", back_color="white")
+    nome_arquivo = f"{token_com_prefixo}.png"
+    caminho_completo = os.path.join(pasta_destino, nome_arquivo)
+    img.save(caminho_completo)
+    print(f"✅ QR Code para {token_com_prefixo} gerado: {caminho_completo}")
+
+
+def gerar_qrs_para_serie(nome_serie, prefixo):
+    """Gera QR Codes para uma série completa."""
+    pasta_serie = os.path.join(os.path.dirname(__file__), "..", nome_serie)
+    pasta_serie = os.path.normpath(pasta_serie)
+    
+    print(f"\n📦 Gerando QR Codes para a série: {nome_serie}")
+    # Gerar tokens com prefixo (ex: MAR_lb-2026-001)
+    for i in range(1, 31):
+        token_com_prefixo = f"{prefixo}_lb-2026-{str(i).zfill(3)}"
+        gerar_qr_obra(token_com_prefixo, pasta_serie)
+
+
+if __name__ == "__main__":
+    # Configurações das séries
+    series = [
+        # {
+        #     "nome": "CASA-DE-VAQUEIRO",
+        #     "prefixo": "CV"
+        # },
+        # {
+        #     "nome": "ELA-E-SEU-CAVALO", 
+        #     "prefixo": "ESC"
+        # },
+        {
+            "nome": "MARKETING",
+            "prefixo": "MAR"
+        }
+    ]
+
+    # Gerar QR Codes para todas as séries
+    for serie in series:
+        gerar_qrs_para_serie(serie["nome"], serie["prefixo"])
+
+    print("\n🎉 Todos os QR Codes gerados com sucesso!")
     
