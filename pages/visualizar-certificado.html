@@ -48,6 +48,29 @@
             color: #777;
             text-transform: uppercase;
             letter-spacing: 1.5px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .download-btn {
+            display: none;
+            background: #2c3e50;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: #1a252f;
         }
 
         /* Ajustes para telas muito pequenas (celulares menores) */
@@ -69,6 +92,7 @@
 
     <div class="status-rodape">
         <p>Certificado Autêntico Validado</p>
+        <a id="download-btn" href="#" download style="display: none; margin-top: 15px; padding: 12px 24px; background-color: #d88800; color: white; text-decoration: none; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-weight: 600; letter-spacing: 0.5px;">Baixar Certificado</a>
     </div>
 
     <script>
@@ -83,6 +107,7 @@
             const timestamp = Date.now();
             const random = Math.random().toString(36).substring(2, 10);
             const caminhoImagem = `../images/certificados/${token}.png?t=${timestamp}&r=${random}`;
+            const downloadBtn = document.getElementById('download-btn');
             
             console.log('Tentando carregar:', caminhoImagem);
             console.log('Token:', token);
@@ -93,17 +118,23 @@
             // Resetar a imagem para forçar recarregamento
             imgElement.src = '';
             imgElement.removeAttribute('srcset');
+            downloadBtn.style.display = 'none';
             
             // Tratar erro de carregamento
             imgElement.onerror = function() {
-                statusElement.textContent = 'OP´S: carregando o certificado';
-                statusElement.style.color = '#c0392b';
+                statusElement.textContent = 'carregando o certificado';
+                statusElement.style.color = '#d88800';
                 console.error('Falha ao carregar:', caminhoImagem);
+                downloadBtn.style.display = 'none';
             };
             
             imgElement.onload = function() {
                 statusElement.textContent = 'Certificado Autêntico Validado';
                 statusElement.style.color = '#777';
+                // Mostrar e configurar botão de download
+                downloadBtn.style.display = 'inline-block';
+                downloadBtn.href = `../images/certificados/${token}.png`;
+                downloadBtn.download = `Certificado-${token}.png`;
             };
             
             // Carregar a imagem
