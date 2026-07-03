@@ -353,17 +353,6 @@ function updateProgressBar() {
     const progressBar = document.getElementById('progress-bar');
     if (progressBar) progressBar.style.width = `${progress}%`;
 
-    const headerLogo = document.getElementById('header-logo');
-    if (headerLogo) {
-        if (scrollTop >= 80) {
-            headerLogo.classList.remove('opacity-0', 'pointer-events-none');
-            headerLogo.classList.add('opacity-100');
-        } else {
-            headerLogo.classList.remove('opacity-100');
-            headerLogo.classList.add('opacity-0', 'pointer-events-none');
-        }
-    }
-
     document.querySelector('header')?.classList.toggle('scrolled', scrollTop > 24);
 }
 
