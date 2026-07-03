@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-book: Domine o Efeito Metálico | Leo Barbosa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brand: { orange: '#d88800' } },
+                    fontFamily: {
+                        display: ['Playfair Display', 'serif'],
+                        sans: ['Comfortaa', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        html { scroll-behavior: smooth; }
+        .toc-link.active {
+            color: #d88800;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-black text-neutral-800 dark:text-neutral-300 antialiased transition-colors duration-300">
+    <!-- Adicione isso NO COMEÇO do <body>, antes do header -->
+<div id="login-screen" class="fixed inset-0 bg-white dark:bg-black z-[9999] flex items-center justify-center p-4">
+    <div class="bg-neutral-50 dark:bg-neutral-900 p-8 rounded-2xl border border-neutral-200 dark:border-neutral-800 max-w-md w-full">
+        <h2 class="text-2xl font-light text-black dark:text-white mb-6 text-center">Acesso ao Curso</h2>
+        <form id="login-form" class="space-y-4">
+            <div>
+                <label class="block text-sm text-neutral-600 dark:text-neutral-400 mb-2">Usuário</label>
+                <input type="text" id="username" required class="w-full bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg px-4 py-3 text-black dark:text-white focus:outline-none focus:border-brand-orange">
+            </div>
+            <div>
+                <label class="block text-sm text-neutral-600 dark:text-neutral-400 mb-2">Senha</label>
+                <input type="password" id="password" required class="w-full bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg px-4 py-3 text-black dark:text-white focus:outline-none focus:border-brand-orange">
+            </div>
+            <button type="submit" class="w-full bg-black dark:bg-white text-white dark:text-black py-3 rounded-lg font-medium hover:bg-neutral-800 dark:hover:bg-neutral-200 transition">Entrar</button>
+            <p id="error-msg" class="text-red-500 text-sm text-center hidden">Usuário ou senha incorretos.</p>
+        </form>
+    </div>
+</div>
+
+<script>
+// Credenciais (você pode mudar!)
+const USUARIO_CORRETO = "artista";
+const SENHA_CORRETA = "curso-metal";
+
+// Verifica se já está logado
+if (sessionStorage.getItem("logado")) {
+    document.getElementById("login-screen").style.display = "none";
+}
+
+// Envio do formulário
+document.getElementById("login-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const user = document.getElementById("username").value;
+    const pass = document.getElementById("password").value;
+
+    if (user === USUARIO_CORRETO && pass === SENHA_CORRETA) {
+        sessionStorage.setItem("logado", "sim");
+        document.getElementById("login-screen").style.display = "none";
+    } else {
+        document.getElementById("error-msg").classList.remove("hidden");
+    }
+});
+</script>
+    <!-- Header -->
+    <header class="bg-white/90 dark:bg-black/90 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-900 px-6 py-4 sticky top-0 z-50">
+        <div class="container mx-auto max-w-6xl flex items-center justify-between gap-4">
+            <a href="#index.html">
+            <img id="header-logo" src="../images/logo-black3-sbg.png" alt="Logo"
+                class="max-w-[132px] sm:max-w-[140px] h-auto opacity-100 transition-opacity duration-300">
+                </a>
+
+           
+            <div class="flex items-center gap-4">
+                <a href="#topo" class="text-sm uppercase tracking-widest hover:text-brand-orange transition hidden sm:inline-block">Voltar ao Topo</a>
+                <button id="darkModeToggle"
+                    class="w-10 h-10 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+                    <i id="darkModeIcon" class="fas fa-moon text-blue-300"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto max-w-6xl px-6 py-12 grid md:grid-cols-[280px_1fr] gap-10">
+        <!-- Sidebar Navegação -->
+        <aside class="md:sticky md:top-24 md:h-[calc(100vh-6rem)] overflow-y-auto pb-8">
+            <div class="bg-neutral-50 dark:bg-neutral-900 p-6 rounded-2xl border border-neutral-200 dark:border-neutral-800">
+                <h3 class="text-lg font-display text-black dark:text-white mb-4">Sumário</h3>
+                <nav class="space-y-3 text-sm">
+                    <a href="#prefacio" class="toc-link block hover:text-brand-orange transition">Prefácio</a>
+                    <a href="#cap1" class="toc-link block hover:text-brand-orange transition">Capítulo 1: Quem Sou Eu?</a>
+                    <a href="#cap2" class="toc-link block hover:text-brand-orange transition">Capítulo 2: Por Que Pintar?</a>
+                    <a href="#cap3" class="toc-link block hover:text-brand-orange transition">Capítulo 3: Materiais</a>
+                    <a href="#cap4" class="toc-link block hover:text-brand-orange transition">Capítulo 4: Método de 3 Fases</a>
+                    <a href="#cap5" class="toc-link block hover:text-brand-orange transition">Capítulo 5: Dicas Práticas</a>
+                    <a href="#cap6" class="toc-link block hover:text-brand-orange transition">Capítulo 6: Seu Caminho Agora</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main id="topo" class="max-w-3xl">
+            <!-- Capa -->
+            <section class="mb-16 border-b border-neutral-200 dark:border-neutral-800 pb-16">
+                <div class="text-center">
+                    <div class="inline-block px-4 py-1 bg-brand-orange/10 border border-brand-orange/30 rounded-full text-sm text-brand-orange mb-6 uppercase tracking-widest">
+                        <i class="fas fa-palette mr-2"></i>E-book Exclusivo
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-light text-black dark:text-white mb-6 leading-tight">
+                        Domine o Efeito Metálico na Pintura Hiper Realista
+                    </h1>
+                    <p class="text-xl text-neutral-600 dark:text-neutral-400 font-light mb-8">
+                        Método Completo para Tinta à Óleo e Acrílica
+                    </p>
+                    <p class="text-neutral-500 dark:text-neutral-600">Por Leo Barbosa (Alexsandro Barbosa dos Santos)</p>
+                    <div class="mt-10 bg-neutral-100 dark:bg-neutral-900 rounded-2xl overflow-hidden aspect-video flex items-center justify-center border border-neutral-200 dark:border-neutral-800">
+                        <img src="../images/curso-metal-efeito-metálico.png" alt="Capa do E-book: Obra com Efeito Metálico" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Prefácio -->
+            <section id="prefacio" class="mb-16 pb-8">
+                <h2 class="text-3xl font-light text-black dark:text-white mb-6 flex items-center gap-3">
+                    <span class="text-brand-orange text-4xl">00</span> Prefácio: Por Que Este E-book?
+                </h2>
+                <p class="text-neutral-600 dark:text-neutral-400 mb-4 leading-relaxed">
+                    Meu nome é Leo Barbosa. Nasci em Jequié (Bahia), mas cresci nas ruas de São Paulo — no bairro Grajaú, onde fazia pipas de papel de seda, rabisquei muros como pichador e descobri a magia do grafite. Voltei à Bahia para morar em Jaguaquara, passei pelo Colégio Pio XII e, hoje, depois de <strong>20 anos de tentativa e erro</strong> como artista autodidata, posso dizer:
+                </p>
+                <blockquote class="border-l-4 border-brand-orange pl-6 py-3 my-8 bg-neutral-50 dark:bg-neutral-900 rounded-r-xl">
+                    <p class="text-xl text-black dark:text-white italic">Eu sei como é lutar para aprender sozinho. E quero que o seu caminho seja mais curto.</p>
+                </blockquote>
+                <p class="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                    Este e-book é o resultado de duas décadas de estudos, experimentos e erros que eu não quero que você repita. Aqui, compartilho <strong>tudo o que sei sobre o efeito metálico</strong> — um dos mais difíceis, mas também um dos mais gratificantes de dominar.
+                </p>
+            </section>
+
+            <!-- Capítulo 1 -->
+            <section id="cap1" class="mb-16 pb-8 border-t border-neutral-200 dark:border-neutral-800 pt-8">
+                <h2 class="text-3xl font-light text-black dark:text-white mb-6 flex items-center gap-3">
+                    <span class="text-brand-orange text-4xl">01</span> Quem Sou Eu? A Minha Jornada para Você
+                </h2>
+                <p class="text-neutral-600 dark:text-neutral-400 mb-4 leading-relaxed">
+                    Antes de qualquer coisa: eu sou como você. Um apaixonado por arte que <strong>não teve professores formais</strong> — aprendi com pipas, grafite, oficinas de projeto social e MUITA prática.
+                </p>
+                
+                <!-- Espaço para fotos da trajetória -->
+                <div class="grid md:grid-cols-3 gap-6 my-8">
+                    <div class="bg-neutral-50 dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+                        <div class="aspect-square bg-neutral-200 dark:bg-neutral-800">
+                            <img src="../images/curso-trajetoria-sp.jpg" alt="Foto da infância em São Paulo" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="font-medium text-black dark:text-white mb-2 text-sm">Infância em SP</h3>
+                            <p class="text-xs text-neutral-600 dark:text-neutral-400">Pipas de papel seda e grafite no bairro Grajaú.</p>
+                        </div>
+                    </div>
+                    <div class="bg-neutral-50 dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+                        <div class="aspect-square bg-neutral-200 dark:bg-neutral-800">
+                            <img src="../images/curso-trajetoria-colegio.jpg" alt="Foto do Colégio Pio XII" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="font-medium text-black dark:text-white mb-2 text-sm">Colégio Pio XII</h3>
+                            <p class="text-xs text-neutral-600 dark:text-neutral-400">Jaguaquara e os anos que selaram minha trajetória.</p>
+                        </div>
+                    </div>
+                    <div class="bg-neutral-50 dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+                        <div class="aspect-square bg-neutral-200 dark:bg-neutral-800">
+                            <img src="../images/curso-trajetoria-atelie.jpg" alt="Foto do ateliê hoje" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="font-medium text-black dark:text-white mb-2 text-sm">Hoje no Ateliê</h3>
+                            <p class="text-xs text-neutral-600 dark:text-neutral-400">20 anos de experiência: obras, palestras e educação.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                    E a melhor notícia? Se eu consegui aprender sozinho, você também consegue — com orientação correta.
+                </p>
+            </section>
+
+            <!-- Capítulo 2 -->
+            <section id="cap2" class="mb-16 pb-8 border-t border-neutral-200 dark:border-neutral-800 pt-8">
+                <h2 class="text-3xl font-light text-black dark:text-white mb-6 flex items-center gap-3">
+                    <span class="text-brand-orange text-4xl">02</span> Por Que Pintar?
+                </h2>
+                <div class="bg-black dark:bg-white text-white dark:text-black p-8 md:p-12 rounded-2xl my-8">
+                    <blockquote class="text-xl md:text-2xl font-light leading-relaxed text-center">
+                        "O artista é um observador que capta sentimentos em uma realidade, traduz com pincéis e tintas e entrega para que outros possam sentir, reviver e reinterpretar esses sentimentos recontando a história traduzida pela mão do artista."
+                    </blockquote>
+                </div>
+                <p class="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                    A técnica não é o fim — é a <strong>ferramenta para você transmitir o que está no seu coração</strong>. E o efeito metálico? É uma dessas ferramentas poderosas para fazer suas obras ganharem vida e realismo.
+                </p>
+            </section>
+
+            <!-- Capítulo 3 -->
+            <section id="cap3" class="mb-16 pb-8 border-t border-neutral-200 dark:border-neutral-800 pt-8">
+                <h2 class="text-3xl font-light text-black dark:text-white mb-6 flex items-center gap-3">
+                    <span class="text-brand-orange text-4xl">03</span> Preparação: Materiais que Você Precisa
+                </h2>
+                <p class="text-neutral-600 dark:text-neutral-400 mb-6 leading-relaxed">
+                    Vamos falar de <strong>tinta à óleo e tinta acrílica</strong> — os dois tipos que eu uso e que você vai dominar:
+                </p>
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-neutral-50 dark:bg-neutral-900 p-6 rounded-xl border border-neutral-200 dark:border-neutral-800">
+                        <h3 class="font-medium text-black dark:text-white mb-3 flex items-center gap-2">
+                            <i class="fas fa-droplet text-brand-orange"></i> Tinta à Óleo
+                        </h3>
+                        <ul class="space-y-2 text-neutral-600 dark:text-neutral-400 text-sm">
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-brand-orange"></i> Secagem lenta (ótima para misturas)</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-brand-orange"></i> Base oleosa</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-brand-orange"></i> Profundidade de cor intensa</li>
+                        </ul>
+                    </div>
+                    <div class="bg-neutral-50 dark:bg-neutral-900 p-6 rounded-xl border border-neutral-200 dark:border-neutral-800">
+                        <h3 class="font-medium text-black dark:text-white mb-3 flex items-center gap-2">
+                            <i class="fas fa-droplet-slash text-brand-orange"></i> Tinta Acrílica
+                        </h3>
+                        <ul class="space-y-2 text-neutral-600 dark:text-neutral-400 text-sm">
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-brand-orange"></i> Secagem rápida (perfeito para camadas rápidas)</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-brand-orange"></i> Base de água</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-check text-brand-orange"></i> Versátil e fácil de limpar</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                    Eu não vou inundar você com teorias. Aqui, o foco é <strong>o que funciona na prática</strong> — vamos usar materiais acessíveis e que eu realmente uso no meu ateliê.
+                </p>
+            </section>
+
+            <!-- Capítulo 4 -->
+            <section id="cap4" class="mb-16 pb-8 border-t border-neutral-200 dark:border-neutral-800 pt-8">
+                <h2 class="text-3xl font-light text-black dark:text-white mb-6 flex items-center gap-3">
+                    <span class="text-brand-orange text-4xl">04</span> O Meu Método de 3 Fases
+                </h2>
+                <p class="text-neutral-600 dark:text-neutral-400 mb-8 leading-relaxed">
+                    Eu aprendi que a pintura é uma <strong>construção</strong> — não existe "talento", existe método. Meu método funciona assim:
+                </p>
+                
+                <div class="space-y-10">
+                    <!-- Fase 1 -->
+                    <div class="bg-neutral-50 dark:bg-neutral-900 p-6 md:p-8 rounded-xl border border-neutral-200 dark:border-neutral-800">
+                        <h3 class="font-medium text-black dark:text-white mb-4 flex items-center gap-3">
+                            <span class="w-10 h-10 bg-brand-orange/10 rounded-full flex items-center justify-center text-brand-orange font-bold">1</span>
+                            Treine o Olho com Escala de Cinza
+                        </h3>
+                        <p class="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed mb-6">
+                            Eu amo pintar temas monocromáticos. Por quê? Porque <strong>treina o seu olhar a VER valores</strong>. Misturo apenas 3 tons de cinza (claro, médio, escuro) e preencho cada tom no seu lugar. Isso é o segredo para entender luz e sombra — a base do efeito metálico.
+                        </p>
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div class="aspect-video bg-neutral-200 dark:bg-neutral-800 rounded-lg overflow-hidden border border-neutral-300 dark:border-neutral-700 flex items-center justify-center">
+                                <img src="../images/curso-fase1-passo1.jpg" alt="Passo 1: Preparar os tons de cinza" class="w-full h-full object-cover">
+                            </div>
+                            <div class="aspect-video bg-neutral-200 dark:bg-neutral-800 rounded-lg overflow-hidden border border-neutral-300 dark:border-neutral-700 flex items-center justify-center">
+                                <img src="../images/curso-fase1-passo2.jpg" alt="Passo 2: Preencher o tom médio" class="w-full h-full object-cover">
+                            </div>
+                            <div class="aspect-video bg-neutral-200 dark:bg-neutral-800 rounded-lg overflow-hidden border border-neutral-300 dark:border-neutral-700 flex items-center justify-center">
+                                <img src="../images/curso-fase1-passo3.jpg" alt="Passo 3: Adicionar sombras escuras" class="w-full h-full object-cover">
+                            </div>
+                            <div class="aspect-video bg-neutral-200 dark:bg-neutral-800 rounded-lg overflow-hidden border border-neutral-300 dark:border-neutral-700 flex items-center justify-center">
+                                <img src="../images/curso-fase1-resultado.jpg" alt="Resultado final da Fase 1" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                        <p class="text-xs text-neutral-400 dark:text-neutral-500 text-center">
+                            Adicione suas fotos do passo a passo aqui (ex: preparar os tons, preencher o tom médio, sombras, resultado final).
+                        </p>
+                    </div>
+                    
+                    <!-- Fase 2 -->
+                    <div class="bg-neutral-50 dark:bg-neutral-900 p-6 md:p-8 rounded-xl border border-neutral-200 dark:border-neutral-800">
+                        <h3 class="font-medium text-black dark:text-white mb-4 flex items-center gap-3">
+                            <span class="w-10 h-10 bg-brand-orange/10 rounded-full flex items-center justify-center text-brand-orange font-bold">2</span>
+                            Entenda a Luz no Metal
+                        </h3>
+                        <p class="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed mb-6">
+                            O metal polido tem características únicas: reflexos nítidos, contraste alto e distorção de reflexos. Vamos analisar essas características juntos no modelo que preparei.
+                        </p>
+                        <div class="grid md:grid-cols-3 gap-4 mb-4">
+                            <div class="aspect-square bg-neutral-200 dark:bg-neutral-800 rounded-lg overflow-hidden border border-neutral-300 dark:border-neutral-700 flex items-center justify-center">
+                                <img src="../images/curso-fase2-reflexo1.jpg" alt="Exemplo: Reflexo nítido" class="w-full h-full object-cover">
+                            </div>
+                            <div class="aspect-square bg-neutral-200 dark:bg-neutral-800 rounded-lg overflow-hidden border border-neutral-300 dark:border-neutral-700 flex items-center justify-center">
+                                <img src="../images/curso-fase2-contraste.jpg" alt="Exemplo: Contraste alto" class="w-full h-full object-cover">
+                            </div>
+                            <div class="aspect-square bg-neutral-200 dark:bg-neutral-800 rounded-lg overflow-hidden border border-neutral-300 dark:border-neutral-700 flex items-center justify-center">
+                                <img src="../images/curso-fase2-distorcao.jpg" alt="Exemplo: Distorção de reflexo" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                        <p class="text-xs text-neutral-400 dark:text-neutral-500 text-center">
+                            Fotos de referência para analisar as características do metal.
+                        </p>
+                    </div>
+                    
+                    <!-- Fase 3 (Passo a Passo Completo) -->
+                    <div class="bg-neutral-50 dark:bg-neutral-900 p-6 md:p-8 rounded-xl border border-neutral-200 dark:border-neutral-800">
+                        <h3 class="font-medium text-black dark:text-white mb-4 flex items-center gap-3">
+                            <span class="w-10 h-10 bg-brand-orange/10 rounded-full flex items-center justify-center text-brand-orange font-bold">3</span>
+                            Aplicar a Técnica — Passo a Passo Completo
+                        </h3>
+                        <p class="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed mb-6">
+                            Vamos pintar <strong>juntos</strong> uma imagem modelo — escolhi ela exatamente para transmitir luz, sombra e contrastes do metal polido. Abaixo, espaço para cada etapa:
+                        </p>
+                        
+                        <div class="space-y-8">
+                            <div>
+                                <h4 class="font-medium text-black dark:text-white mb-3 text-sm uppercase tracking-widest text-neutral-600 dark:text-neutral-500">Passo 1: Preparar a superfície</h4>
+                                <div class="aspect-video bg-neutral-200 dark:bg-neutral-800 rounded-lg overflow-hidden border border-neutral-300 dark:border-neutral-700 mb-2">
+                                    <img src="../images/curso-fase3-passo1.jpg" alt="Passo 1: Preparar a superfície" class="w-full h-full object-cover">
+                                </div>
+                                <p class="text-xs text-neutral-400 dark:text-neutral-500">[Adicione sua descrição do passo 1 aqui]</p>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-medium text-black dark:text-white mb-3 text-sm uppercase tracking-widest text-neutral-600 dark:text-neutral-500">Passo 2: Misturar os tons de base</h4>
+                                <div class="aspect-video bg-neutral-200 dark:bg-neutral-800 rounded-lg overflow-hidden border border-neutral-300 dark:border-neutral-700 mb-2">
+                                    <img src="../images/curso-fase3-passo2.jpg" alt="Passo 2: Misturar os tons" class="w-full h-full object-cover">
+                                </div>
+                                <p class="text-xs text-neutral-400 dark:text-neutral-500">[Adicione sua descrição do passo 2 aqui]</p>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-medium text-black dark:text-white mb-3 text-sm uppercase tracking-widest text-neutral-600 dark:text-neutral-500">Passo 3: Aplicar a primeira camada</h4>
+                                <div class="aspect-video bg-neutral-200 dark:bg-neutral-800 rounded-lg overflow-hidden border border-neutral-300 dark:border-neutral-700 mb-2">
+                                    <img src="../images/curso-fase3-passo3.jpg" alt="Passo 3: Primeira camada" class="w-full h-full object-cover">
+                                </div>
+                                <p class="text-xs text-neutral-400 dark:text-neutral-500">[Adicione sua descrição do passo 3 aqui]</p>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-medium text-black dark:text-white mb-3 text-sm uppercase tracking-widest text-neutral-600 dark:text-neutral-500">Passo 4: Adicionar os reflexos</h4>
+                                <div class="aspect-video bg-neutral-200 dark:bg-neutral-800 rounded-lg overflow-hidden border border-neutral-300 dark:border-neutral-700 mb-2">
+                                    <img src="../images/curso-fase3-passo4.jpg" alt="Passo 4: Reflexos" class="w-full h-full object-cover">
+                                </div>
+                                <p class="text-xs text-neutral-400 dark:text-neutral-500">[Adicione sua descrição do passo 4 aqui]</p>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-medium text-black dark:text-white mb-3 text-sm uppercase tracking-widest text-neutral-600 dark:text-neutral-500">Passo 5: Finalizar e realçar o brilho</h4>
+                                <div class="aspect-video bg-neutral-200 dark:bg-neutral-800 rounded-lg overflow-hidden border border-neutral-300 dark:border-neutral-700 mb-2">
+                                    <img src="../images/curso-fase3-resultado.jpg" alt="Passo 5: Resultado final" class="w-full h-full object-cover">
+                                </div>
+                                <p class="text-xs text-neutral-400 dark:text-neutral-500">[Adicione sua descrição do passo 5 aqui]</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Capítulo 5 -->
+            <section id="cap5" class="mb-16 pb-8 border-t border-neutral-200 dark:border-neutral-800 pt-8">
+                <h2 class="text-3xl font-light text-black dark:text-white mb-6 flex items-center gap-3">
+                    <span class="text-brand-orange text-4xl">05</span> Dicas que Eu Gostaria de Ter Sabido Há 20 Anos
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-neutral-50 dark:bg-neutral-900 p-6 rounded-xl border border-neutral-200 dark:border-neutral-800">
+                        <h3 class="font-medium text-black dark:text-white mb-3 flex items-center gap-2">
+                            <i class="fas fa-star text-brand-orange"></i> Não use branco puro
+                        </h3>
+                        <p class="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed">
+                            Adicione um toque de amarelo ou azul para dar realismo aos brilhos.
+                        </p>
+                    </div>
+                    <div class="bg-neutral-50 dark:bg-neutral-900 p-6 rounded-xl border border-neutral-200 dark:border-neutral-800">
+                        <h3 class="font-medium text-black dark:text-white mb-3 flex items-center gap-2">
+                            <i class="fas fa-paintbrush text-brand-orange"></i> Pincel fino para reflexos
+                        </h3>
+                        <p class="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed">
+                            A precisão é tudo — use um pincel fino para os reflexos nítidos.
+                        </p>
+                    </div>
+                    <div class="bg-neutral-50 dark:bg-neutral-900 p-6 rounded-xl border border-neutral-200 dark:border-neutral-800">
+                        <h3 class="font-medium text-black dark:text-white mb-3 flex items-center gap-2">
+                            <i class="fas fa-rotate-left text-brand-orange"></i> Erre rápido, corrige rápido
+                        </h3>
+                        <p class="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed">
+                            Se um reflexo ficar errado, limpe e tente novamente — não se apegue a erros.
+                        </p>
+                    </div>
+                    <div class="bg-neutral-50 dark:bg-neutral-900 p-6 rounded-xl border border-neutral-200 dark:border-neutral-800">
+                        <h3 class="font-medium text-black dark:text-white mb-3 flex items-center gap-2">
+                            <i class="fas fa-wrench text-brand-orange"></i> Comece com objetos simples
+                        </h3>
+                        <p class="text-neutral-600 dark:text-neutral-400 text-sm leading-relaxed">
+                            Chaves, colheres — antes de pegar projetos complexos, pratique com o básico.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Capítulo 6 -->
+            <section id="cap6" class="mb-16 pb-8 border-t border-neutral-200 dark:border-neutral-800 pt-8">
+                <h2 class="text-3xl font-light text-black dark:text-white mb-6 flex items-center gap-3">
+                    <span class="text-brand-orange text-4xl">06</span> Seu Caminho Agora: Vamos Começar?
+                </h2>
+                <p class="text-neutral-600 dark:text-neutral-400 mb-4 leading-relaxed">
+                    Eu não quero que você passe anos tentando sozinho. Eu quero que você:
+                </p>
+                <ul class="text-neutral-600 dark:text-neutral-400 space-y-3 mb-8">
+                    <li class="flex gap-3">
+                        <i class="fas fa-check text-brand-orange mt-1"></i>
+                        Domine a técnica do efeito metálico
+                    </li>
+                    <li class="flex gap-3">
+                        <i class="fas fa-check text-brand-orange mt-1"></i>
+                        Ganhe confiança nas suas escolhas de cor e luz
+                    </li>
+                    <li class="flex gap-3">
+                        <i class="fas fa-check text-brand-orange mt-1"></i>
+                        Crie obras que você se orgulhe de mostrar
+                    </li>
+                </ul>
+                <p class="text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                    Lembre-se: <strong>a pintura é para quem quer aprender — não para quem já sabe tudo</strong>.
+                </p>
+            </section>
+
+            <!-- Agradecimento -->
+            <section class="border-t border-neutral-200 dark:border-neutral-800 pt-16 text-center">
+                <div class="bg-gradient-to-br from-brand-orange/10 to-white dark:from-neutral-900 dark:to-neutral-950 border border-brand-orange/20 p-8 md:p-10 rounded-2xl">
+                    <h3 class="text-2xl font-light text-black dark:text-white mb-4">Agradecimento Final</h3>
+                    <p class="text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6">
+                        Obrigado por confiar na minha história e no meu método. Espero que este e-book seja o início da sua jornada para o hiper realismo — e que você sinta a mesma paixão que eu sinto a cada vez que pego um pincel.
+                    </p>
+                    <p class="text-xl text-black dark:text-white font-display italic">Boa pintura,<br>Leo Barbosa</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-neutral-200 dark:border-neutral-800 py-12 text-center opacity-60">
+        <div class="container mx-auto max-w-6xl px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <p class="text-sm text-neutral-500">&copy; 2026 Leo Barbosa Art Studio</p>
+                <div class="flex items-center gap-6 text-xl">
+                    <a href="https://www.instagram.com/leob_pinturas/" target="_blank" aria-label="Instagram"
+                        class="hover:text-brand-orange transition"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.youtube.com/@leobarbosa-art-studio" target="_blank" aria-label="YouTube"
+                        class="hover:text-brand-orange transition"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dark Mode
+        const toggle = document.getElementById('darkModeToggle');
+        const icon = document.getElementById('darkModeIcon');
+        toggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            icon.className = isDark ? 'fas fa-moon text-blue-300' : 'fas fa-sun text-yellow-500';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+        // Padrão escuro
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            icon.className = 'fas fa-sun text-yellow-500';
+        } else {
+            document.documentElement.classList.add('dark');
+            icon.className = 'fas fa-moon text-blue-300';
+        }
+
+        // Navegação ativa (marca capítulo atual na sidebar)
+        const observerOptions = {
+            rootMargin: '-20% 0px -80% 0px'
+        };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    document.querySelectorAll('.toc-link').forEach(link => link.classList.remove('active'));
+                    document.querySelector(`.toc-link[href="#${entry.target.id}"]`)?.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section[id]').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
