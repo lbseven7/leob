@@ -18,12 +18,14 @@ const obras = [
         pt: {
             titulo: "Casa de Vaqueiro",
             tecnica: "Papel Ultra Smooth",
-            dimensoes: "20x28cm"
+            dimensoes: "20x28cm",
+            valor: "R$ 1.200"
         },
         en: {
             titulo: "The Cowboy's House",
             tecnica: "Ultra Smooth Paper",
-            dimensoes: "20x28cm"
+            dimensoes: "20x28cm",
+            valor: "$ 240"
         }
     },
     {
@@ -36,12 +38,14 @@ const obras = [
         pt: {
             titulo: "Ela e Seu Cavalo",
             tecnica: "Papel Ultra Smooth",
-            dimensoes: "27,9 x 42cm"
+            dimensoes: "27,9 x 42cm",
+            valor: "R$ 1.800"
         },
         en: {
             titulo: "She and Her Horse",
             tecnica: "Ultra Smooth Paper",
-            dimensoes: "27.9 x 42cm"
+            dimensoes: "27.9 x 42cm",
+            valor: "$ 360"
         }
     }
 ];
@@ -212,6 +216,7 @@ function openModal(obra) {
     document.getElementById('modal-title').innerText = content.titulo;
     document.getElementById('modal-technique').innerText = content.tecnica;
     document.getElementById('modal-dimensions').innerText = content.dimensoes;
+    document.getElementById('modal-valor').innerText = content.valor;
 
     const badge = document.getElementById('modal-stock-badge');
     const btnPayment = document.getElementById('payment-link');
@@ -272,49 +277,82 @@ function changeLanguage(lang) {
         document.getElementById('lang-en').className = 'text-brand-orange font-bold';
         document.getElementById('lang-pt').className = 'text-zinc-400 hover:text-black dark:hover:text-white transition';
 
-        // Header & Nav
-        document.getElementById('nav-catalogo').innerText = "Catalogue";
-        const navEventosEl = document.getElementById('nav-eventos');
-        if (navEventosEl) navEventosEl.innerText = "Events";
-        document.getElementById('nav-sobre').innerText = "About";
+        const navCatalogo = document.getElementById('nav-catalogo');
+        const navEventos = document.getElementById('nav-eventos');
+        const navSobre = document.getElementById('nav-sobre');
 
-        // Elementos da página
-        document.getElementById('catalog-heading').innerText = "Fine Art Limited Series";
-        document.getElementById('filter-all').innerText = "All";
-        document.getElementById('filter-available').innerText = "Available";
-        document.getElementById('filter-urgent').innerText = "Low Stock";
+        if (navCatalogo) navCatalogo.innerText = "Catalogue";
+        if (navEventos) navEventos.innerText = "Events";
+        if (navSobre) navSobre.innerText = "About";
 
-        const aboutHeadingEl = document.getElementById('about-heading');
-        const aboutTextEl = document.getElementById('about-text');
-        if (aboutHeadingEl) aboutHeadingEl.innerText = "About the Artist";
-        if (aboutTextEl) aboutTextEl.innerHTML = "Born in Jequié and forged by the streets of São Paulo, my artistic journey began with a simple drawing of candy wrapper stickers in the 90s. Between the graffiti of the metropolis and the tranquility of the countryside in Jaguaquara, I learned that art is the translation of the soul. With 20 years of experience, today I use hyperrealism to capture more than images: I capture stories, lights, and rural memories. As an artist, designer, and web developer, I combine technical rigor with emotion, believing that a house by the roadside has as much to say as the landscape that surrounds it. My goal is simple: to bring peace and reflection to those who observe what my brushes have been able to record.";
+        const catalogHeading = document.getElementById('catalog-heading');
+        const filterAll = document.getElementById('filter-all');
+        const filterAvailable = document.getElementById('filter-available');
+        const filterUrgent = document.getElementById('filter-urgent');
 
-        // Modals
-        document.getElementById('modal-label-support').innerText = "Support";
-        document.getElementById('modal-label-dimensions').innerText = "Dimensions";
-        document.getElementById('modal-label-cta').innerText = "acquire exclusive artwork now";
+        if (catalogHeading) catalogHeading.innerText = "Fine Art Limited Series";
+        if (filterAll) filterAll.innerText = "All";
+        if (filterAvailable) filterAvailable.innerText = "Available";
+        if (filterUrgent) filterUrgent.innerText = "Low Stock";
+
+        const eventsHeading = document.getElementById('events-heading');
+        const eventsSubtitle = document.getElementById('events-subtitle');
+        if (eventsHeading) eventsHeading.innerText = "Events & Records";
+        if (eventsSubtitle) eventsSubtitle.innerText = "Short videos, posts, and snapshots of Leo Barbosa's journey in exhibitions, behind the scenes, and gatherings.";
+
+        const aboutHeading = document.getElementById('about-heading');
+        const aboutText = document.getElementById('about-text');
+        if (aboutHeading) aboutHeading.innerText = "About the Artist";
+        if (aboutText) aboutText.innerHTML = "Born in Jequié and forged by the streets of São Paulo, my artistic journey began with a simple drawing of candy wrapper stickers in the 90s. Between the graffiti of the metropolis and the tranquility of the countryside in Jaguaquara, I learned that art is the translation of the soul. With 20 years of experience, today I use hyperrealism to capture more than images: I capture stories, lights, and rural memories. As an artist, designer, and web developer, I combine technical rigor with emotion, believing that a house by the roadside has as much to say as the landscape that surrounds it. My goal is simple: to bring peace and reflection to those who observe what my brushes have been able to record.";
+
+        const modalLabelSupport = document.getElementById('modal-label-support');
+        const modalLabelDimensions = document.getElementById('modal-label-dimensions');
+        const modalLabelValor = document.getElementById('modal-label-valor');
+        const modalLabelCta = document.getElementById('modal-label-cta');
+        if (modalLabelSupport) modalLabelSupport.innerText = "Support";
+        if (modalLabelDimensions) modalLabelDimensions.innerText = "Dimensions";
+        if (modalLabelValor) modalLabelValor.innerText = "Price";
+        if (modalLabelCta) modalLabelCta.innerText = "want exclusive artwork now";
     } else {
         document.getElementById('lang-pt').className = 'text-brand-orange font-bold';
         document.getElementById('lang-en').className = 'text-zinc-400 hover:text-black dark:hover:text-white transition';
 
-        document.getElementById('nav-catalogo').innerText = "Catálogo";
-        const navEventosElPt = document.getElementById('nav-eventos');
-        if (navEventosElPt) navEventosElPt.innerText = "Eventos";
-        document.getElementById('nav-sobre').innerText = "Sobre";
+        const navCatalogo = document.getElementById('nav-catalogo');
+        const navEventos = document.getElementById('nav-eventos');
+        const navSobre = document.getElementById('nav-sobre');
 
-        document.getElementById('catalog-heading').innerText = "Séries Limitadas Fine Art";
-        document.getElementById('filter-all').innerText = "Todos";
-        document.getElementById('filter-available').innerText = "Disponíveis";
-        document.getElementById('filter-urgent').innerText = "Últimas Unidades";
+        if (navCatalogo) navCatalogo.innerText = "Catálogo";
+        if (navEventos) navEventos.innerText = "Eventos";
+        if (navSobre) navSobre.innerText = "Sobre";
 
-        const aboutHeadingElPt = document.getElementById('about-heading');
-        const aboutTextElPt = document.getElementById('about-text');
-        if (aboutHeadingElPt) aboutHeadingElPt.innerText = "Sobre o Artista";
-        if (aboutTextElPt) aboutTextElPt.innerHTML = "Nascido em Jequié e forjado pelas ruas de São Paulo, minha jornada artística começou com um simples desenho de figurinhas de bala nos anos 90. Entre o grafite da metrópole e a calmaria do campo em Jaguaquara, aprendi que a arte é a tradução da alma. Com 20 anos de experiência, hoje utilizo o hiper-realismo para capturar mais do que imagens: capturo histórias, luzes e memórias rurais. Como artista, designer e desenvolvedor web, uno o rigor técnico à emoção, acreditando que uma casa à beira da estrada tem tanto a dizer quanto a paisagem que a envolve. Meu objetivo é simples: levar paz e reflexão a quem observa o que meus pincéis puderam registrar.";
+        const catalogHeading = document.getElementById('catalog-heading');
+        const filterAll = document.getElementById('filter-all');
+        const filterAvailable = document.getElementById('filter-available');
+        const filterUrgent = document.getElementById('filter-urgent');
 
-        document.getElementById('modal-label-support').innerText = "Suporte";
-        document.getElementById('modal-label-dimensions').innerText = "Dimensões";
-        document.getElementById('modal-label-cta').innerText = "quero obra exclusiva agora";
+        if (catalogHeading) catalogHeading.innerText = "Séries Limitadas Fine Art";
+        if (filterAll) filterAll.innerText = "Todos";
+        if (filterAvailable) filterAvailable.innerText = "Disponíveis";
+        if (filterUrgent) filterUrgent.innerText = "Últimas Unidades";
+
+        const eventsHeading = document.getElementById('events-heading');
+        const eventsSubtitle = document.getElementById('events-subtitle');
+        if (eventsHeading) eventsHeading.innerText = "Eventos & Registros";
+        if (eventsSubtitle) eventsSubtitle.innerText = "Pequenos vídeos, posts e momentos da trajetória de Leo Barbosa em exposições, bastidores e encontros.";
+
+        const aboutHeading = document.getElementById('about-heading');
+        const aboutText = document.getElementById('about-text');
+        if (aboutHeading) aboutHeading.innerText = "Sobre o Artista";
+        if (aboutText) aboutText.innerHTML = "Nascido em Jequié e forjado pelas ruas de São Paulo, minha jornada artística começou com um simples desenho de figurinhas de bala nos anos 90. Entre o grafite da metrópole e a calmaria do campo em Jaguaquara, aprendi que a arte é a tradução da alma. Com 20 anos de experiência, hoje utilizo o hiper-realismo para capturar mais do que imagens: capturo histórias, luzes e memórias rurais. Como artista, designer e desenvolvedor web, uno o rigor técnico à emoção, acreditando que uma casa à beira da estrada tem tanto a dizer quanto a paisagem que a envolve. Meu objetivo é simples: levar paz e reflexão a quem observa o que meus pincéis puderam registrar.";
+
+        const modalLabelSupport = document.getElementById('modal-label-support');
+        const modalLabelDimensions = document.getElementById('modal-label-dimensions');
+        const modalLabelValor = document.getElementById('modal-label-valor');
+        const modalLabelCta = document.getElementById('modal-label-cta');
+        if (modalLabelSupport) modalLabelSupport.innerText = "Suporte";
+        if (modalLabelDimensions) modalLabelDimensions.innerText = "Dimensões";
+        if (modalLabelValor) modalLabelValor.innerText = "Valor";
+        if (modalLabelCta) modalLabelCta.innerText = "quero obra exclusiva agora";
     }
 
     renderGallery();
@@ -353,6 +391,17 @@ function updateProgressBar() {
     const progressBar = document.getElementById('progress-bar');
     if (progressBar) progressBar.style.width = `${progress}%`;
 
+    const headerLogo = document.getElementById('header-logo');
+    if (headerLogo) {
+        if (scrollTop >= 80) {
+            headerLogo.classList.remove('opacity-0', 'pointer-events-none');
+            headerLogo.classList.add('opacity-100');
+        } else {
+            headerLogo.classList.remove('opacity-100');
+            headerLogo.classList.add('opacity-0', 'pointer-events-none');
+        }
+    }
+
     document.querySelector('header')?.classList.toggle('scrolled', scrollTop > 24);
 }
 
@@ -366,11 +415,6 @@ mainNav?.querySelectorAll('a').forEach(link => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Aplica o idioma inicial
     changeLanguage(currentLang);
-
-    // 2. Renderização Inteligente baseada na página atual
-    if (document.getElementById('gallery-grid')) {
-        renderGallery(); // Renderiza galeria apenas se o grid existir nesta página
-    }
+    if (document.getElementById('gallery-grid')) renderGallery();
 });
