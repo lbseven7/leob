@@ -12,14 +12,19 @@
                 extend: {
                     colors: { brand: { orange: '#d88800' } },
                     fontFamily: {
-                        display: ['Playfair Display', 'serif'],
-                        sans: ['Comfortaa', 'sans-serif'],
+                        sans: ['Comfortaa', 'cursive', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
                     }
                 }
             }
         }
     </script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/barra-progresso.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
     <style>
         html { scroll-behavior: smooth; }
         .toc-link.active {
@@ -28,7 +33,11 @@
         }
     </style>
 </head>
-<body class="bg-white dark:bg-black text-neutral-800 dark:text-neutral-300 antialiased transition-colors duration-300">
+<body class="bg-white text-black dark:bg-black dark:text-white transition-colors duration-500 antialiased">
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+    <div id="custom-cursor"></div>
     <!-- Adicione isso NO COMEÇO do <body>, antes do header -->
 <div id="login-screen" class="fixed inset-0 bg-white dark:bg-black z-[9999] flex items-center justify-center p-4">
     <div class="bg-neutral-50 dark:bg-neutral-900 p-8 rounded-2xl border border-neutral-200 dark:border-neutral-800 max-w-md w-full">
@@ -490,5 +499,6 @@ document.getElementById("login-form").addEventListener("submit", (e) => {
             observer.observe(section);
         });
     </script>
+    <script src="../js/script.js"></script>
 </body>
 </html>

@@ -6,18 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galeria do Artista</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="css/barra-progresso.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/barra-progresso.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
 
 </head>
 
-<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
-
+<body class="bg-white text-black dark:bg-black dark:text-white transition-colors duration-500 antialiased">
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+    <div id="custom-cursor"></div>
     <header
         class="fixed w-full top-0 z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
         <nav class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <a href="../index.html" class="text-xl font-bold uppercase tracking-widest hover:text-orange-500 transition">
-                <img id="header-logo" src="../images/logo-black3-sbg.png" alt="Logo"
+                <img id="header-logo" src="../images/logo/logo-white-gold-removebg-preview.png" alt="Logo"
                     class="max-w-[132px] sm:max-w-[140px] h-auto opacity-0  duration-300">
             </a>
             <ul class="flex items-center gap-8 text-[12px] uppercase tracking-[0.2em]">
@@ -109,7 +116,6 @@
     });
 </script>
     </main>
-
+    <script src="../js/script.js"></script>
 </body>
-
 </html>

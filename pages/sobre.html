@@ -13,28 +13,33 @@
                 extend: {
                     colors: { brand: { orange: '#d88800' } },
                     fontFamily: {
-                        display: ['Playfair Display', 'serif'],
-                        sans: ['Comfortaa', 'sans-serif'],
+                        sans: ['Comfortaa', 'cursive', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
                     }
                 }
             }
         }
     </script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/barra-progresso.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 
-<body class="bg-white dark:bg-black text-neutral-800 dark:text-neutral-300 antialiased transition-colors duration-300">
+<body class="bg-white text-black dark:bg-black dark:text-white transition-colors duration-500 antialiased">
 
     <!-- Header -->
     <header
         class="bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-900 px-4 sm:px-6 py-4 sm:py-6 sticky top-0 z-50">
         <div class="container mx-auto max-w-5xl flex items-center justify-between gap-4">
             <a href="#top">
-                <img id="header-logo" src="../images/logo-black3-sbg.png" alt="Logo"
+                <img id="header-logo" src="../images/logo/logo-white-gold-removebg-preview.png" alt="Logo"
                     class="max-w-[80px] sm:max-w-[100px] h-auto opacity-100 transition-opacity duration-300">
             </a>
             <div class="flex items-center gap-3 sm:gap-6">
-                <a href="../index.html"
+                <a href="lista-espera-curso.html"
                     class="hidden md:inline-block text-xs sm:text-sm uppercase tracking-widest hover:text-brand-orange transition whitespace-nowrap">Lista
                     de Espera</a>
                 <a href="sobre.html"
