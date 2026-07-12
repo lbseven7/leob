@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valores Tonais — Escola de Pintura Hiper Realista</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg:     'hsl(0 0% 4%)',
+            fg:     'hsl(40 10% 94%)',
+            card:   'hsl(0 0% 6%)',
+            muted:  'hsl(0 0% 55%)',
+            accent: 'hsl(38 55% 59%)',
+            border: 'hsl(0 0% 14%)',
+          },
+          fontFamily: {
+            display: ['Cormorant Garamond', 'Georgia', 'serif'],
+            body:    ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body { -webkit-font-smoothing: antialiased; }
+    ::selection { background: hsl(38 55% 59% / 0.3); }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: hsl(0 0% 4%); }
+    ::-webkit-scrollbar-thumb { background: hsl(0 0% 14%); border-radius: 4px; }
+
+    .fade-in  { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn  { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .swatch-grow { animation: growUp 0.4s ease-out; transform-origin: bottom; }
+    @keyframes growUp  { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+    /* Slider custom styling */
+    input[type=range] { -webkit-appearance: none; appearance: none; height: 4px; border-radius: 2px; background: hsl(0 0% 14%); outline: none; cursor: pointer; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: hsl(38 55% 59%); cursor: pointer; border: 2px solid hsl(0 0% 4%); }
+    input[type=range]::-moz-range-thumb    { width: 16px; height: 16px; border-radius: 50%; background: hsl(38 55% 59%); cursor: pointer; border: 2px solid hsl(0 0% 4%); }
+
+    /* Upload zone drag-over */
+    .drag-over { border-color: hsl(38 55% 59%) !important; background: hsl(38 55% 59% / 0.06) !important; }
+  </style>
+</head>
+<body class="bg-bg text-fg font-body min-h-screen">
+
+  <!-- ── NAV ── -->
+  <nav class="fixed top-0 w-full z-50 backdrop-blur-xl bg-bg/80 border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
+      <button onclick="navigate('home')" class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-full ring-1 ring-white/10" style="background: radial-gradient(circle at 40% 35%, #ffffff, #6b6b6b, #000000)"></div>
+        <span class="font-display text-lg tracking-wide">Valores Tonais</span>
+      </button>
+      <div class="hidden md:flex items-center gap-1">
+        <button onclick="navigate('escala')"    data-nav="escala"    class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Escala de Cinzas</button>
+        <button onclick="navigate('treino')"    data-nav="treino"    class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Treino de Valores</button>
+        <button onclick="navigate('misturas')"  data-nav="misturas"  class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Guia de Misturas</button>
+        <button onclick="navigate('converter')" data-nav="converter" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Converter</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Mobile bottom nav ── -->
+  <div class="md:hidden fixed bottom-0 w-full z-50 backdrop-blur-xl bg-bg/90 border-t border-white/5">
+    <div class="flex justify-around py-2">
+      <button onclick="navigate('home')"      class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-accent"><span>●</span><span>Início</span></button>
+      <button onclick="navigate('escala')"    class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted"><span>▮</span><span>Escala</span></button>
+      <button onclick="navigate('treino')"    class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted"><span>▤</span><span>Treino</span></button>
+      <button onclick="navigate('misturas')"  class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted"><span>◇</span><span>Misturas</span></button>
+      <button onclick="navigate('converter')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted"><span>⊡</span><span>Converter</span></button>
+    </div>
+  </div>
+
+  <main id="app" class="pt-16 pb-20 md:pb-0"></main>
+
+  <script>
+  // ── Data ──────────────────────────────────────────────────────────────
+  const escalaCinza = [
+    { valor:0,  hex:'#FFFFFF', branco:10, preto:0,  nome:'Branco Puro'       },
+    { valor:1,  hex:'#E6E6E6', branco:9,  preto:1,  nome:'Cinza Claro 1'     },
+    { valor:2,  hex:'#CCCCCC', branco:8,  preto:2,  nome:'Cinza Claro 2'     },
+    { valor:3,  hex:'#B3B3B3', branco:7,  preto:3,  nome:'Cinza Claro 3'     },
+    { valor:4,  hex:'#999999', branco:6,  preto:4,  nome:'Cinza Médio Claro' },
+    { valor:5,  hex:'#808080', branco:5,  preto:5,  nome:'Cinza Médio'       },
+    { valor:6,  hex:'#666666', branco:4,  preto:6,  nome:'Cinza Médio Escuro'},
+    { valor:7,  hex:'#4D4D4D', branco:3,  preto:7,  nome:'Cinza Escuro 1'    },
+    { valor:8,  hex:'#333333', branco:2,  preto:8,  nome:'Cinza Escuro 2'    },
+    { valor:9,  hex:'#191919', branco:1,  preto:9,  nome:'Cinza Escuro 3'    },
+    { valor:10, hex:'#000000', branco:0,  preto:10, nome:'Preto Puro'        },
+  ];
+
+  const dicas = [
+    'Comece sempre com a cor mais clara (branco) e adicione o preto aos poucos.',
+    'Use uma espátula limpa para cada mistura — contaminação altera o valor.',
+    'Teste o tom sobre um pedaço de papel branco para avaliar corretamente.',
+    'O olho se adapta rapidamente: observe cada mistura por no máximo 5 segundos.',
+    'Prepare todos os 11 valores de uma vez para ter a escala completa à mão.',
+  ];
+
+  // ── Router ────────────────────────────────────────────────────────────
+  function navigate(page) {
+    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter };
+    document.getElementById('app').innerHTML = '';
+    (map[page] || renderHome)();
+    document.querySelectorAll('.nav-link').forEach(el => {
+      el.classList.toggle('text-accent', el.dataset.nav === page);
+      el.classList.toggle('text-muted',  el.dataset.nav !== page);
+    });
+    window.scrollTo(0, 0);
+  }
+
+  // ── Home ──────────────────────────────────────────────────────────────
+  function renderHome() {
+    const app = document.getElementById('app');
+    const strip = escalaCinza.map(v => `<div class="flex-1 swatch-grow" style="background-color:${v.hex};animation-delay:${0.05*v.valor}s"></div>`).join('');
+    const modulos = [
+      { id:'escala',   icon:'▮', title:'Escala de Cinzas',    desc:'Estude a escala completa de 11 valores, do branco puro ao preto absoluto.' },
+      { id:'treino',   icon:'▤', title:'Treino de Valores',   desc:'Pratique identificar valores tonais e avalie sua precisão visual.' },
+      { id:'misturas', icon:'◇', title:'Guia de Misturas',    desc:'Proporções exatas de branco e preto para obter cada tom de cinza.' },
+      { id:'converter',icon:'⊡', title:'Converter para Cinzas', desc:'Transforme qualquer imagem de referência em escala de cinzas para estudar valores tonais.' },
+    ].map(m => `
+      <button onclick="navigate('${m.id}')" class="group text-left block h-full p-8 rounded-2xl border border-white/10 hover:border-accent/40 bg-white/[0.02] hover:bg-white/[0.04] transition-all">
+        <div class="text-accent mb-6 text-2xl">${m.icon}</div>
+        <h3 class="font-display text-2xl mb-3">${m.title}</h3>
+        <p class="text-muted text-sm leading-relaxed mb-6 font-light">${m.desc}</p>
+        <span class="inline-flex items-center gap-2 text-sm text-accent group-hover:gap-3 transition-all">Acessar →</span>
+      </button>`).join('');
+
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)">
+        <section class="relative flex flex-col items-center justify-center px-6 py-24 md:py-40 text-center overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 flex" style="height:6px">${strip}</div>
+          <div class="fade-in relative z-10 max-w-3xl">
+            <p class="text-accent text-xs md:text-sm tracking-[0.3em] uppercase mb-6">Pintura Hiper Realista</p>
+            <h1 class="font-display text-5xl md:text-7xl leading-[1.05] mb-8">Domínio dos<br>Valores Tonais</h1>
+            <p class="text-muted text-lg md:text-xl leading-relaxed mb-12 max-w-2xl mx-auto font-light">
+              Aprenda a enxergar, classificar e misturar cada nuance de cinza. A base de toda pintura hiper realista começa no domínio dos valores.
+            </p>
+            <button onclick="navigate('escala')" class="inline-flex items-center gap-2 px-8 py-4 bg-fg text-bg rounded-full text-sm tracking-wide hover:bg-accent transition-colors">
+              Começar a aprender →
+            </button>
+          </div>
+        </section>
+        <section class="px-6 pb-16">
+          <div class="max-w-6xl mx-auto flex rounded-xl overflow-hidden border border-white/10" style="height:5rem">${strip}</div>
+        </section>
+        <section class="px-6 pb-24">
+          <div class="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-5 fade-in">${modulos}</div>
+        </section>
+      </div>`;
+  }
+
+  // ── Escala ────────────────────────────────────────────────────────────
+  let selecionadoIdx = 5;
+
+  function renderEscala() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-6xl mx-auto">
+          <div class="fade-in mb-12">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Escala de Cinzas</h1>
+            <p class="text-muted max-w-2xl font-light">A escala de valores é a espinha dorsal da pintura hiper realista. Toque em qualquer tom para explorar suas propriedades e misturas.</p>
+          </div>
+          <div id="escala-preview" class="mb-8"></div>
+          <div id="escala-strip"   class="mb-8"></div>
+          <div id="escala-details"></div>
+        </div>
+      </div>`;
+    renderEscalaStrip();
+    renderEscalaPreview();
+    renderEscalaDetails();
+  }
+
+  function renderEscalaStrip() {
+    const el = document.getElementById('escala-strip');
+    el.className = 'flex rounded-xl overflow-hidden border border-white/10';
+    el.style.height = '5rem';
+    el.innerHTML = escalaCinza.map((v,i) => `
+      <button onclick="selectEscala(${i})" class="flex-1 relative transition-all" style="background-color:${v.hex};${i===selecionadoIdx?'outline:2px solid hsl(38 55% 59%);outline-offset:-2px;z-index:10':''}">
+        <span class="absolute bottom-1.5 left-1/2 -translate-x-1/2 text-[10px] font-mono" style="color:${v.valor>5?'#999':'#333'}">${v.valor}</span>
+      </button>`).join('');
+  }
+
+  function selectEscala(i) { selecionadoIdx = i; renderEscalaStrip(); renderEscalaPreview(); renderEscalaDetails(); }
+
+  function renderEscalaPreview() {
+    const v = escalaCinza[selecionadoIdx];
+    const txt = v.valor > 5 ? 'hsl(0 0% 60%)' : 'hsl(0 0% 20%)';
+    document.getElementById('escala-preview').innerHTML = `
+      <div class="fade-in relative rounded-2xl overflow-hidden border border-white/10" style="background-color:${v.hex};height:16rem">
+        <div class="absolute inset-0 flex items-end justify-between p-6 md:p-8">
+          <div>
+            <p class="text-xs uppercase mb-1 opacity-60 tracking-[0.2em]" style="color:${txt}">Valor</p>
+            <p class="font-display leading-none" style="font-size:clamp(3.5rem,10vw,6rem);color:${txt}">${v.valor}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-sm" style="color:${txt}">${v.nome}</p>
+            <p class="text-xs font-mono mt-1 opacity-70" style="color:${txt}">${v.hex}</p>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function renderEscalaDetails() {
+    const v = escalaCinza[selecionadoIdx];
+    document.getElementById('escala-details').innerHTML = `
+      <div class="grid md:grid-cols-3 gap-4 fade-in">
+        <div class="p-6 rounded-xl border border-white/10 bg-white/[0.02]">
+          <p class="text-xs tracking-[0.2em] uppercase text-accent mb-2">Cor</p>
+          <p class="font-display text-2xl">${v.nome}</p>
+          <p class="text-sm text-muted font-mono mt-1">${v.hex}</p>
+        </div>
+        <div class="p-6 rounded-xl border border-white/10 bg-white/[0.02]">
+          <p class="text-xs tracking-[0.2em] uppercase text-accent mb-2">Branco</p>
+          <p class="font-display text-2xl">${v.branco} <span class="text-sm text-muted">partes</span></p>
+          <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
+            <div class="h-full bg-fg rounded-full transition-all duration-300" style="width:${v.branco*10}%"></div>
+          </div>
+        </div>
+        <div class="p-6 rounded-xl border border-white/10 bg-white/[0.02]">
+          <p class="text-xs tracking-[0.2em] uppercase text-accent mb-2">Preto</p>
+          <p class="font-display text-2xl">${v.preto} <span class="text-sm text-muted">partes</span></p>
+          <div class="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
+            <div class="h-full bg-black rounded-full transition-all duration-300" style="width:${v.preto*10}%"></div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // ── Treino ────────────────────────────────────────────────────────────
+  const TOTAL_RODADAS = 10;
+  let treinoState = { rodada:1, acertos:0, alvo:null, resposta:null, fase:'jogando' };
+
+  function sortearValor(excluirValor) {
+    let v;
+    do { v = escalaCinza[Math.floor(Math.random() * escalaCinza.length)]; }
+    while (excluirValor !== undefined && v.valor === excluirValor);
+    return v;
+  }
+
+  function renderTreino() {
+    treinoState = { rodada:1, acertos:0, alvo: sortearValor(), resposta:null, fase:'jogando' };
+    renderTreinoView();
+  }
+
+  function renderTreinoView() {
+    const app = document.getElementById('app');
+    const { rodada, acertos, alvo, resposta, fase } = treinoState;
+
+    // ── Resultado final
+    if (fase === 'resultado') {
+      const pct  = Math.round((acertos / TOTAL_RODADAS) * 100);
+      const msg  = pct >= 80 ? 'Excelente percepção tonal!' : pct >= 50 ? 'Bom progresso, continue praticando.' : 'Revise a escala de cinzas e tente novamente.';
+      app.innerHTML = `
+        <div style="min-height:calc(100vh - 4rem)" class="flex items-center justify-center px-6 py-12">
+          <div class="max-w-lg w-full text-center fade-in">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full border-2 border-accent mb-8">
+              <span class="text-accent text-3xl">★</span>
+            </div>
+            <h1 class="font-display text-5xl md:text-6xl mb-3">${pct}%</h1>
+            <p class="text-muted mb-2">Você acertou <span class="text-fg">${acertos}</span> de ${TOTAL_RODADAS} valores</p>
+            <p class="text-accent text-sm mb-12">${msg}</p>
+            <button onclick="navigate('treino')" class="inline-flex items-center gap-2 px-8 py-4 bg-fg text-bg rounded-full text-sm hover:bg-accent transition-colors">↻ Tentar novamente</button>
+          </div>
+        </div>`;
+      return;
+    }
+
+    // ── Botões de resposta (11 em linha, com bolinha colorida)
+    const botoesHtml = escalaCinza.map(cor => {
+      let bg = 'hsl(0 0% 6%)', border = 'hsl(0 0% 14%)', numColor = 'hsl(40 10% 94%)', opacity = '1';
+      if (resposta !== null) {
+        if (cor.valor === alvo.valor) { bg = 'hsl(38 55% 59% / 0.15)'; border = 'hsl(38 55% 59%)'; numColor = 'hsl(38 55% 59%)'; }
+        else if (cor.valor === resposta) { bg = 'hsl(0 72% 51% / 0.15)'; border = 'hsl(0 72% 51%)'; numColor = 'hsl(0 72% 51%)'; }
+        else opacity = '0.35';
+      }
+      const disabled = resposta !== null ? 'disabled' : '';
+      const onclick  = resposta !== null ? '' : `onclick="responderTreino(${cor.valor})"`;
+      return `
+        <button ${disabled} ${onclick}
+          class="flex flex-col items-center justify-center gap-2 py-3 rounded-xl transition-all"
+          style="background:${bg};border:1px solid ${border};opacity:${opacity};cursor:${resposta!==null?'default':'pointer'}"
+          ${resposta===null?`onmouseenter="this.style.borderColor='hsl(38 55% 59% / 0.6)'" onmouseleave="this.style.borderColor='hsl(0 0% 14%)'"`:''}>
+          <span class="font-mono text-sm font-medium" style="color:${numColor}">${cor.valor}</span>
+          <div class="w-5 h-5 rounded-full" style="background-color:${cor.hex};box-shadow:0 0 0 1px hsl(0 0% 25%)"></div>
+        </button>`;
+    }).join('');
+
+    // ── Feedback
+    let feedbackHtml = '';
+    if (resposta !== null) {
+      const ok = resposta === alvo.valor;
+      feedbackHtml = `
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 rounded-xl border border-white/10 bg-white/[0.02] fade-in">
+          <span style="color:${ok?'hsl(38 55% 59%)':'hsl(0 72% 51%)'}">
+            ${ok ? `✓ Correto! Valor ${alvo.valor} — ${alvo.nome}` : `✕ Incorreto. Correto: ${alvo.valor} — ${alvo.nome}`}
+          </span>
+          <button onclick="proximaRodadaTreino()" class="px-6 py-3 bg-fg text-bg rounded-full text-sm whitespace-nowrap hover:bg-accent transition-colors">
+            ${rodada >= TOTAL_RODADAS ? 'Ver resultado' : 'Próximo →'}
+          </button>
+        </div>`;
+    }
+
+    const progresso = ((rodada - 1) / TOTAL_RODADAS) * 100;
+
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16 fade-in">
+        <div class="max-w-6xl mx-auto">
+          <!-- Header -->
+          <div class="flex items-start justify-between mb-8">
+            <div>
+              <h1 class="font-display text-4xl md:text-5xl mb-1">Treino de Valores</h1>
+              <p class="text-sm font-light text-muted">Identifique o valor tonal correto da amostra</p>
+            </div>
+            <div class="text-right flex-shrink-0 ml-8">
+              <p class="text-sm text-muted">Rodada ${rodada}/${TOTAL_RODADAS}</p>
+              <p class="text-sm font-medium text-accent">Acertos: ${acertos}</p>
+            </div>
+          </div>
+          <!-- Barra de progresso -->
+          <div class="w-full rounded-full mb-10" style="height:3px;background:hsl(0 0% 14%)">
+            <div class="h-full rounded-full transition-all duration-500" style="width:${progresso}%;background:hsl(38 55% 59%)"></div>
+          </div>
+          <!-- Swatch largo -->
+          <div class="w-full rounded-2xl mb-10 fade-in" style="background-color:${alvo.hex};height:220px;border:1px solid hsl(0 0% 14%)"></div>
+          <!-- Botões de resposta (11 em uma linha) -->
+          <div class="grid mb-8" style="grid-template-columns:repeat(11,1fr);gap:0.5rem">
+            ${botoesHtml}
+          </div>
+          <!-- Feedback -->
+          ${feedbackHtml}
+        </div>
+      </div>`;
+  }
+
+  function responderTreino(valor) {
+    if (treinoState.resposta !== null) return;
+    treinoState.resposta = valor;
+    if (valor === treinoState.alvo.valor) treinoState.acertos++;
+    renderTreinoView();
+  }
+
+  function proximaRodadaTreino() {
+    if (treinoState.rodada >= TOTAL_RODADAS) { treinoState.fase = 'resultado'; renderTreinoView(); return; }
+    treinoState.rodada++;
+    treinoState.alvo = sortearValor(treinoState.alvo.valor);
+    treinoState.resposta = null;
+    renderTreinoView();
+  }
+
+  // ── Misturas ──────────────────────────────────────────────────────────
+  function renderMisturas() {
+    const app = document.getElementById('app');
+    const rows = escalaCinza.map((v,i) => `
+      <div class="grid items-center p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors fade-in" style="grid-template-columns:auto auto 1fr 1fr auto;gap:1rem;animation-delay:${i*0.04}s">
+        <div><p class="font-display text-3xl">${v.valor}</p></div>
+        <div class="rounded-lg border border-white/10" style="width:3.5rem;height:3rem;background-color:${v.hex}"></div>
+        <div>
+          <p class="text-sm font-medium">${v.nome}</p>
+          <p class="text-xs text-muted font-mono">${v.hex}</p>
+        </div>
+        <div class="flex items-center gap-2 text-xs">
+          <span class="text-right w-8 text-muted">${v.branco}B</span>
+          <div class="flex-1 h-6 rounded overflow-hidden flex" style="box-shadow:0 0 0 1px hsl(0 0% 14%)">
+            ${v.branco > 0 ? `<div class="bg-white" style="width:${v.branco*10}%"></div>` : ''}
+            ${v.preto  > 0 ? `<div class="bg-black" style="width:${v.preto*10}%"></div>`  : ''}
+          </div>
+          <span class="w-8 text-muted">${v.preto}P</span>
+        </div>
+        <div class="text-right">
+          <p class="text-xs text-muted">${v.branco===0?'100% preto':v.preto===0?'100% branco':`${v.branco}:${v.preto}`}</p>
+        </div>
+      </div>`).join('');
+    const tips = dicas.map(d => `<li>• ${d}</li>`).join('');
+
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-6xl mx-auto">
+          <div class="fade-in mb-12">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Guia de Misturas</h1>
+            <p class="text-muted max-w-2xl font-light">Cada valor tonal é obtido misturando branco e preto em proporções precisas. Use este guia como referência ao preparar suas tintas.</p>
+          </div>
+          <div class="space-y-3">${rows}</div>
+          <div class="mt-16 p-8 rounded-2xl border border-accent/20 bg-accent/[0.03] fade-in">
+            <div class="flex items-start gap-4">
+              <span class="text-accent flex-shrink-0 mt-1 text-2xl">◇</span>
+              <div>
+                <h3 class="font-display text-xl mb-4">Dicas de Mistura</h3>
+                <ul class="space-y-2 text-sm text-muted">${tips}</ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // ── Converter para Cinzas ─────────────────────────────────────────────
+  let converterState = {
+    originalImageData: null,
+    originalImg: null,
+    brilho: 0, contraste: 0, intensidade: 100,
+    metodo: 'luminancia',
+  };
+
+  function renderConverter() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-6xl mx-auto">
+
+          <!-- Header -->
+          <div class="fade-in mb-10">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Converter para Cinzas</h1>
+            <p class="text-muted max-w-2xl font-light">Faça o upload de uma foto de referência e converta-a para escala de cinzas para estudar valores tonais. Ajuste brilho e contraste para focar nos valores que importam.</p>
+          </div>
+
+          <!-- Upload zone -->
+          <div id="upload-zone"
+            class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 mb-8 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]"
+            style="min-height:220px"
+            onclick="document.getElementById('file-input').click()"
+            ondragover="handleDragOver(event)"
+            ondragleave="handleDragLeave(event)"
+            ondrop="handleDrop(event)">
+            <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="handleFileChange(event)" />
+            <div id="upload-placeholder" class="flex flex-col items-center gap-3 text-center p-8">
+              <div class="w-14 h-14 rounded-full bg-white/[0.06] flex items-center justify-center">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </div>
+              <p class="font-display text-xl">Clique ou arraste uma imagem</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
+            </div>
+          </div>
+
+          <!-- Canvases (hidden until image is loaded) -->
+          <div id="canvas-section" class="hidden mb-8">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Original</p>
+                <canvas id="canvas-original" class="w-full rounded-xl border border-white/10" style="max-height:400px;object-fit:contain"></canvas>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-accent mb-3">Resultado</p>
+                <canvas id="canvas-resultado" class="w-full rounded-xl border border-white/10" style="max-height:400px;object-fit:contain"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stats (hidden until image) -->
+          <div id="stats-section" class="hidden mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
+              <p class="text-xs uppercase tracking-[0.2em] text-accent mb-1">Valor Médio</p>
+              <p id="stat-valor" class="font-display text-2xl">—</p>
+            </div>
+            <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
+              <p class="text-xs uppercase tracking-[0.2em] text-accent mb-1">Luminosidade</p>
+              <p id="stat-lumi" class="font-display text-2xl">—</p>
+            </div>
+            <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
+              <p class="text-xs uppercase tracking-[0.2em] text-accent mb-1">Faixa Dominante</p>
+              <p id="stat-faixa" class="font-display text-xl">—</p>
+            </div>
+            <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
+              <p class="text-xs uppercase tracking-[0.2em] text-accent mb-1">Contraste</p>
+              <p id="stat-contraste" class="font-display text-xl">—</p>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="p-8 rounded-2xl border border-white/10 bg-white/[0.02] mb-6">
+            <div class="grid md:grid-cols-2 gap-8">
+
+              <!-- Sliders -->
+              <div class="space-y-6">
+                <h3 class="font-display text-xl mb-4">Ajustes</h3>
+                <div>
+                  <div class="flex justify-between text-sm mb-2">
+                    <span>Brilho</span>
+                    <span id="val-brilho" class="text-accent font-mono">0</span>
+                  </div>
+                  <input type="range" id="sl-brilho" min="-100" max="100" value="0" class="w-full" oninput="onSlider('brilho', this.value)" />
+                </div>
+                <div>
+                  <div class="flex justify-between text-sm mb-2">
+                    <span>Contraste</span>
+                    <span id="val-contraste" class="text-accent font-mono">0</span>
+                  </div>
+                  <input type="range" id="sl-contraste" min="-100" max="100" value="0" class="w-full" oninput="onSlider('contraste', this.value)" />
+                </div>
+                <div>
+                  <div class="flex justify-between text-sm mb-2">
+                    <span>Intensidade do Cinza</span>
+                    <span id="val-intensidade" class="text-accent font-mono">100%</span>
+                  </div>
+                  <input type="range" id="sl-intensidade" min="0" max="100" value="100" class="w-full" oninput="onSlider('intensidade', this.value)" />
+                  <p class="text-xs text-muted mt-1">0% = cor original · 100% = cinza completo</p>
+                </div>
+              </div>
+
+              <!-- Método -->
+              <div>
+                <h3 class="font-display text-xl mb-4">Método de Conversão</h3>
+                <div class="space-y-3">
+                  ${[
+                    { id:'luminancia', label:'Luminância <span class="text-accent text-xs">(recomendado)</span>', desc:'Pesos ITU-R BT.601: 0.299R + 0.587G + 0.114B. Mais próximo da percepção humana.' },
+                    { id:'media',      label:'Média simples',         desc:'Média aritmética dos canais R, G e B.' },
+                    { id:'maximo',     label:'Valor máximo',          desc:'Usa o canal com maior valor entre R, G e B.' },
+                  ].map(m => `
+                    <label class="flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all ${m.id==='luminancia'?'border-accent/40 bg-accent/[0.04]':'border-white/10 hover:border-white/20'}" id="lbl-${m.id}">
+                      <input type="radio" name="metodo" value="${m.id}" ${m.id==='luminancia'?'checked':''} class="mt-1 accent-[hsl(38,55%,59%)]" onchange="onMetodo('${m.id}')" />
+                      <div>
+                        <p class="text-sm font-medium">${m.label}</p>
+                        <p class="text-xs text-muted mt-0.5">${m.desc}</p>
+                      </div>
+                    </label>`).join('')}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botões -->
+          <div class="flex flex-col sm:flex-row gap-4">
+            <button onclick="resetarAjustes()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
+              Redefinir Ajustes
+            </button>
+            <button id="btn-download" onclick="baixarImagem()" disabled
+              class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              style="background:hsl(38 55% 59%);color:hsl(0 0% 4%)"
+              onmouseenter="if(!this.disabled) this.style.background='hsl(38 55% 50%)'"
+              onmouseleave="if(!this.disabled) this.style.background='hsl(38 55% 59%)'">
+              Baixar Imagem (PNG)
+            </button>
+            <button onclick="document.getElementById('file-input').click()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
+              Trocar Imagem
+            </button>
+          </div>
+
+        </div>
+      </div>`;
+  }
+
+  // ── Converter: handlers ───────────────────────────────────────────────
+  function handleDragOver(e) { e.preventDefault(); document.getElementById('upload-zone').classList.add('drag-over'); }
+  function handleDragLeave(e) { document.getElementById('upload-zone').classList.remove('drag-over'); }
+  function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('upload-zone').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) processFile(file);
+  }
+  function handleFileChange(e) { if (e.target.files[0]) processFile(e.target.files[0]); }
+
+  function processFile(file) {
+    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        converterState.originalImg = img;
+        // Draw original
+        const cOrig = document.getElementById('canvas-original');
+        const maxW = 800, maxH = 600;
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
+        cOrig.width = w; cOrig.height = h;
+        const ctx = cOrig.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        converterState.originalImageData = ctx.getImageData(0, 0, w, h);
+        // Show sections
+        document.getElementById('canvas-section').classList.remove('hidden');
+        document.getElementById('stats-section').classList.remove('hidden');
+        document.getElementById('btn-download').disabled = false;
+        document.getElementById('upload-placeholder').innerHTML = `
+          <p class="text-muted text-sm">Imagem carregada: <span class="text-fg">${file.name}</span></p>`;
+        // Process
+        aplicarFiltros();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function onSlider(campo, valor) {
+    converterState[campo] = Number(valor);
+    const el = document.getElementById('val-' + campo);
+    if (el) el.textContent = campo === 'intensidade' ? valor + '%' : valor;
+    aplicarFiltros();
+  }
+
+  function onMetodo(m) {
+    converterState.metodo = m;
+    ['luminancia','media','maximo'].forEach(id => {
+      const lbl = document.getElementById('lbl-' + id);
+      if (!lbl) return;
+      if (id === m) {
+        lbl.style.borderColor = 'hsl(38 55% 59% / 0.4)';
+        lbl.style.background  = 'hsl(38 55% 59% / 0.04)';
+      } else {
+        lbl.style.borderColor = 'hsl(0 0% 14%)';
+        lbl.style.background  = 'transparent';
+      }
+    });
+    aplicarFiltros();
+  }
+
+  function resetarAjustes() {
+    converterState.brilho = 0; converterState.contraste = 0; converterState.intensidade = 100; converterState.metodo = 'luminancia';
+    ['brilho','contraste','intensidade'].forEach(c => {
+      const sl = document.getElementById('sl-' + c);
+      const vl = document.getElementById('val-' + c);
+      if (sl) sl.value = c === 'intensidade' ? 100 : 0;
+      if (vl) vl.textContent = c === 'intensidade' ? '100%' : '0';
+    });
+    document.querySelector('input[name=metodo][value=luminancia]').checked = true;
+    onMetodo('luminancia');
+    aplicarFiltros();
+  }
+
+  function aplicarFiltros() {
+    if (!converterState.originalImageData) return;
+    const { originalImageData, brilho, contraste, intensidade, metodo, originalImg } = converterState;
+    const cRes = document.getElementById('canvas-resultado');
+    cRes.width  = originalImageData.width;
+    cRes.height = originalImageData.height;
+    const ctx   = cRes.getContext('2d');
+    const src   = originalImageData.data;
+    const out   = ctx.createImageData(cRes.width, cRes.height);
+    const d     = out.data;
+    const iRatio = intensidade / 100;
+    const contrastFactor = (259 * (contraste + 255)) / (255 * (259 - contraste));
+    let totalGray = 0, minGray = 255, maxGray = 0;
+
+    for (let i = 0; i < src.length; i += 4) {
+      const r = src[i], g = src[i+1], b = src[i+2];
+      let gray;
+      if      (metodo === 'luminancia') gray = 0.299*r + 0.587*g + 0.114*b;
+      else if (metodo === 'media')      gray = (r + g + b) / 3;
+      else                              gray = Math.max(r, g, b);
+
+      // Brilho
+      gray = Math.min(255, Math.max(0, gray + brilho * 2.55));
+      // Contraste
+      gray = Math.min(255, Math.max(0, contrastFactor * (gray - 128) + 128));
+
+      const gInt = Math.round(gray);
+      totalGray += gInt;
+      if (gInt < minGray) minGray = gInt;
+      if (gInt > maxGray) maxGray = gInt;
+
+      // Blend com original
+      const fR = Math.round(gInt * iRatio + r * (1 - iRatio));
+      const fG = Math.round(gInt * iRatio + g * (1 - iRatio));
+      const fB = Math.round(gInt * iRatio + b * (1 - iRatio));
+      d[i]=fR; d[i+1]=fG; d[i+2]=fB; d[i+3]=255;
+    }
+    ctx.putImageData(out, 0, 0);
+
+    // Stats
+    const pixels  = (src.length / 4);
+    const avgGray = totalGray / pixels;
+    const avgVal  = Math.round((avgGray / 255) * 10 * 10) / 10;
+    const range   = maxGray - minGray;
+    const faixa   = avgGray < 85 ? 'Escuro' : avgGray < 170 ? 'Médio' : 'Claro';
+    const ctStr   = range < 80 ? 'Baixo' : range < 160 ? 'Médio' : 'Alto';
+
+    const sv = document.getElementById('stat-valor');
+    const sl = document.getElementById('stat-lumi');
+    const sf = document.getElementById('stat-faixa');
+    const sc = document.getElementById('stat-contraste');
+    if (sv) sv.textContent = avgVal.toFixed(1);
+    if (sl) sl.textContent = Math.round(avgGray);
+    if (sf) sf.textContent = faixa;
+    if (sc) sc.textContent = ctStr;
+  }
+
+  function baixarImagem() {
+    const canvas = document.getElementById('canvas-resultado');
+    if (!canvas) return;
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href = url; a.download = 'cinzas.png';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
+
+  // ── Init ──────────────────────────────────────────────────────────────
+  navigate('home');
+  </script>
+</body>
+</html>
