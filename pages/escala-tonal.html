@@ -63,6 +63,7 @@
         <button onclick="navigate('treino')"    data-nav="treino"    class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Treino de Valores</button>
         <button onclick="navigate('misturas')"  data-nav="misturas"  class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Guia de Misturas</button>
         <button onclick="navigate('converter')" data-nav="converter" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Converter</button>
+        <button onclick="navigate('posterizar')" data-nav="posterizar" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Posterizar</button>
       </div>
     </div>
   </nav>
@@ -75,6 +76,7 @@
       <button onclick="navigate('treino')"    class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted"><span>▤</span><span>Treino</span></button>
       <button onclick="navigate('misturas')"  class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted"><span>◇</span><span>Misturas</span></button>
       <button onclick="navigate('converter')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted"><span>⊡</span><span>Converter</span></button>
+      <button onclick="navigate('posterizar')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted"><span>◧</span><span>Posterizar</span></button>
     </div>
   </div>
 
@@ -106,7 +108,7 @@
 
   // ── Router ────────────────────────────────────────────────────────────
   function navigate(page) {
-    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter };
+    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter, posterizar: renderPosterizar };
     document.getElementById('app').innerHTML = '';
     (map[page] || renderHome)();
     document.querySelectorAll('.nav-link').forEach(el => {
@@ -125,6 +127,7 @@
       { id:'treino',   icon:'▤', title:'Treino de Valores',   desc:'Pratique identificar valores tonais e avalie sua precisão visual.' },
       { id:'misturas', icon:'◇', title:'Guia de Misturas',    desc:'Proporções exatas de branco e preto para obter cada tom de cinza.' },
       { id:'converter',icon:'⊡', title:'Converter para Cinzas', desc:'Transforme qualquer imagem de referência em escala de cinzas para estudar valores tonais.' },
+      { id:'posterizar',icon:'◧', title:'Posterizar',           desc:'Reduza a imagem a poucos tons para enxergar as regiões de valor como blocos distintos.' },
     ].map(m => `
       <button onclick="navigate('${m.id}')" class="group text-left block h-full p-8 rounded-2xl border border-white/10 hover:border-accent/40 bg-white/[0.02] hover:bg-white/[0.04] transition-all">
         <div class="text-accent mb-6 text-2xl">${m.icon}</div>
@@ -690,6 +693,257 @@
       const url = URL.createObjectURL(blob);
       const a   = document.createElement('a');
       a.href = url; a.download = 'cinzas.png';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
+
+  // ── Posterizar ──────────────────────────────────────────────────────
+  let posterizeState = {
+    originalImageData: null,
+    niveis: 4,
+    metodo: 'luminancia',
+    contorno: false,
+  };
+
+  function renderPosterizar() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-6xl mx-auto">
+
+          <!-- Header -->
+          <div class="fade-in mb-10">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Posterizar</h1>
+            <p class="text-muted max-w-2xl font-light">Reduza qualquer imagem a poucos tons de cinza para enxergar apenas as regiões de valor — como blocos. Essa é a forma mais eficaz de treinar o olhar para pintar.</p>
+          </div>
+
+          <!-- Upload zone -->
+          <div id="pz-upload-zone"
+            class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 mb-8 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]"
+            style="min-height:220px"
+            onclick="document.getElementById('pz-file-input').click()"
+            ondragover="pzHandleDragOver(event)"
+            ondragleave="pzHandleDragLeave(event)"
+            ondrop="pzHandleDrop(event)">
+            <input type="file" id="pz-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="pzHandleFileChange(event)" />
+            <div id="pz-upload-placeholder" class="flex flex-col items-center gap-3 text-center p-8">
+              <div class="w-14 h-14 rounded-full bg-white/[0.06] flex items-center justify-center">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </div>
+              <p class="font-display text-xl">Clique ou arraste uma imagem</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
+            </div>
+          </div>
+
+          <!-- Canvases -->
+          <div id="pz-canvas-section" class="hidden mb-8">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Original</p>
+                <canvas id="pz-canvas-original" class="w-full rounded-xl border border-white/10" style="max-height:400px;object-fit:contain"></canvas>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-accent mb-3">Posterizado</p>
+                <canvas id="pz-canvas-resultado" class="w-full rounded-xl border border-white/10" style="max-height:400px;object-fit:contain"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div id="pz-controls-section" class="hidden p-8 rounded-2xl border border-white/10 bg-white/[0.02] mb-6">
+            <div class="grid md:grid-cols-2 gap-8">
+              <div class="space-y-6">
+                <h3 class="font-display text-xl mb-4">Número de Tons</h3>
+                <div class="flex gap-3" id="pz-levels">
+                  ${[3,4,5,7,11].map(n => `
+                    <button onclick="pzSetNiveis(${n})" data-nivel="${n}"
+                      class="px-5 py-3 rounded-xl text-sm font-medium transition-all ${n===4?'border-accent/40 bg-accent/[0.04] text-accent border':'border-white/10 text-muted hover:border-white/20'}">
+                      ${n} tons
+                    </button>`).join('')}
+                </div>
+                <p class="text-xs text-muted mt-2">Menos tons = formas mais simplificadas. 3–5 é ideal para estudo.</p>
+
+                <h3 class="font-display text-xl mt-6 mb-4">Método de Conversão</h3>
+                <div class="space-y-3">
+                  ${[
+                    { id:'luminancia', label:'Luminância <span class="text-accent text-xs">(recomendado)</span>', desc:'Pesos ITU-R BT.601. Mais próximo da percepção humana.' },
+                    { id:'media',      label:'Média simples',         desc:'Média aritmética dos canais R, G e B.' },
+                  ].map(m => `
+                    <label class="flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all ${m.id==='luminancia'?'border-accent/40 bg-accent/[0.04]':'border-white/10 hover:border-white/20'}" id="pz-lbl-${m.id}">
+                      <input type="radio" name="pz-metodo" value="${m.id}" ${m.id==='luminancia'?'checked':''} class="mt-1 accent-[hsl(38,55%,59%)]" onchange="pzOnMetodo('${m.id}')" />
+                      <div>
+                        <p class="text-sm font-medium">${m.label}</p>
+                        <p class="text-xs text-muted mt-0.5">${m.desc}</p>
+                      </div>
+                    </label>`).join('')}
+                </div>
+              </div>
+
+              <div class="space-y-6">
+                <h3 class="font-display text-xl mb-4">Legenda</h3>
+                <div id="pz-legenda" class="space-y-2"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botões -->
+          <div id="pz-actions" class="hidden flex flex-col sm:flex-row gap-4">
+            <button id="pz-btn-download" onclick="pzBaixarImagem()"
+              class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors"
+              style="background:hsl(38 55% 59%);color:hsl(0 0% 4%)"
+              onmouseenter="this.style.background='hsl(38 55% 50%)'"
+              onmouseleave="this.style.background='hsl(38 55% 59%)'">
+              Baixar Posterizado (PNG)
+            </button>
+            <button onclick="document.getElementById('pz-file-input').click()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
+              Trocar Imagem
+            </button>
+          </div>
+
+        </div>
+      </div>`;
+  }
+
+  function pzSetNiveis(n) {
+    posterizeState.niveis = n;
+    document.querySelectorAll('#pz-levels button').forEach(btn => {
+      const v = Number(btn.dataset.nivel);
+      btn.className = v === n
+        ? 'px-5 py-3 rounded-xl text-sm font-medium transition-all border-accent/40 bg-accent/[0.04] text-accent border'
+        : 'px-5 py-3 rounded-xl text-sm font-medium transition-all border-white/10 text-muted hover:border-white/20 border';
+    });
+    pzAplicarPosterizacao();
+  }
+
+  function pzOnMetodo(m) {
+    posterizeState.metodo = m;
+    ['luminancia','media'].forEach(id => {
+      const lbl = document.getElementById('pz-lbl-' + id);
+      if (!lbl) return;
+      if (id === m) {
+        lbl.style.borderColor = 'hsl(38 55% 59% / 0.4)';
+        lbl.style.background  = 'hsl(38 55% 59% / 0.04)';
+      } else {
+        lbl.style.borderColor = 'hsl(0 0% 14%)';
+        lbl.style.background  = 'transparent';
+      }
+    });
+    pzAplicarPosterizacao();
+  }
+
+  function pzHandleDragOver(e) { e.preventDefault(); document.getElementById('pz-upload-zone').classList.add('drag-over'); }
+  function pzHandleDragLeave(e) { document.getElementById('pz-upload-zone').classList.remove('drag-over'); }
+  function pzHandleDrop(e) {
+    e.preventDefault();
+    document.getElementById('pz-upload-zone').classList.remove('drag-over');
+    if (e.dataTransfer.files[0]) pzProcessFile(e.dataTransfer.files[0]);
+  }
+  function pzHandleFileChange(e) { if (e.target.files[0]) pzProcessFile(e.target.files[0]); }
+
+  function pzProcessFile(file) {
+    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const cOrig = document.getElementById('pz-canvas-original');
+        const maxW = 800, maxH = 600;
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
+        cOrig.width = w; cOrig.height = h;
+        const ctx = cOrig.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        posterizeState.originalImageData = ctx.getImageData(0, 0, w, h);
+
+        document.getElementById('pz-canvas-section').classList.remove('hidden');
+        document.getElementById('pz-controls-section').classList.remove('hidden');
+        document.getElementById('pz-actions').classList.remove('hidden');
+        document.getElementById('pz-upload-placeholder').innerHTML =
+          `<p class="text-muted text-sm">Imagem carregada: <span class="text-fg">${file.name}</span></p>`;
+
+        pzAplicarPosterizacao();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function pzAplicarPosterizacao() {
+    if (!posterizeState.originalImageData) return;
+    const { originalImageData, niveis, metodo } = posterizeState;
+    const cRes = document.getElementById('pz-canvas-resultado');
+    cRes.width  = originalImageData.width;
+    cRes.height = originalImageData.height;
+    const ctx   = cRes.getContext('2d');
+    const src   = originalImageData.data;
+    const out   = ctx.createImageData(cRes.width, cRes.height);
+    const d     = out.data;
+
+    const passo   = 255 / (niveis - 1);
+    const valorMax = (niveis - 1) * passo;
+    const escala  = escalaCinza;
+
+    for (let i = 0; i < src.length; i += 4) {
+      const r = src[i], g = src[i+1], b = src[i+2];
+      let gray = metodo === 'luminancia'
+        ? 0.299*r + 0.587*g + 0.114*b
+        : (r + g + b) / 3;
+
+      const idx = Math.round(gray / passo);
+      const clampIdx = Math.min(idx, niveis - 1);
+      const posterGray = Math.round(clampIdx * passo);
+
+      // Se 11 níveis, mapear diretamente para a escala 0–10
+      let finalGray;
+      if (niveis === 11) {
+        const escIdx = Math.min(Math.round((gray / 255) * 10), 10);
+        finalGray = Math.round(escIdx * 25.5);
+      } else {
+        finalGray = posterGray;
+      }
+
+      const fR = Math.round(finalGray * (r / 255));
+      const fG = Math.round(finalGray * (g / 255));
+      const fB = Math.round(finalGray * (b / 255));
+      d[i] = fR; d[i+1] = fG; d[i+2] = fB; d[i+3] = 255;
+    }
+    ctx.putImageData(out, 0, 0);
+
+    // Legenda
+    const legenda = document.getElementById('pz-legenda');
+    let html = '';
+    for (let i = 0; i < niveis; i++) {
+      const val = niveis === 11 ? i : Math.round((i / (niveis - 1)) * 10);
+      const hex = niveis === 11 ? escala[i].hex : `#${Math.round(i * passo).toString(16).padStart(2,'0').repeat(3)}`;
+      const nome = niveis === 11 ? escala[val].nome : `Tom ${i + 1}`;
+      const branco = niveis === 11 ? escala[val].branco : Math.round(((niveis - 1 - i) / (niveis - 1)) * 10);
+      const preto  = niveis === 11 ? escala[val].preto  : Math.round((i / (niveis - 1)) * 10);
+      html += `
+        <div class="flex items-center gap-3 p-3 rounded-lg border border-white/10 bg-white/[0.02] fade-in" style="animation-delay:${i * 0.04}s">
+          <div class="w-10 h-10 rounded-lg flex-shrink-0" style="background-color:${hex};${i === 0 ? 'box-shadow:inset 0 0 0 1px hsl(0 0% 20%)' : ''}"></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium">${nome}</p>
+            <p class="text-xs text-muted font-mono">${hex}</p>
+          </div>
+          <div class="text-right flex-shrink-0">
+            <p class="text-xs text-muted">${branco}B : ${preto}P</p>
+          </div>
+        </div>`;
+    }
+    legenda.innerHTML = html;
+  }
+
+  function pzBaixarImagem() {
+    const canvas = document.getElementById('pz-canvas-resultado');
+    if (!canvas) return;
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href = url; a.download = 'posterizado.png';
       document.body.appendChild(a); a.click();
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
