@@ -71,7 +71,7 @@
   <nav class="fixed top-0 w-full z-50 backdrop-blur-xl bg-bg/80 border-b border-white/5">
     <div class="max-w-7xl mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
       <button onclick="navigate('home')" class="flex items-center gap-2.5">
-        <img src="../images/logo-black3-sbg.png" alt="logo" class="[width:120px] [height:120px]">
+        <img src="../images/logo/logo-white-gold-removebg-preview.png" alt="logo" class="w-16 h-16">
       </button>
       <div class="hidden md:flex items-center gap-1">
         <button onclick="navigate('escala')"    data-nav="escala"    class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Escala de Cinzas</button>
@@ -80,6 +80,7 @@
         <button onclick="navigate('converter')" data-nav="converter" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Converter</button>
         <button onclick="navigate('posterizar')" data-nav="posterizar" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Posterizar</button>
         <button onclick="navigate('zonas')" data-nav="zonas" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Mapear Zonas</button>
+        <button onclick="navigate('riscoLinear')" data-nav="riscoLinear" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Risco Linear</button>
         <button onclick="navigate('imprimir')" data-nav="imprimir" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Imprimir</button>
       </div>
     </div>
@@ -95,6 +96,7 @@
       <button onclick="navigate('converter')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>⊡</span><span>Converter</span></button>
       <button onclick="navigate('posterizar')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>◧</span><span>Posterizar</span></button>
       <button onclick="navigate('zonas')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>▦</span><span>Zonas</span></button>
+      <button onclick="navigate('riscoLinear')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>◐</span><span>Risco</span></button>
       <button onclick="navigate('imprimir')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>▧</span><span>Imprimir</span></button>
     </div>
   </div>
@@ -137,7 +139,7 @@
 
   // ── Router ────────────────────────────────────────────────────────────
   function navigate(page) {
-    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, imprimir: renderImprimir };
+    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, imprimir: renderImprimir };
     document.getElementById('app').innerHTML = '';
     (map[page] || renderHome)();
     document.querySelectorAll('.nav-link').forEach(el => {
@@ -158,6 +160,7 @@
       { id:'converter',icon:'⊡', title:'Converter para Cinzas', desc:'Transforme qualquer imagem de referência em escala de cinzas para estudar valores tonais.' },
       { id:'posterizar',icon:'◧', title:'Posterizar',           desc:'Reduza a imagem a poucos tons para enxergar as regiões de valor como blocos distintos.' },
       { id:'zonas',     icon:'▦', title:'Mapear Zonas',          desc:'Divida a imagem em zonas e identifique o valor dominante de cada região — como um mapa tonal.' },
+      { id:'riscoLinear',icon:'◐', title:'Risco Linear',          desc:'Extraia o contorno da imagem como um desenho de linha — ideal para estudar formas e preparar a tela.' },
     ].map(m => `
       <button onclick="navigate('${m.id}')" class="group text-left block h-full p-8 rounded-2xl border border-white/10 hover:border-accent/40 bg-white/[0.02] hover:bg-white/[0.04] transition-all">
         <div class="text-accent mb-6 text-2xl">${m.icon}</div>
@@ -1351,6 +1354,328 @@
       const url = URL.createObjectURL(blob);
       const a   = document.createElement('a');
       a.href = url; a.download = 'mapa-zonas.png';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
+
+  // ── Risco Linear ──────────────────────────────────────────────────────
+  let riscoState = {
+    originalImageData: null,
+    limiar: 30,
+    inversao: false,
+    suavizacao: 2,
+  };
+
+  function renderRiscoLinear() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-6xl mx-auto">
+
+          <!-- Header -->
+          <div class="fade-in mb-10">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Risco Linear</h1>
+            <p class="text-muted max-w-2xl font-light">Extraia os contornos de qualquer imagem como um desenho de linha. Ideal para estudar formas, preparar a tela com o contorno base, ou simplificar uma referência complexa.</p>
+          </div>
+
+          <!-- Upload zone -->
+          <div id="rl-upload-zone"
+            class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 mb-8 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]"
+            style="min-height:220px"
+            onclick="document.getElementById('rl-file-input').click()"
+            ondragover="rlHandleDragOver(event)"
+            ondragleave="rlHandleDragLeave(event)"
+            ondrop="rlHandleDrop(event)">
+            <input type="file" id="rl-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="rlHandleFileChange(event)" />
+            <div id="rl-upload-placeholder" class="flex flex-col items-center gap-3 text-center p-8">
+              <div class="w-14 h-14 rounded-full bg-white/[0.06] flex items-center justify-center">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </div>
+              <p class="font-display text-xl">Clique ou arraste uma imagem</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
+            </div>
+          </div>
+
+          <!-- Canvases -->
+          <div id="rl-canvas-section" class="hidden mb-8">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Original</p>
+                <canvas id="rl-canvas-original" class="w-full rounded-xl border border-white/10" style="max-height:400px;object-fit:contain"></canvas>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-accent mb-3">Risco Linear</p>
+                <canvas id="rl-canvas-resultado" class="w-full rounded-xl border border-white/10" style="max-height:400px;object-fit:contain"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div id="rl-controls-section" class="hidden p-8 rounded-2xl border border-white/10 bg-white/[0.02] mb-6">
+            <div class="grid md:grid-cols-2 gap-8">
+              <div class="space-y-6">
+                <h3 class="font-display text-xl mb-4">Ajustes</h3>
+                <div>
+                  <div class="flex justify-between text-sm mb-2">
+                    <span>Limiar (Sensibilidade)</span>
+                    <span id="rl-val-limiar" class="text-accent font-mono">30</span>
+                  </div>
+                  <input type="range" id="rl-sl-limiar" min="5" max="120" value="30" class="w-full" oninput="rlOnSlider('limiar', this.value)" />
+                  <p class="text-xs text-muted mt-1">Menor = mais detalhes · Maior = apenas contornos fortes</p>
+                </div>
+                <div>
+                  <div class="flex justify-between text-sm mb-2">
+                    <span>Suavização (Gauss)</span>
+                    <span id="rl-val-suavizacao" class="text-accent font-mono">2</span>
+                  </div>
+                  <input type="range" id="rl-sl-suavizacao" min="0" max="6" value="2" class="w-full" oninput="rlOnSlider('suavizacao', this.value)" />
+                  <p class="text-xs text-muted mt-1">Remove ruído antes da detecção. 0 = sem suavização.</p>
+                </div>
+                <div>
+                  <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="rl-inversao-toggle" onchange="rlOnInversao()" class="accent-[hsl(38,55%,59%)] w-4 h-4" />
+                    <span class="text-sm">Inverter cores (fundo branco)</span>
+                  </label>
+                  <p class="text-xs text-muted mt-1 ml-7">Linhas pretas em fundo branco — ideal para impressão e desenho na tela.</p>
+                </div>
+              </div>
+
+              <div class="space-y-6">
+                <h3 class="font-display text-xl mb-4">Sobre o Algoritmo</h3>
+                <div class="p-5 rounded-xl border border-white/10 bg-white/[0.02]">
+                  <p class="text-sm text-muted leading-relaxed">
+                    O algoritmo <span class="text-fg font-medium">Sobel</span> detecta bordas calculando o gradiente de intensidade em cada pixel. Primeiro, a imagem é convertida para cinzas e suavizada (filtro Gaussiano). Depois, duas máscaras 3×3 calculam a variação horizontal e vertical. A intensidade do contorno é dada pela magnitude do gradiente — pixels com variação alta são bordas.
+                  </p>
+                  <p class="text-sm text-muted leading-relaxed mt-3">
+                    <span class="text-accent font-medium">Dica prática:</span> Para preparar a tela, use suavização 2–3 e limiar 25–40. Para um estudo detalhado, diminua o limiar e aumente a suavização.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botões -->
+          <div id="rl-actions" class="hidden flex flex-col sm:flex-row gap-4">
+            <button onclick="rlResetarAjustes()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
+              Redefinir Ajustes
+            </button>
+            <button id="rl-btn-download" onclick="rlBaixarImagem()"
+              class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors"
+              style="background:hsl(38 55% 59%);color:hsl(0 0% 4%)"
+              onmouseenter="this.style.background='hsl(38 55% 50%)'"
+              onmouseleave="this.style.background='hsl(38 55% 59%)'">
+              Baixar Risco Linear (PNG)
+            </button>
+            <button onclick="document.getElementById('rl-file-input').click()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
+              Trocar Imagem
+            </button>
+          </div>
+
+        </div>
+      </div>`;
+  }
+
+  // ── Risco Linear: handlers ────────────────────────────────────────────
+  function rlHandleDragOver(e) { e.preventDefault(); document.getElementById('rl-upload-zone').classList.add('drag-over'); }
+  function rlHandleDragLeave(e) { document.getElementById('rl-upload-zone').classList.remove('drag-over'); }
+  function rlHandleDrop(e) {
+    e.preventDefault();
+    document.getElementById('rl-upload-zone').classList.remove('drag-over');
+    if (e.dataTransfer.files[0]) rlProcessFile(e.dataTransfer.files[0]);
+  }
+  function rlHandleFileChange(e) { if (e.target.files[0]) rlProcessFile(e.target.files[0]); }
+
+  function rlProcessFile(file) {
+    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const cOrig = document.getElementById('rl-canvas-original');
+        const maxW = 800, maxH = 600;
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
+        cOrig.width = w; cOrig.height = h;
+        const ctx = cOrig.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        riscoState.originalImageData = ctx.getImageData(0, 0, w, h);
+
+        document.getElementById('rl-canvas-section').classList.remove('hidden');
+        document.getElementById('rl-controls-section').classList.remove('hidden');
+        document.getElementById('rl-actions').classList.remove('hidden');
+        document.getElementById('rl-upload-placeholder').innerHTML =
+          `<p class="text-muted text-sm">Imagem carregada: <span class="text-fg">${file.name}</span></p>`;
+
+        rlAplicar();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function rlOnSlider(campo, valor) {
+    riscoState[campo] = Number(valor);
+    const el = document.getElementById('rl-val-' + campo);
+    if (el) el.textContent = valor;
+    rlAplicar();
+  }
+
+  function rlOnInversao() {
+    riscoState.inversao = document.getElementById('rl-inversao-toggle').checked;
+    rlAplicar();
+  }
+
+  function rlResetarAjustes() {
+    riscoState.limiar = 30;
+    riscoState.suavizacao = 2;
+    riscoState.inversao = false;
+    const slL = document.getElementById('rl-sl-limiar');
+    const slS = document.getElementById('rl-sl-suavizacao');
+    const vlL = document.getElementById('rl-val-limiar');
+    const vlS = document.getElementById('rl-val-suavizacao');
+    const tog = document.getElementById('rl-inversao-toggle');
+    if (slL) slL.value = 30;
+    if (slS) slS.value = 2;
+    if (vlL) vlL.textContent = '30';
+    if (vlS) vlS.textContent = '2';
+    if (tog) tog.checked = false;
+    rlAplicar();
+  }
+
+  // ── Filtro Gaussiano 3×3 ─────────────────────────────────────────────
+  function rlGaussianBlur(src, w, h, sigma) {
+    if (sigma <= 0) return src;
+    // Kernel 5×5 adaptativo ao sigma
+    const s = Math.max(0.5, sigma);
+    const k = 5;
+    const kernel = [];
+    let sum = 0;
+    const half = Math.floor(k / 2);
+    for (let y = -half; y <= half; y++) {
+      for (let x = -half; x <= half; x++) {
+        const v = Math.exp(-(x*x + y*y) / (2 * s * s));
+        kernel.push(v);
+        sum += v;
+      }
+    }
+    for (let i = 0; i < kernel.length; i++) kernel[i] /= sum;
+
+    const out = new Float32Array(w * h);
+    // Pass horizontal
+    const temp = new Float32Array(w * h);
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        let val = 0;
+        for (let ky = -half; ky <= half; ky++) {
+          for (let kx = -half; kx <= half; kx++) {
+            const px = Math.min(w - 1, Math.max(0, x + kx));
+            const py = Math.min(h - 1, Math.max(0, y + ky));
+            val += src[py * w + px] * kernel[(ky + half) * k + (kx + half)];
+          }
+        }
+        temp[y * w + x] = val;
+      }
+    }
+    // Pass vertical
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        let val = 0;
+        for (let ky = -half; ky <= half; ky++) {
+          for (let kx = -half; kx <= half; kx++) {
+            const px = Math.min(w - 1, Math.max(0, x + kx));
+            const py = Math.min(h - 1, Math.max(0, y + ky));
+            val += temp[py * w + px] * kernel[(ky + half) * k + (kx + half)];
+          }
+        }
+        out[y * w + x] = val;
+      }
+    }
+    return out;
+  }
+
+  // ── Sobel edge detection ──────────────────────────────────────────────
+  function rlSobel(gray, w, h) {
+    const mag = new Float32Array(w * h);
+    // Gx e Gy kernels
+    const Gx = [-1, 0, 1, -2, 0, 2, -1, 0, 1];
+    const Gy = [-1, -2, -1,  0, 0, 0,  1, 2, 1];
+    for (let y = 1; y < h - 1; y++) {
+      for (let x = 1; x < w - 1; x++) {
+        let sx = 0, sy = 0;
+        for (let ky = -1; ky <= 1; ky++) {
+          for (let kx = -1; kx <= 1; kx++) {
+            const idx = (y + ky) * w + (x + kx);
+            const ki = (ky + 1) * 3 + (kx + 1);
+            sx += gray[idx] * Gx[ki];
+            sy += gray[idx] * Gy[ki];
+          }
+        }
+        mag[y * w + x] = Math.sqrt(sx * sx + sy * sy);
+      }
+    }
+    return mag;
+  }
+
+  // ── Aplicar risco linear ──────────────────────────────────────────────
+  function rlAplicar() {
+    if (!riscoState.originalImageData) return;
+    const { originalImageData, limiar, inversao, suavizacao } = riscoState;
+    const W = originalImageData.width, H = originalImageData.height;
+    const src = originalImageData.data;
+    const cRes = document.getElementById('rl-canvas-resultado');
+    cRes.width = W; cRes.height = H;
+    const ctx = cRes.getContext('2d');
+    const out = ctx.createImageData(W, H);
+    const d = out.data;
+
+    // 1. Converter para cinzas (luminância)
+    const gray = new Float32Array(W * H);
+    for (let i = 0; i < src.length; i += 4) {
+      gray[i / 4] = 0.299 * src[i] + 0.587 * src[i + 1] + 0.114 * src[i + 2];
+    }
+
+    // 2. Suavização Gaussiana
+    const smoothed = rlGaussianBlur(gray, W, H, suavizacao);
+
+    // 3. Sobel
+    const edges = rlSobel(smoothed, W, H);
+
+    // 4. Encontrar magnitude máxima para normalização
+    let maxMag = 0;
+    for (let i = 0; i < edges.length; i++) {
+      if (edges[i] > maxMag) maxMag = edges[i];
+    }
+
+    // 5. Aplicar limiar e gerar resultado
+    const limiarNorm = (limiar / 120) * maxMag;
+    for (let i = 0; i < edges.length; i++) {
+      let isEdge = edges[i] >= limiarNorm;
+      let grayVal;
+      if (inversao) {
+        grayVal = isEdge ? 0 : 255;
+      } else {
+        grayVal = isEdge ? 255 : 0;
+      }
+      const pi = i * 4;
+      d[pi] = grayVal;
+      d[pi + 1] = grayVal;
+      d[pi + 2] = grayVal;
+      d[pi + 3] = 255;
+    }
+    ctx.putImageData(out, 0, 0);
+  }
+
+  function rlBaixarImagem() {
+    const canvas = document.getElementById('rl-canvas-resultado');
+    if (!canvas) return;
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href = url; a.download = 'risco-linear.png';
       document.body.appendChild(a); a.click();
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
