@@ -49,6 +49,15 @@
     .drag-over { border-color: hsl(38 55% 59%) !important; background: hsl(38 55% 59% / 0.06) !important; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Impressão */
+    @media print {
+      body * { visibility: hidden; }
+      #print-target, #print-target * { visibility: visible; }
+      #print-target { position: absolute; top: 0; left: 0; width: 100%; }
+      nav, .no-print, #imp-preview-wrap { border: none !important; background: none !important; padding: 0 !important; }
+      @page { margin: 12mm; }
+    }
   </style>
 </head>
 <body class="bg-bg text-fg font-body min-h-screen">
@@ -67,6 +76,7 @@
         <button onclick="navigate('converter')" data-nav="converter" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Converter</button>
         <button onclick="navigate('posterizar')" data-nav="posterizar" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Posterizar</button>
         <button onclick="navigate('zonas')" data-nav="zonas" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Mapear Zonas</button>
+        <button onclick="navigate('imprimir')" data-nav="imprimir" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Imprimir</button>
       </div>
     </div>
   </nav>
@@ -81,6 +91,7 @@
       <button onclick="navigate('converter')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>⊡</span><span>Converter</span></button>
       <button onclick="navigate('posterizar')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>◧</span><span>Posterizar</span></button>
       <button onclick="navigate('zonas')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>▦</span><span>Zonas</span></button>
+      <button onclick="navigate('imprimir')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>▧</span><span>Imprimir</span></button>
     </div>
   </div>
 
@@ -112,7 +123,7 @@
 
   // ── Router ────────────────────────────────────────────────────────────
   function navigate(page) {
-    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas };
+    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, imprimir: renderImprimir };
     document.getElementById('app').innerHTML = '';
     (map[page] || renderHome)();
     document.querySelectorAll('.nav-link').forEach(el => {
@@ -1289,6 +1300,119 @@
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }, 'image/png');
+  }
+
+  // ── Imprimir ──────────────────────────────────────────────────────────
+  let imprimirState = { tab: 'escala' };
+
+  function renderImprimir() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-6xl mx-auto">
+
+          <div class="fade-in mb-10 no-print">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Imprimir</h1>
+            <p class="text-muted max-w-2xl font-light">Gere folhas de referência para levar ao ateliê: a escala de cinzas em tamanho real ou a cartela com as proporções de mistura de cada valor.</p>
+          </div>
+
+          <div class="flex gap-2 mb-8 no-print">
+            <button onclick="imprimirSetTab('escala')" id="imp-tab-escala"
+              class="px-5 py-3 rounded-xl text-sm font-medium transition-all border ${imprimirState.tab==='escala' ? 'border-accent/40 bg-accent/[0.04] text-accent' : 'border-white/10 text-muted hover:border-white/20'}">
+              Escala de Cinzas
+            </button>
+            <button onclick="imprimirSetTab('cartela')" id="imp-tab-cartela"
+              class="px-5 py-3 rounded-xl text-sm font-medium transition-all border ${imprimirState.tab==='cartela' ? 'border-accent/40 bg-accent/[0.04] text-accent' : 'border-white/10 text-muted hover:border-white/20'}">
+              Cartela de Mistura
+            </button>
+          </div>
+
+          <p class="text-xs text-muted mb-4 no-print">Pré-visualização — as cores impressas dependem da calibração da sua impressora; use como guia relativo, não absoluto.</p>
+
+          <div id="imp-preview-wrap" class="rounded-2xl border border-white/10 bg-white p-8 md:p-10 mb-8 overflow-x-auto">
+            <div id="print-target"></div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-4 no-print">
+            <button onclick="window.print()"
+              class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors"
+              style="background:hsl(38 55% 59%);color:hsl(0 0% 4%)"
+              onmouseenter="this.style.background='hsl(38 55% 50%)'"
+              onmouseleave="this.style.background='hsl(38 55% 59%)'">
+              🖨 Imprimir esta folha
+            </button>
+          </div>
+
+        </div>
+      </div>`;
+    imprimirRenderPreview();
+  }
+
+  function imprimirSetTab(tab) {
+    imprimirState.tab = tab;
+    const base = 'px-5 py-3 rounded-xl text-sm font-medium transition-all border';
+    document.getElementById('imp-tab-escala').className  = `${base} ${tab==='escala'  ? 'border-accent/40 bg-accent/[0.04] text-accent' : 'border-white/10 text-muted hover:border-white/20'}`;
+    document.getElementById('imp-tab-cartela').className = `${base} ${tab==='cartela' ? 'border-accent/40 bg-accent/[0.04] text-accent' : 'border-white/10 text-muted hover:border-white/20'}`;
+    imprimirRenderPreview();
+  }
+
+  function imprimirRenderPreview() {
+    const target = document.getElementById('print-target');
+    if (!target) return;
+
+    if (imprimirState.tab === 'escala') {
+      target.innerHTML = `
+        <div style="color:#111">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.5rem;border-bottom:2px solid #111;padding-bottom:0.75rem">
+            <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.75rem;margin:0">Escala de Cinzas — 11 Valores Tonais</h2>
+            <span style="font-size:0.7rem;color:#666;white-space:nowrap;margin-left:1rem">leob · Valores Tonais</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(11,1fr);gap:6px">
+            ${escalaCinza.map(v => `
+              <div style="display:flex;flex-direction:column;align-items:center">
+                <div style="width:100%;aspect-ratio:1/1.3;background-color:${v.hex};border:1px solid #999;border-radius:4px"></div>
+                <span style="font-size:0.7rem;font-weight:600;margin-top:4px;color:#111">${v.valor}</span>
+              </div>`).join('')}
+          </div>
+          <p style="font-size:0.7rem;color:#666;margin-top:1.5rem;line-height:1.5">
+            Corte esta folha e mantenha ao lado da tela para comparar valores enquanto pinta. Avalie sempre sob a mesma luz usada para pintar — a percepção de um cinza muda conforme a iluminação.
+          </p>
+        </div>`;
+    } else {
+      target.innerHTML = `
+        <div style="color:#111">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.5rem;border-bottom:2px solid #111;padding-bottom:0.75rem">
+            <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.75rem;margin:0">Cartela de Mistura — Branco / Preto</h2>
+            <span style="font-size:0.7rem;color:#666;white-space:nowrap;margin-left:1rem">leob · Valores Tonais</span>
+          </div>
+          <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
+            <thead>
+              <tr style="border-bottom:1px solid #111">
+                <th style="text-align:left;padding:6px 8px">Valor</th>
+                <th style="text-align:left;padding:6px 8px">Amostra</th>
+                <th style="text-align:left;padding:6px 8px">Nome</th>
+                <th style="text-align:left;padding:6px 8px">Branco</th>
+                <th style="text-align:left;padding:6px 8px">Preto</th>
+                <th style="text-align:left;padding:6px 8px">Proporção</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${escalaCinza.map(v => `
+                <tr style="border-bottom:1px solid #ddd">
+                  <td style="padding:6px 8px;font-weight:600">${v.valor}</td>
+                  <td style="padding:6px 8px"><div style="width:28px;height:22px;background-color:${v.hex};border:1px solid #999;border-radius:3px"></div></td>
+                  <td style="padding:6px 8px">${v.nome}</td>
+                  <td style="padding:6px 8px">${v.branco} partes</td>
+                  <td style="padding:6px 8px">${v.preto} partes</td>
+                  <td style="padding:6px 8px">${v.branco===0?'100% preto':v.preto===0?'100% branco':`${v.branco}:${v.preto}`}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+          <p style="font-size:0.7rem;color:#666;margin-top:1rem;line-height:1.5">
+            Prenda esta cartela junto ao cavalete como referência rápida de proporções ao preparar as misturas. As partes são relativas — 1 parte pode ser a medida de espátula que você preferir, desde que mantenha a mesma para todas as cores.
+          </p>
+        </div>`;
+    }
   }
 
   // ── Init ──────────────────────────────────────────────────────────────
