@@ -53,7 +53,12 @@
     /* Impressão */
     @media print {
       body * { visibility: hidden; }
-      #print-target, #print-target * { visibility: visible; }
+      #print-target, #print-target * {
+        visibility: visible;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
       #print-target { position: absolute; top: 0; left: 0; width: 100%; }
       nav, .no-print, #imp-preview-wrap { border: none !important; background: none !important; padding: 0 !important; }
       @page { margin: 12mm; }
@@ -119,6 +124,16 @@
     'Teste o tom sobre um pedaço de papel branco para avaliar corretamente.',
     'O olho se adapta rapidamente: observe cada mistura por no máximo 5 segundos.',
     'Prepare todos os 11 valores de uma vez para ter a escala completa à mão.',
+  ];
+
+  const pigmentos = {
+    branco: { nome: 'Branco de Titânio', codigo: 'PW6', desc: 'O branco mais opaco e usado em pintura hiper realista; cobertura máxima e neutralidade de tom.' },
+    preto:  { nome: 'Negro de Marfim',   codigo: 'PBk9', desc: 'Preto neutro e levemente amadeirado, não puxa a mistura para o azul ou o marrom como outros pretos.' },
+  };
+  const pigmentosAlternativos = [
+    { nome: 'Branco de Zinco',  codigo: 'PW4',  papel: 'Alternativa ao Branco de Titânio', desc: 'Mais transparente e frio; produz cinzas ligeiramente mais suaves.' },
+    { nome: 'Preto Marte',      codigo: 'PBk11', papel: 'Alternativa ao Negro de Marfim', desc: 'Preto opaco levemente avermelhado, seca mais rápido em óleo.' },
+    { nome: 'Negro Fumo',       codigo: 'PBk6/7', papel: 'Alternativa ao Negro de Marfim', desc: 'Muito intenso e frio; cobre bem, mas domina a mistura em pequenas quantidades.' },
   ];
 
   // ── Router ────────────────────────────────────────────────────────────
@@ -387,27 +402,62 @@
           <p class="text-xs text-muted font-mono">${v.hex}</p>
         </div>
         <div class="flex items-center gap-2 text-xs">
-          <span class="text-right w-8 text-muted">${v.branco}B</span>
+          <span class="text-right w-8 text-muted" title="${pigmentos.branco.nome}">${v.branco}B</span>
           <div class="flex-1 h-6 rounded overflow-hidden flex" style="box-shadow:0 0 0 1px hsl(0 0% 14%)">
             ${v.branco > 0 ? `<div class="bg-white" style="width:${v.branco*10}%"></div>` : ''}
             ${v.preto  > 0 ? `<div class="bg-black" style="width:${v.preto*10}%"></div>`  : ''}
           </div>
-          <span class="w-8 text-muted">${v.preto}P</span>
+          <span class="w-8 text-muted" title="${pigmentos.preto.nome}">${v.preto}P</span>
         </div>
         <div class="text-right">
           <p class="text-xs text-muted">${v.branco===0?'100% preto':v.preto===0?'100% branco':`${v.branco}:${v.preto}`}</p>
         </div>
       </div>`).join('');
     const tips = dicas.map(d => `<li>• ${d}</li>`).join('');
+    const alternativas = pigmentosAlternativos.map(p => `
+      <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
+        <div class="flex items-center justify-between mb-1">
+          <p class="text-sm font-medium">${p.nome}</p>
+          <span class="text-xs font-mono text-muted">${p.codigo}</span>
+        </div>
+        <p class="text-xs text-accent mb-1">${p.papel}</p>
+        <p class="text-xs text-muted leading-relaxed">${p.desc}</p>
+      </div>`).join('');
 
     app.innerHTML = `
       <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
         <div class="max-w-6xl mx-auto">
           <div class="fade-in mb-12">
             <h1 class="font-display text-4xl md:text-5xl mb-4">Guia de Misturas</h1>
-            <p class="text-muted max-w-2xl font-light">Cada valor tonal é obtido misturando branco e preto em proporções precisas. Use este guia como referência ao preparar suas tintas.</p>
+            <p class="text-muted max-w-2xl font-light">Cada valor tonal é obtido misturando ${pigmentos.branco.nome} e ${pigmentos.preto.nome} em proporções precisas. Use este guia como referência ao preparar suas tintas.</p>
           </div>
+
+          <!-- Pigmentos de referência -->
+          <div class="grid md:grid-cols-2 gap-4 mb-10 fade-in">
+            <div class="p-6 rounded-xl border border-white/10 bg-white/[0.02] flex items-start gap-4">
+              <div class="w-10 h-10 rounded-lg flex-shrink-0 border border-white/10" style="background-color:#FFFFFF"></div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <p class="font-display text-lg">${pigmentos.branco.nome}</p>
+                  <span class="text-xs font-mono text-accent">${pigmentos.branco.codigo}</span>
+                </div>
+                <p class="text-xs text-muted mt-1 leading-relaxed">${pigmentos.branco.desc}</p>
+              </div>
+            </div>
+            <div class="p-6 rounded-xl border border-white/10 bg-white/[0.02] flex items-start gap-4">
+              <div class="w-10 h-10 rounded-lg flex-shrink-0 border border-white/10" style="background-color:#000000"></div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <p class="font-display text-lg">${pigmentos.preto.nome}</p>
+                  <span class="text-xs font-mono text-accent">${pigmentos.preto.codigo}</span>
+                </div>
+                <p class="text-xs text-muted mt-1 leading-relaxed">${pigmentos.preto.desc}</p>
+              </div>
+            </div>
+          </div>
+
           <div class="space-y-3">${rows}</div>
+
           <div class="mt-16 p-8 rounded-2xl border border-accent/20 bg-accent/[0.03] fade-in">
             <div class="flex items-start gap-4">
               <span class="text-accent flex-shrink-0 mt-1 text-2xl">◇</span>
@@ -416,6 +466,12 @@
                 <ul class="space-y-2 text-sm text-muted">${tips}</ul>
               </div>
             </div>
+          </div>
+
+          <div class="mt-6 p-8 rounded-2xl border border-white/10 bg-white/[0.02] fade-in">
+            <h3 class="font-display text-xl mb-1">Pigmentos Alternativos</h3>
+            <p class="text-sm text-muted mb-5 font-light">Caso não tenha os pigmentos de referência, estas são substituições comuns — o resultado tonal muda ligeiramente de temperatura.</p>
+            <div class="grid md:grid-cols-3 gap-4">${alternativas}</div>
           </div>
         </div>
       </div>`;
@@ -1370,7 +1426,7 @@
           <div style="display:grid;grid-template-columns:repeat(11,1fr);gap:6px">
             ${escalaCinza.map(v => `
               <div style="display:flex;flex-direction:column;align-items:center">
-                <div style="width:100%;aspect-ratio:1/1.3;background-color:${v.hex};border:1px solid #999;border-radius:4px"></div>
+                <div style="width:100%;aspect-ratio:1/1.3;background-color:${v.hex};border:1px solid #999;border-radius:4px;-webkit-print-color-adjust:exact;print-color-adjust:exact;"></div>
                 <span style="font-size:0.7rem;font-weight:600;margin-top:4px;color:#111">${v.valor}</span>
               </div>`).join('')}
           </div>
@@ -1381,18 +1437,21 @@
     } else {
       target.innerHTML = `
         <div style="color:#111">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1.5rem;border-bottom:2px solid #111;padding-bottom:0.75rem">
-            <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.75rem;margin:0">Cartela de Mistura — Branco / Preto</h2>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.25rem;border-bottom:2px solid #111;padding-bottom:0.75rem">
+            <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.75rem;margin:0">Cartela de Mistura</h2>
             <span style="font-size:0.7rem;color:#666;white-space:nowrap;margin-left:1rem">leob · Valores Tonais</span>
           </div>
+          <p style="font-size:0.75rem;color:#666;margin:0.5rem 0 1.25rem">
+            ${pigmentos.branco.nome} (${pigmentos.branco.codigo}) + ${pigmentos.preto.nome} (${pigmentos.preto.codigo})
+          </p>
           <table style="width:100%;border-collapse:collapse;font-size:0.8rem">
             <thead>
               <tr style="border-bottom:1px solid #111">
                 <th style="text-align:left;padding:6px 8px">Valor</th>
                 <th style="text-align:left;padding:6px 8px">Amostra</th>
                 <th style="text-align:left;padding:6px 8px">Nome</th>
-                <th style="text-align:left;padding:6px 8px">Branco</th>
-                <th style="text-align:left;padding:6px 8px">Preto</th>
+                <th style="text-align:left;padding:6px 8px">${pigmentos.branco.nome}</th>
+                <th style="text-align:left;padding:6px 8px">${pigmentos.preto.nome}</th>
                 <th style="text-align:left;padding:6px 8px">Proporção</th>
               </tr>
             </thead>
@@ -1400,7 +1459,7 @@
               ${escalaCinza.map(v => `
                 <tr style="border-bottom:1px solid #ddd">
                   <td style="padding:6px 8px;font-weight:600">${v.valor}</td>
-                  <td style="padding:6px 8px"><div style="width:28px;height:22px;background-color:${v.hex};border:1px solid #999;border-radius:3px"></div></td>
+                  <td style="padding:6px 8px"><div style="width:28px;height:22px;background-color:${v.hex};border:1px solid #999;border-radius:3px;-webkit-print-color-adjust:exact;print-color-adjust:exact;"></div></td>
                   <td style="padding:6px 8px">${v.nome}</td>
                   <td style="padding:6px 8px">${v.branco} partes</td>
                   <td style="padding:6px 8px">${v.preto} partes</td>
@@ -1410,6 +1469,9 @@
           </table>
           <p style="font-size:0.7rem;color:#666;margin-top:1rem;line-height:1.5">
             Prenda esta cartela junto ao cavalete como referência rápida de proporções ao preparar as misturas. As partes são relativas — 1 parte pode ser a medida de espátula que você preferir, desde que mantenha a mesma para todas as cores.
+          </p>
+          <p style="font-size:0.65rem;color:#888;margin-top:0.5rem;line-height:1.5">
+            Sem os pigmentos acima? Alternativas comuns: ${pigmentosAlternativos.map(p => `${p.nome} (${p.codigo})`).join(' · ')}.
           </p>
         </div>`;
     }
