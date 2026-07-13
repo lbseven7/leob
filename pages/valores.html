@@ -81,6 +81,8 @@
         <button onclick="navigate('posterizar')" data-nav="posterizar" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Posterizar</button>
         <button onclick="navigate('zonas')" data-nav="zonas" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Mapear Zonas</button>
         <button onclick="navigate('riscoLinear')" data-nav="riscoLinear" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Risco Linear</button>
+        <button onclick="navigate('isolador')" data-nav="isolador" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Isolador</button>
+        <button onclick="navigate('janela')" data-nav="janela" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Janela</button>
         <button onclick="navigate('imprimir')" data-nav="imprimir" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Imprimir</button>
       </div>
     </div>
@@ -97,6 +99,8 @@
       <button onclick="navigate('posterizar')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>◧</span><span>Posterizar</span></button>
       <button onclick="navigate('zonas')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>▦</span><span>Zonas</span></button>
       <button onclick="navigate('riscoLinear')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>◐</span><span>Risco</span></button>
+      <button onclick="navigate('isolador')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>◉</span><span>Isolador</span></button>
+      <button onclick="navigate('janela')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>⊡</span><span>Janela</span></button>
       <button onclick="navigate('imprimir')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>▧</span><span>Imprimir</span></button>
     </div>
   </div>
@@ -139,7 +143,7 @@
 
   // ── Router ────────────────────────────────────────────────────────────
   function navigate(page) {
-    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, imprimir: renderImprimir };
+    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, isolador: renderIsolador, janela: renderJanela, imprimir: renderImprimir };
     document.getElementById('app').innerHTML = '';
     (map[page] || renderHome)();
     document.querySelectorAll('.nav-link').forEach(el => {
@@ -161,6 +165,8 @@
       { id:'posterizar',icon:'◧', title:'Posterizar',           desc:'Reduza a imagem a poucos tons para enxergar as regiões de valor como blocos distintos.' },
       { id:'zonas',     icon:'▦', title:'Mapear Zonas',          desc:'Divida a imagem em zonas e identifique o valor dominante de cada região — como um mapa tonal.' },
       { id:'riscoLinear',icon:'◐', title:'Risco Linear',          desc:'Extraia o contorno da imagem como um desenho de linha — ideal para estudar formas e preparar a tela.' },
+      { id:'isolador',  icon:'◉', title:'Isolador Tonal',       desc:'Clique em qualquer ponto da imagem e descubra seu valor tonal exato. Isole uma faixa de valores para estudar.' },
+      { id:'janela',    icon:'⊞', title:'Janela Física',        desc:'Isole uma área da imagem com uma máscara — como um cartão vazado. Arraste e redimensione para estudar detalhes.' },
     ].map(m => `
       <button onclick="navigate('${m.id}')" class="group text-left block h-full p-8 rounded-2xl border border-white/10 hover:border-accent/40 bg-white/[0.02] hover:bg-white/[0.04] transition-all">
         <div class="text-accent mb-6 text-2xl">${m.icon}</div>
@@ -1495,7 +1501,7 @@
       const img = new Image();
       img.onload = () => {
         const cOrig = document.getElementById('rl-canvas-original');
-        const maxW = 800, maxH = 600;
+        const maxW = 2000, maxH = 1500;
         let w = img.width, h = img.height;
         if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
         if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
@@ -1676,6 +1682,705 @@
       const url = URL.createObjectURL(blob);
       const a   = document.createElement('a');
       a.href = url; a.download = 'risco-linear.png';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
+
+  // ── Isolador Tonal Dinâmico ──────────────────────────────────────────
+  // Escala: 0 = Branco (luz), 10 = Preto (sombra) — padrão artístico
+  let isoladorState = {
+    originalImageData: null,
+    grayData: null,
+    picked: null,
+    faixaMin: 0,
+    faixaMax: 10,
+    modoIsolacao: false,
+    opacidadeFundo: 80,
+  };
+
+  function isoGrayToValor(gray) {
+    return Math.min(10, Math.round(((255 - gray) / 255) * 10));
+  }
+
+  function renderIsolador() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-6xl mx-auto">
+
+          <!-- Header -->
+          <div class="fade-in mb-10">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Isolador Tonal Dinâmico</h1>
+            <p class="text-muted max-w-2xl font-light">Passe o mouse ou arraste o dedo sobre a imagem para isolar o valor tonal exato de qualquer ponto — destrua as ilusões de ótica.</p>
+          </div>
+
+          <!-- Upload zone -->
+          <div id="iso-upload-zone"
+            class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 mb-8 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]"
+            style="min-height:220px"
+            onclick="document.getElementById('iso-file-input').click()"
+            ondragover="isoHandleDragOver(event)"
+            ondragleave="isoHandleDragLeave(event)"
+            ondrop="isoHandleDrop(event)">
+            <input type="file" id="iso-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="isoHandleFileChange(event)" />
+            <div id="iso-upload-placeholder" class="flex flex-col items-center gap-3 text-center p-8">
+              <div class="w-14 h-14 rounded-full bg-white/[0.06] flex items-center justify-center">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </div>
+              <p class="font-display text-xl">Clique ou arraste uma imagem</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
+            </div>
+          </div>
+
+          <!-- Result area -->
+          <div id="iso-result-section" class="hidden">
+            <div class="grid lg:grid-cols-3 gap-6 mb-8">
+              <!-- Canvas + hover wrapper -->
+              <div class="lg:col-span-2">
+                <div id="iso-canvas-wrapper" class="relative rounded-xl border border-white/10 overflow-hidden cursor-crosshair" style="background:#000">
+                  <p id="iso-canvas-label" class="absolute top-3 left-3 z-10 text-[10px] uppercase tracking-[0.2em] text-accent bg-bg/80 backdrop-blur-sm px-2 py-1 rounded">Passe o mouse na imagem</p>
+                  <canvas id="iso-canvas" class="block" style="max-width:100%;height:auto"></canvas>
+                </div>
+              </div>
+
+              <!-- Inspector panel (sticky) -->
+              <div class="space-y-4 lg:sticky lg:top-20 lg:self-start">
+                <!-- Amostra de cor pura -->
+                <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+                  <p class="text-xs uppercase tracking-[0.2em] text-muted mb-4">Tom Isolado</p>
+                  <div id="iso-sample-box" class="w-full rounded-xl border border-white/10 flex items-center justify-center relative" style="background-color:#222;height:140px;transition:background-color 0.05s">
+                    <div class="absolute w-2 h-2 rounded-full border border-white/40" style="background:rgba(0,0,0,0.2)"></div>
+                  </div>
+                </div>
+
+                <!-- Dados numéricos -->
+                <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+                  <p class="text-xs uppercase tracking-[0.2em] text-muted mb-4">Dados do Pixel</p>
+                  <div id="iso-picked-content" class="space-y-3">
+                    <p class="text-muted text-sm">Passe o mouse na imagem</p>
+                  </div>
+                </div>
+
+                <!-- Escala visual com marcador -->
+                <div class="p-4 rounded-2xl border border-white/10 bg-white/[0.02]">
+                  <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Mapeamento na Escala</p>
+                  <div id="iso-scale-bar" class="relative flex rounded-lg overflow-hidden border border-white/10" style="height:24px">
+                    ${escalaCinza.map(v => `<div class="flex-1" style="background-color:${v.hex}"></div>`).join('')}
+                    <div id="iso-scale-marker" class="absolute top-[-2px] w-1 h-[28px] rounded-sm transition-all duration-100 ease-out" style="background:hsl(38 55% 59%);box-shadow:0 0 8px hsl(38 55% 59%);left:50%;display:none"></div>
+                  </div>
+                  <div class="mt-2 flex justify-between text-[10px] text-muted font-mono">
+                    <span>0 (Branco)</span><span>5</span><span>10 (Preto)</span>
+                  </div>
+                </div>
+
+                <!-- Ampliação -->
+                <div class="p-4 rounded-2xl border border-white/10 bg-white/[0.02]">
+                  <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Ampliação (7×7)</p>
+                  <div class="flex justify-center">
+                    <canvas id="iso-canvas-mag" width="140" height="140" class="rounded-lg border border-white/10" style="image-rendering:pixelated"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Isolation controls -->
+            <div class="p-8 rounded-2xl border border-white/10 bg-white/[0.02] mb-6">
+              <div class="grid md:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                  <h3 class="font-display text-xl mb-4">Isolar Faixa de Valores</h3>
+                  <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="iso-modo-toggle" onchange="isoOnModoIsolacao()" class="accent-[hsl(38,55%,59%)] w-4 h-4" />
+                    <span class="text-sm">Ativar isolamento tonal</span>
+                  </label>
+                  <p class="text-xs text-muted">Quando ativo, apenas os pixels dentro da faixa selecionada ficam visíveis — o resto fica dessaturado.</p>
+
+                  <div class="space-y-3">
+                    <div>
+                      <div class="flex justify-between text-sm mb-2">
+                        <span>Valor Mínimo (Claro)</span>
+                        <span id="iso-val-min" class="text-accent font-mono">0</span>
+                      </div>
+                      <input type="range" id="iso-sl-min" min="0" max="10" value="0" class="w-full" oninput="isoOnFaixa()" />
+                    </div>
+                    <div>
+                      <div class="flex justify-between text-sm mb-2">
+                        <span>Valor Máximo (Escuro)</span>
+                        <span id="iso-val-max" class="text-accent font-mono">10</span>
+                      </div>
+                      <input type="range" id="iso-sl-max" min="0" max="10" value="10" class="w-full" oninput="isoOnFaixa()" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <p class="text-xs text-muted mb-2">Atalhos rápidos:</p>
+                    <div class="flex flex-wrap gap-2">
+                      <button onclick="isoSetFaixa(0,3)" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">Claros (0–3)</button>
+                      <button onclick="isoSetFaixa(4,7)" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">Médios (4–7)</button>
+                      <button onclick="isoSetFaixa(8,10)" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">Escuros (8–10)</button>
+                      <button onclick="isoSetFaixa(0,10)" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">Todos</button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-sm mb-2">
+                      <span>Opacidade do Fundo</span>
+                      <span id="iso-val-opacidade" class="text-accent font-mono">80%</span>
+                    </div>
+                    <input type="range" id="iso-sl-opacidade" min="0" max="100" value="80" class="w-full" oninput="isoOnOpacidade()" />
+                    <p class="text-xs text-muted mt-1">Quanto do fundo dessaturado permanece visível.</p>
+                  </div>
+                </div>
+
+                <div class="space-y-6">
+                  <h3 class="font-display text-xl mb-4">Distribuição de Valores</h3>
+                  <div id="iso-histograma" class="space-y-2"></div>
+                  <p class="text-xs text-muted">Quantos pixels da imagem pertencem a cada faixa tonal.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botões -->
+            <div class="flex flex-col sm:flex-row gap-4">
+              <button onclick="isoLimparIsolamento()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
+                Limpar Isolamento
+              </button>
+              <button onclick="isoBaixarImagem()"
+                class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors"
+                style="background:hsl(38 55% 59%);color:hsl(0 0% 4%)"
+                onmouseenter="this.style.background='hsl(38 55% 50%)'"
+                onmouseleave="this.style.background='hsl(38 55% 59%)'">
+                Baixar Resultado (PNG)
+              </button>
+              <button onclick="document.getElementById('iso-file-input').click()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
+                Trocar Imagem
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>`;
+  }
+
+  // ── Isolador: handlers ────────────────────────────────────────────────
+  function isoHandleDragOver(e) { e.preventDefault(); document.getElementById('iso-upload-zone').classList.add('drag-over'); }
+  function isoHandleDragLeave(e) { document.getElementById('iso-upload-zone').classList.remove('drag-over'); }
+  function isoHandleDrop(e) {
+    e.preventDefault();
+    document.getElementById('iso-upload-zone').classList.remove('drag-over');
+    if (e.dataTransfer.files[0]) isoProcessFile(e.dataTransfer.files[0]);
+  }
+  function isoHandleFileChange(e) { if (e.target.files[0]) isoProcessFile(e.target.files[0]); }
+
+  function isoProcessFile(file) {
+    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const c = document.getElementById('iso-canvas');
+        const maxW = 900, maxH = 700;
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
+        c.width = w; c.height = h;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const imgData = ctx.getImageData(0, 0, w, h);
+        isoladorState.originalImageData = imgData;
+
+        // Pre-calc grayscale
+        const gray = new Float32Array(w * h);
+        for (let i = 0; i < imgData.data.length; i += 4) {
+          gray[i / 4] = 0.299 * imgData.data[i] + 0.587 * imgData.data[i+1] + 0.114 * imgData.data[i+2];
+        }
+        isoladorState.grayData = gray;
+        isoladorState.picked = null;
+
+        document.getElementById('iso-result-section').classList.remove('hidden');
+        document.getElementById('iso-upload-placeholder').innerHTML =
+          `<p class="text-muted text-sm">Imagem carregada: <span class="text-fg">${file.name}</span></p>`;
+
+        isoRenderHistograma();
+        isoRenderOriginal();
+
+        // ── Eventos de interação (mouse + touch) ──
+        // Remove listeners anteriores via AbortController
+        if (c._isoAbort) c._isoAbort.abort();
+        c._isoAbort = new AbortController();
+        const signal = c._isoAbort.signal;
+
+        function isoGetCoords(e) {
+          const rect = c.getBoundingClientRect();
+          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+          return {
+            x: Math.min(c.width - 1, Math.max(0, Math.floor(((clientX - rect.left) / rect.width) * c.width))),
+            y: Math.min(c.height - 1, Math.max(0, Math.floor(((clientY - rect.top) / rect.height) * c.height)))
+          };
+        }
+
+        function isoInteragir(e) {
+          if (!c.width) return;
+          e.preventDefault();
+          const { x, y } = isoGetCoords(e);
+          isoPickPixel(x, y);
+        }
+
+        c.addEventListener('mousemove', isoInteragir, { signal });
+        c.addEventListener('touchmove', isoInteragir, { passive: false, signal });
+        c.addEventListener('touchstart', isoInteragir, { passive: false, signal });
+
+        // Inicializa apontando para o centro
+        isoPickPixel(Math.round(w / 2), Math.round(h / 2));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function isoPickPixel(cx, cy) {
+    const c = document.getElementById('iso-canvas');
+    const W = c.width, H = c.height;
+    if (cx < 0 || cx >= W || cy < 0 || cy >= H) return;
+    const idx = cy * W + cx;
+    const gray = isoladorState.grayData[idx];
+    const valor = isoGrayToValor(gray);
+    const src = isoladorState.originalImageData.data;
+    const pi = idx * 4;
+    const r = src[pi], g = src[pi+1], b = src[pi+2];
+    const hex = '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join('').toUpperCase();
+    const escala = escalaCinza[valor];
+    const pctLuz = Math.round((gray / 255) * 100);
+
+    isoladorState.picked = { cx, cy, valor, r, g, b, hex, gray, nome: escala.nome };
+
+    // Amostra de cor
+    const sampleBox = document.getElementById('iso-sample-box');
+    if (sampleBox) sampleBox.style.backgroundColor = hex;
+
+    // Dados numéricos
+    const panel = document.getElementById('iso-picked-content');
+    if (panel) {
+      panel.innerHTML = `
+        <div class="flex items-center gap-4">
+          <div>
+            <p class="font-display text-4xl leading-none">Valor ${valor}</p>
+            <p class="text-sm text-muted mt-1">${escala.nome}</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div class="p-3 rounded-lg border border-white/10 bg-white/[0.02]">
+            <p class="text-[10px] uppercase tracking-wider text-muted">Luz</p>
+            <p class="font-mono text-fg">${pctLuz}%</p>
+          </div>
+          <div class="p-3 rounded-lg border border-white/10 bg-white/[0.02]">
+            <p class="text-[10px] uppercase tracking-wider text-muted">Hex</p>
+            <p class="font-mono text-fg">${hex}</p>
+          </div>
+          <div class="p-3 rounded-lg border border-white/10 bg-white/[0.02]">
+            <p class="text-[10px] uppercase tracking-wider text-muted">RGB</p>
+            <p class="font-mono text-fg">${r}, ${g}, ${b}</p>
+          </div>
+          <div class="p-3 rounded-lg border border-white/10 bg-white/[0.02]">
+            <p class="text-[10px] uppercase tracking-wider text-muted">Faixa</p>
+            <p class="font-mono text-fg">${valor <= 3 ? 'Claro' : valor <= 7 ? 'Médio' : 'Escuro'}</p>
+          </div>
+        </div>
+        <div class="p-3 rounded-lg border border-accent/20 bg-accent/[0.04]">
+          <p class="text-xs text-accent">Mistura: <span class="font-medium">${escala.branco} partes branco · ${escala.preto} partes preto</span></p>
+        </div>`;
+    }
+
+    // Marcador animado na escala (0=branco à esquerda, 10=preto à direita)
+    const marker = document.getElementById('iso-scale-marker');
+    if (marker) {
+      marker.style.display = 'block';
+      const posEscala = 100 - pctLuz;
+      marker.style.left = `calc(${posEscala}% - 2px)`;
+    }
+
+    // Ampliação
+    isoRenderMagnifier(cx, cy);
+  }
+
+  function isoRenderMagnifier(cx, cy) {
+    const srcCanvas = document.getElementById('iso-canvas');
+    const magCanvas = document.getElementById('iso-canvas-mag');
+    if (!srcCanvas || !magCanvas) return;
+    const ctxMag = magCanvas.getContext('2d');
+    const W = srcCanvas.width, H = srcCanvas.height;
+    const radius = 3;
+    const size = radius * 2 + 1;
+
+    magCanvas.width = size * 20;
+    magCanvas.height = size * 20;
+    ctxMag.imageSmoothingEnabled = false;
+
+    const x0 = Math.max(0, cx - radius);
+    const y0 = Math.max(0, cy - radius);
+    const x1 = Math.min(W - 1, cx + radius);
+    const y1 = Math.min(H - 1, cy + radius);
+
+    ctxMag.clearRect(0, 0, magCanvas.width, magCanvas.height);
+    ctxMag.drawImage(srcCanvas, x0, y0, x1 - x0 + 1, y1 - y0 + 1, 0, 0, magCanvas.width, magCanvas.height);
+
+    // Grid
+    ctxMag.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctxMag.lineWidth = 0.5;
+    for (let i = 0; i <= size; i++) {
+      ctxMag.beginPath(); ctxMag.moveTo(i * 20, 0); ctxMag.lineTo(i * 20, size * 20); ctxMag.stroke();
+      ctxMag.beginPath(); ctxMag.moveTo(0, i * 20); ctxMag.lineTo(size * 20, i * 20); ctxMag.stroke();
+    }
+
+    // Centro
+    const cxIdx = cx - x0, cyIdx = cy - y0;
+    ctxMag.strokeStyle = 'hsl(38 55% 59%)';
+    ctxMag.lineWidth = 2;
+    ctxMag.strokeRect(cxIdx * 20, cyIdx * 20, 20, 20);
+  }
+
+  function isoRenderOriginal() {
+    const c = document.getElementById('iso-canvas');
+    const ctx = c.getContext('2d');
+    ctx.putImageData(isoladorState.originalImageData, 0, 0);
+  }
+
+  function isoOnFaixa() {
+    isoladorState.faixaMin = Number(document.getElementById('iso-sl-min').value);
+    isoladorState.faixaMax = Number(document.getElementById('iso-sl-max').value);
+    if (isoladorState.faixaMin > isoladorState.faixaMax) {
+      const tmp = isoladorState.faixaMin;
+      isoladorState.faixaMin = isoladorState.faixaMax;
+      isoladorState.faixaMax = tmp;
+    }
+    document.getElementById('iso-val-min').textContent = isoladorState.faixaMin;
+    document.getElementById('iso-val-max').textContent = isoladorState.faixaMax;
+    isoAplicarIsolamento();
+  }
+
+  function isoSetFaixa(min, max) {
+    isoladorState.faixaMin = min;
+    isoladorState.faixaMax = max;
+    document.getElementById('iso-sl-min').value = min;
+    document.getElementById('iso-sl-max').value = max;
+    document.getElementById('iso-val-min').textContent = min;
+    document.getElementById('iso-val-max').textContent = max;
+    isoAplicarIsolamento();
+  }
+
+  function isoOnModoIsolacao() {
+    isoladorState.modoIsolacao = document.getElementById('iso-modo-toggle').checked;
+    isoAplicarIsolamento();
+  }
+
+  function isoOnOpacidade() {
+    isoladorState.opacidadeFundo = Number(document.getElementById('iso-sl-opacidade').value);
+    document.getElementById('iso-val-opacidade').textContent = isoladorState.opacidadeFundo + '%';
+    isoAplicarIsolamento();
+  }
+
+  function isoAplicarIsolamento() {
+    if (!isoladorState.originalImageData || !isoladorState.modoIsolacao) {
+      isoRenderOriginal();
+      if (isoladorState.picked) isoPickPixel(isoladorState.picked.cx, isoladorState.picked.cy);
+      return;
+    }
+    const c = document.getElementById('iso-canvas');
+    const ctx = c.getContext('2d');
+    const W = c.width, H = c.height;
+    const src = isoladorState.originalImageData.data;
+    const gray = isoladorState.grayData;
+    const out = ctx.createImageData(W, H);
+    const d = out.data;
+    const { faixaMin, faixaMax, opacidadeFundo } = isoladorState;
+    const bgOpacity = opacidadeFundo / 100;
+
+    for (let i = 0; i < gray.length; i++) {
+      const valor = isoGrayToValor(gray[i]);
+      const pi = i * 4;
+      if (valor >= faixaMin && valor <= faixaMax) {
+        d[pi] = src[pi]; d[pi+1] = src[pi+1]; d[pi+2] = src[pi+2]; d[pi+3] = 255;
+      } else {
+        const avg = Math.round(gray[i]);
+        d[pi] = Math.round(avg + (src[pi] - avg) * (1 - bgOpacity));
+        d[pi+1] = Math.round(avg + (src[pi+1] - avg) * (1 - bgOpacity));
+        d[pi+2] = Math.round(avg + (src[pi+2] - avg) * (1 - bgOpacity));
+        d[pi+3] = 255;
+      }
+    }
+    ctx.putImageData(out, 0, 0);
+  }
+
+  function isoLimparIsolamento() {
+    isoladorState.modoIsolacao = false;
+    isoladorState.faixaMin = 0;
+    isoladorState.faixaMax = 10;
+    const tog = document.getElementById('iso-modo-toggle');
+    const slMin = document.getElementById('iso-sl-min');
+    const slMax = document.getElementById('iso-sl-max');
+    const vlMin = document.getElementById('iso-val-min');
+    const vlMax = document.getElementById('iso-val-max');
+    if (tog) tog.checked = false;
+    if (slMin) slMin.value = 0;
+    if (slMax) slMax.value = 10;
+    if (vlMin) vlMin.textContent = '0';
+    if (vlMax) vlMax.textContent = '10';
+    isoRenderOriginal();
+    if (isoladorState.picked) isoPickPixel(isoladorState.picked.cx, isoladorState.picked.cy);
+  }
+
+  function isoRenderHistograma() {
+    if (!isoladorState.grayData) return;
+    const gray = isoladorState.grayData;
+    const contagem = Array(11).fill(0);
+    for (let i = 0; i < gray.length; i++) {
+      const v = isoGrayToValor(gray[i]);
+      contagem[v]++;
+    }
+    const maxCount = Math.max(...contagem);
+    const el = document.getElementById('iso-histograma');
+    el.innerHTML = escalaCinza.map((v, i) => {
+      const pct = maxCount > 0 ? (contagem[i] / maxCount) * 100 : 0;
+      return `
+        <div class="flex items-center gap-3">
+          <span class="w-4 text-right font-mono text-xs text-muted">${i}</span>
+          <div class="flex-1 h-5 rounded overflow-hidden bg-white/5 relative" style="cursor:pointer" onclick="isoSetFaixa(${i},${i})">
+            <div class="h-full rounded transition-all duration-300" style="width:${pct}%;background:${v.hex};box-shadow:inset 0 0 0 1px rgba(255,255,255,0.1)"></div>
+          </div>
+          <span class="w-10 text-right font-mono text-xs text-muted">${contagem[i]}</span>
+        </div>`;
+    }).join('');
+  }
+
+  function isoBaixarImagem() {
+    const canvas = document.getElementById('iso-canvas');
+    if (!canvas) return;
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href = url; a.download = 'isolador-tonal.png';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
+
+  // ── Simulador de Janela Física ───────────────────────────────────────
+  let janelaState = {
+    originalImageData: null,
+    imgW: 0, imgH: 0,
+    janelaX: 0, janelaY: 0,
+    tamanho: 120,
+    arrastando: false,
+  };
+
+  function renderJanela() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-6xl mx-auto">
+
+          <!-- Header -->
+          <div class="fade-in mb-10">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Simulador de Janela Física</h1>
+            <p class="text-muted max-w-2xl font-light">Isole detalhes bloqueando o contexto ao redor. Arraste o bloco vazado sobre a foto para estudar valores, texturas e micro-anatomias sem sofrer interferência das luzes ao redor.</p>
+          </div>
+
+          <!-- Upload zone -->
+          <div id="jn-upload-zone"
+            class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 mb-8 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]"
+            style="min-height:220px"
+            onclick="document.getElementById('jn-file-input').click()"
+            ondragover="jnHandleDragOver(event)"
+            ondragleave="jnHandleDragLeave(event)"
+            ondrop="jnHandleDrop(event)">
+            <input type="file" id="jn-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="jnHandleFileChange(event)" />
+            <div id="jn-upload-placeholder" class="flex flex-col items-center gap-3 text-center p-8">
+              <div class="w-14 h-14 rounded-full bg-white/[0.06] flex items-center justify-center">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/><path d="M21 15l-5-5L5 21"/></svg>
+              </div>
+              <p class="font-display text-xl">Clique ou arraste uma imagem</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
+            </div>
+          </div>
+
+          <!-- Result area -->
+          <div id="jn-result-section" class="hidden">
+
+            <!-- Controles -->
+            <div class="flex items-center gap-6 p-5 rounded-2xl border border-white/10 bg-white/[0.02] mb-6">
+              <div class="flex-1">
+                <div class="flex justify-between text-sm mb-2">
+                  <span>Tamanho da Abertura</span>
+                  <span id="jn-val-tamanho" class="text-accent font-mono">120</span>
+                </div>
+                <input type="range" id="jn-sl-tamanho" min="30" max="400" value="120" class="w-full" oninput="jnOnTamanho(this.value)" />
+              </div>
+              <div class="text-xs text-muted hidden md:block">Arraste a janela na imagem</div>
+            </div>
+
+            <!-- Canvas -->
+            <div id="jn-canvas-wrapper"
+              class="relative rounded-2xl border border-white/10 overflow-hidden cursor-move"
+              style="background:#000;box-shadow:0 20px 40px rgba(0,0,0,0.5)">
+              <canvas id="jn-canvas" class="block" style="max-width:100%;height:auto"></canvas>
+            </div>
+
+            <!-- Botões -->
+            <div class="flex flex-col sm:flex-row gap-4 mt-6">
+              <button onclick="jnResetar()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
+                Centralizar Janela
+              </button>
+              <button onclick="jnBaixarImagem()"
+                class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors"
+                style="background:hsl(38 55% 59%);color:hsl(0 0% 4%)"
+                onmouseenter="this.style.background='hsl(38 55% 50%)'"
+                onmouseleave="this.style.background='hsl(38 55% 59%)'">
+                Baixar Resultado (PNG)
+              </button>
+              <button onclick="document.getElementById('jn-file-input').click()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
+                Trocar Imagem
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>`;
+  }
+
+  // ── Janela: handlers ──────────────────────────────────────────────────
+  function jnHandleDragOver(e) { e.preventDefault(); document.getElementById('jn-upload-zone').classList.add('drag-over'); }
+  function jnHandleDragLeave(e) { document.getElementById('jn-upload-zone').classList.remove('drag-over'); }
+  function jnHandleDrop(e) {
+    e.preventDefault();
+    document.getElementById('jn-upload-zone').classList.remove('drag-over');
+    if (e.dataTransfer.files[0]) jnProcessFile(e.dataTransfer.files[0]);
+  }
+  function jnHandleFileChange(e) { if (e.target.files[0]) jnProcessFile(e.target.files[0]); }
+
+  function jnProcessFile(file) {
+    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const c = document.getElementById('jn-canvas');
+        const maxW = 900, maxH = 700;
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
+        c.width = w; c.height = h;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        janelaState.originalImageData = ctx.getImageData(0, 0, w, h);
+        janelaState.imgW = w;
+        janelaState.imgH = h;
+        janelaState.janelaX = Math.round(w / 2);
+        janelaState.janelaY = Math.round(h / 2);
+
+        document.getElementById('jn-result-section').classList.remove('hidden');
+        document.getElementById('jn-upload-placeholder').innerHTML =
+          `<p class="text-muted text-sm">Imagem carregada: <span class="text-fg">${file.name}</span></p>`;
+
+        jnDesenharMascara();
+
+        // ── Eventos de arrasto ──
+        const wrapper = document.getElementById('jn-canvas-wrapper');
+        if (wrapper._jnAbort) wrapper._jnAbort.abort();
+        wrapper._jnAbort = new AbortController();
+        const signal = wrapper._jnAbort.signal;
+
+        function jnGetCoords(e) {
+          const rect = c.getBoundingClientRect();
+          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+          return {
+            x: Math.min(c.width, Math.max(0, ((clientX - rect.left) / rect.width) * c.width)),
+            y: Math.min(c.height, Math.max(0, ((clientY - rect.top) / rect.height) * c.height))
+          };
+        }
+
+        function jnIniciarArrasto(e) {
+          janelaState.arrastando = true;
+          jnMoverJanela(e);
+        }
+
+        function jnFinalizarArrasto() {
+          janelaState.arrastando = false;
+        }
+
+        function jnMoverJanela(e) {
+          if (!janelaState.arrastando) return;
+          e.preventDefault();
+          const { x, y } = jnGetCoords(e);
+          janelaState.janelaX = x;
+          janelaState.janelaY = y;
+          jnDesenharMascara();
+        }
+
+        wrapper.addEventListener('mousedown', jnIniciarArrasto, { signal });
+        wrapper.addEventListener('mousemove', jnMoverJanela, { signal });
+        window.addEventListener('mouseup', jnFinalizarArrasto);
+        wrapper.addEventListener('touchstart', jnIniciarArrasto, { passive: false, signal });
+        wrapper.addEventListener('touchmove', jnMoverJanela, { passive: false, signal });
+        window.addEventListener('touchend', jnFinalizarArrasto);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function jnOnTamanho(val) {
+    janelaState.tamanho = Number(val);
+    document.getElementById('jn-val-tamanho').textContent = val;
+    jnDesenharMascara();
+  }
+
+  function jnDesenharMascara() {
+    const c = document.getElementById('jn-canvas');
+    if (!c || !janelaState.originalImageData) return;
+    const ctx = c.getContext('2d');
+    const W = janelaState.imgW, H = janelaState.imgH;
+    const { janelaX, janelaY, tamanho } = janelaState;
+    const metade = tamanho / 2;
+
+    // Restaura a imagem original
+    ctx.putImageData(janelaState.originalImageData, 0, 0);
+
+    // Máscara escura ao redor (96% opaco)
+    ctx.fillStyle = 'rgba(10, 10, 10, 0.96)';
+    // Bloco superior
+    ctx.fillRect(0, 0, W, janelaY - metade);
+    // Bloco inferior
+    ctx.fillRect(0, janelaY + metade, W, H - (janelaY + metade));
+    // Bloco lateral esquerdo (na faixa da janela)
+    ctx.fillRect(0, janelaY - metade, janelaX - metade, tamanho);
+    // Bloco lateral direito (na faixa da janela)
+    ctx.fillRect(janelaX + metade, janelaY - metade, W - (janelaX + metade), tamanho);
+
+    // Borda sutil laranja na abertura
+    ctx.strokeStyle = 'rgba(216, 136, 0, 0.5)';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(janelaX - metade, janelaY - metade, tamanho, tamanho);
+  }
+
+  function jnResetar() {
+    janelaState.janelaX = Math.round(janelaState.imgW / 2);
+    janelaState.janelaY = Math.round(janelaState.imgH / 2);
+    jnDesenharMascara();
+  }
+
+  function jnBaixarImagem() {
+    const canvas = document.getElementById('jn-canvas');
+    if (!canvas) return;
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href = url; a.download = 'janela-fisica.png';
       document.body.appendChild(a); a.click();
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
