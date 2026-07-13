@@ -10,6 +10,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -17,8 +18,9 @@
             fg:     'hsl(40 10% 94%)',
             card:   'hsl(0 0% 6%)',
             muted:  'hsl(0 0% 55%)',
-            accent: 'hsl(38 55% 59%)',
+            accent: '#d88800',
             border: 'hsl(0 0% 14%)',
+            brand:  { orange: '#d88800' },
           },
           fontFamily: {
             display: ['Cormorant Garamond', 'Georgia', 'serif'],
@@ -30,7 +32,7 @@
   </script>
   <style>
     body { -webkit-font-smoothing: antialiased; }
-    ::selection { background: hsl(38 55% 59% / 0.3); }
+    ::selection { background: #d888004d; }
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: hsl(0 0% 4%); }
     ::-webkit-scrollbar-thumb { background: hsl(0 0% 14%); border-radius: 4px; }
@@ -42,11 +44,11 @@
 
     /* Slider custom styling */
     input[type=range] { -webkit-appearance: none; appearance: none; height: 4px; border-radius: 2px; background: hsl(0 0% 14%); outline: none; cursor: pointer; }
-    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: hsl(38 55% 59%); cursor: pointer; border: 2px solid hsl(0 0% 4%); }
-    input[type=range]::-moz-range-thumb    { width: 16px; height: 16px; border-radius: 50%; background: hsl(38 55% 59%); cursor: pointer; border: 2px solid hsl(0 0% 4%); }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #d88800; cursor: pointer; border: 2px solid hsl(0 0% 4%); }
+    input[type=range]::-moz-range-thumb    { width: 16px; height: 16px; border-radius: 50%; background: #d88800; cursor: pointer; border: 2px solid hsl(0 0% 4%); }
 
     /* Upload zone drag-over */
-    .drag-over { border-color: hsl(38 55% 59%) !important; background: hsl(38 55% 59% / 0.06) !important; }
+    .drag-over { border-color: #d88800 !important; background: #d8880010 !important; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -74,13 +76,13 @@
         <img src="../images/logo/logo-white-gold-removebg-preview.png" alt="logo" class="w-16 h-16">
       </button>
       <div class="hidden md:flex items-center gap-1">
-        <button onclick="navigate('escala')"    data-nav="escala"    class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Escala de Cinzas</button>
-        <button onclick="navigate('treino')"    data-nav="treino"    class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Treino de Valores</button>
-        <button onclick="navigate('misturas')"  data-nav="misturas"  class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Guia de Misturas</button>
+        <button onclick="navigate('escala')"    data-nav="escala"    class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Escala</button>
+        <button onclick="navigate('treino')"    data-nav="treino"    class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Treino</button>
+        <button onclick="navigate('misturas')"  data-nav="misturas"  class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Misturas</button>
         <button onclick="navigate('converter')" data-nav="converter" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Converter</button>
         <button onclick="navigate('posterizar')" data-nav="posterizar" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Posterizar</button>
-        <button onclick="navigate('zonas')" data-nav="zonas" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Mapear Zonas</button>
-        <button onclick="navigate('riscoLinear')" data-nav="riscoLinear" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Risco Linear</button>
+        <button onclick="navigate('zonas')" data-nav="zonas" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Mapear</button>
+        <button onclick="navigate('riscoLinear')" data-nav="riscoLinear" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Risco</button>
         <button onclick="navigate('isolador')" data-nav="isolador" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Isolador</button>
         <button onclick="navigate('janela')" data-nav="janela" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Janela</button>
         <button onclick="navigate('imprimir')" data-nav="imprimir" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Imprimir</button>
@@ -226,7 +228,7 @@
     el.className = 'flex rounded-xl overflow-hidden border border-white/10';
     el.style.height = '5rem';
     el.innerHTML = escalaCinza.map((v,i) => `
-      <button onclick="selectEscala(${i})" class="flex-1 relative transition-all" style="background-color:${v.hex};${i===selecionadoIdx?'outline:2px solid hsl(38 55% 59%);outline-offset:-2px;z-index:10':''}">
+      <button onclick="selectEscala(${i})" class="flex-1 relative transition-all" style="background-color:${v.hex};${i===selecionadoIdx?'outline:2px solid #d88800;outline-offset:-2px;z-index:10':''}">
         <span class="absolute bottom-1.5 left-1/2 -translate-x-1/2 text-[10px] font-mono" style="color:${v.valor>5?'#999':'#333'}">${v.valor}</span>
       </button>`).join('');
   }
@@ -320,7 +322,7 @@
     const botoesHtml = escalaCinza.map(cor => {
       let bg = 'hsl(0 0% 6%)', border = 'hsl(0 0% 14%)', numColor = 'hsl(40 10% 94%)', opacity = '1';
       if (resposta !== null) {
-        if (cor.valor === alvo.valor) { bg = 'hsl(38 55% 59% / 0.15)'; border = 'hsl(38 55% 59%)'; numColor = 'hsl(38 55% 59%)'; }
+        if (cor.valor === alvo.valor) { bg = '#d8880026'; border = '#d88800'; numColor = '#d88800'; }
         else if (cor.valor === resposta) { bg = 'hsl(0 72% 51% / 0.15)'; border = 'hsl(0 72% 51%)'; numColor = 'hsl(0 72% 51%)'; }
         else opacity = '0.35';
       }
@@ -330,7 +332,7 @@
         <button ${disabled} ${onclick}
           class="flex flex-col items-center justify-center gap-2 py-3 rounded-xl transition-all"
           style="background:${bg};border:1px solid ${border};opacity:${opacity};cursor:${resposta!==null?'default':'pointer'}"
-          ${resposta===null?`onmouseenter="this.style.borderColor='hsl(38 55% 59% / 0.6)'" onmouseleave="this.style.borderColor='hsl(0 0% 14%)'"`:''}>
+          ${resposta===null?`onmouseenter="this.style.borderColor='#d8880099'" onmouseleave="this.style.borderColor='hsl(0 0% 14%)'"`:''}>
           <span class="font-mono text-sm font-medium" style="color:${numColor}">${cor.valor}</span>
           <div class="w-5 h-5 rounded-full" style="background-color:${cor.hex};box-shadow:0 0 0 1px hsl(0 0% 25%)"></div>
         </button>`;
@@ -342,7 +344,7 @@
       const ok = resposta === alvo.valor;
       feedbackHtml = `
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 rounded-xl border border-white/10 bg-white/[0.02] fade-in">
-          <span style="color:${ok?'hsl(38 55% 59%)':'hsl(0 72% 51%)'}">
+          <span style="color:${ok?'#d88800':'hsl(0 72% 51%)'}">
             ${ok ? `✓ Correto! Valor ${alvo.valor} — ${alvo.nome}` : `✕ Incorreto. Correto: ${alvo.valor} — ${alvo.nome}`}
           </span>
           <button onclick="proximaRodadaTreino()" class="px-6 py-3 bg-fg text-bg rounded-full text-sm whitespace-nowrap hover:bg-accent transition-colors">
@@ -369,7 +371,7 @@
           </div>
           <!-- Barra de progresso -->
           <div class="w-full rounded-full mb-10" style="height:3px;background:hsl(0 0% 14%)">
-            <div class="h-full rounded-full transition-all duration-500" style="width:${progresso}%;background:hsl(38 55% 59%)"></div>
+            <div class="h-full rounded-full transition-all duration-500" style="width:${progresso}%;background:#d88800"></div>
           </div>
           <!-- Swatch largo -->
           <div class="w-full rounded-2xl mb-10 fade-in" style="background-color:${alvo.hex};height:220px;border:1px solid hsl(0 0% 14%)"></div>
@@ -598,7 +600,7 @@
                     { id:'maximo',     label:'Valor máximo',          desc:'Usa o canal com maior valor entre R, G e B.' },
                   ].map(m => `
                     <label class="flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all ${m.id==='luminancia'?'border-accent/40 bg-accent/[0.04]':'border-white/10 hover:border-white/20'}" id="lbl-${m.id}">
-                      <input type="radio" name="metodo" value="${m.id}" ${m.id==='luminancia'?'checked':''} class="mt-1 accent-[hsl(38,55%,59%)]" onchange="onMetodo('${m.id}')" />
+                      <input type="radio" name="metodo" value="${m.id}" ${m.id==='luminancia'?'checked':''} class="mt-1 accent-[#d88800]" onchange="onMetodo('${m.id}')" />
                       <div>
                         <p class="text-sm font-medium">${m.label}</p>
                         <p class="text-xs text-muted mt-0.5">${m.desc}</p>
@@ -616,9 +618,9 @@
             </button>
             <button id="btn-download" onclick="baixarImagem()" disabled
               class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-              style="background:hsl(38 55% 59%);color:hsl(0 0% 4%)"
-              onmouseenter="if(!this.disabled) this.style.background='hsl(38 55% 50%)'"
-              onmouseleave="if(!this.disabled) this.style.background='hsl(38 55% 59%)'">
+              style="background:#d88800;color:hsl(0 0% 4%)"
+              onmouseenter="if(!this.disabled) this.style.background='#c07800'"
+              onmouseleave="if(!this.disabled) this.style.background='#d88800'">
               Baixar Imagem (PNG)
             </button>
             <button onclick="document.getElementById('file-input').click()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
@@ -686,8 +688,8 @@
       const lbl = document.getElementById('lbl-' + id);
       if (!lbl) return;
       if (id === m) {
-        lbl.style.borderColor = 'hsl(38 55% 59% / 0.4)';
-        lbl.style.background  = 'hsl(38 55% 59% / 0.04)';
+        lbl.style.borderColor = '#d8880066';
+        lbl.style.background  = '#d888000a';
       } else {
         lbl.style.borderColor = 'hsl(0 0% 14%)';
         lbl.style.background  = 'transparent';
@@ -851,7 +853,7 @@
                     { id:'media',      label:'Média simples',         desc:'Média aritmética dos canais R, G e B.' },
                   ].map(m => `
                     <label class="flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all ${m.id==='luminancia'?'border-accent/40 bg-accent/[0.04]':'border-white/10 hover:border-white/20'}" id="pz-lbl-${m.id}">
-                      <input type="radio" name="pz-metodo" value="${m.id}" ${m.id==='luminancia'?'checked':''} class="mt-1 accent-[hsl(38,55%,59%)]" onchange="pzOnMetodo('${m.id}')" />
+                      <input type="radio" name="pz-metodo" value="${m.id}" ${m.id==='luminancia'?'checked':''} class="mt-1 accent-[#d88800]" onchange="pzOnMetodo('${m.id}')" />
                       <div>
                         <p class="text-sm font-medium">${m.label}</p>
                         <p class="text-xs text-muted mt-0.5">${m.desc}</p>
@@ -871,9 +873,9 @@
           <div id="pz-actions" class="hidden flex flex-col sm:flex-row gap-4">
             <button id="pz-btn-download" onclick="pzBaixarImagem()"
               class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors"
-              style="background:hsl(38 55% 59%);color:hsl(0 0% 4%)"
-              onmouseenter="this.style.background='hsl(38 55% 50%)'"
-              onmouseleave="this.style.background='hsl(38 55% 59%)'">
+              style="background:#d88800;color:hsl(0 0% 4%)"
+              onmouseenter="this.style.background='#c07800'"
+              onmouseleave="this.style.background='#d88800'">
               Baixar Posterizado (PNG)
             </button>
             <button onclick="document.getElementById('pz-file-input').click()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
@@ -902,8 +904,8 @@
       const lbl = document.getElementById('pz-lbl-' + id);
       if (!lbl) return;
       if (id === m) {
-        lbl.style.borderColor = 'hsl(38 55% 59% / 0.4)';
-        lbl.style.background  = 'hsl(38 55% 59% / 0.04)';
+        lbl.style.borderColor = '#d8880066';
+        lbl.style.background  = '#d888000a';
       } else {
         lbl.style.borderColor = 'hsl(0 0% 14%)';
         lbl.style.background  = 'transparent';
@@ -1102,7 +1104,7 @@
 
                   <h3 class="font-display text-xl mt-6 mb-4">Sobreposição</h3>
                   <label class="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" id="zn-overlay-toggle" checked onchange="znToggleOverlay()" class="accent-[hsl(38,55%,59%)] w-4 h-4" />
+                    <input type="checkbox" id="zn-overlay-toggle" checked onchange="znToggleOverlay()" class="accent-[#d88800] w-4 h-4" />
                     <span class="text-sm">Mostrar cores por faixa (escuro / médio / claro)</span>
                   </label>
 
@@ -1113,7 +1115,7 @@
                       { id:'media',      label:'Média simples' },
                     ].map(m => `
                       <label class="flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all ${m.id==='luminancia'?'border-accent/40 bg-accent/[0.04]':'border-white/10 hover:border-white/20'}" id="zn-lbl-${m.id}">
-                        <input type="radio" name="zn-metodo" value="${m.id}" ${m.id==='luminancia'?'checked':''} class="mt-1 accent-[hsl(38,55%,59%)]" onchange="znOnMetodo('${m.id}')" />
+                        <input type="radio" name="zn-metodo" value="${m.id}" ${m.id==='luminancia'?'checked':''} class="mt-1 accent-[#d88800]" onchange="znOnMetodo('${m.id}')" />
                         <p class="text-sm font-medium">${m.label}</p>
                       </label>`).join('')}
                   </div>
@@ -1130,9 +1132,9 @@
             <div class="flex flex-col sm:flex-row gap-4">
               <button onclick="znBaixarImagem()"
                 class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors"
-                style="background:hsl(38 55% 59%);color:hsl(0 0% 4%)"
-                onmouseenter="this.style.background='hsl(38 55% 50%)'"
-                onmouseleave="this.style.background='hsl(38 55% 59%)'">
+                style="background:#d88800;color:hsl(0 0% 4%)"
+                onmouseenter="this.style.background='#c07800'"
+                onmouseleave="this.style.background='#d88800'">
                 Baixar Mapa de Zonas (PNG)
               </button>
               <button onclick="document.getElementById('zn-file-input').click()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
@@ -1168,8 +1170,8 @@
       const lbl = document.getElementById('zn-lbl-' + id);
       if (!lbl) return;
       if (id === m) {
-        lbl.style.borderColor = 'hsl(38 55% 59% / 0.4)';
-        lbl.style.background  = 'hsl(38 55% 59% / 0.04)';
+        lbl.style.borderColor = '#d8880066';
+        lbl.style.background  = '#d888000a';
       } else {
         lbl.style.borderColor = 'hsl(0 0% 14%)';
         lbl.style.background  = 'transparent';
@@ -1336,7 +1338,7 @@
         <p class="text-xs uppercase tracking-[0.2em] text-muted mb-2">Distribuição</p>
         <div class="flex gap-1 h-3 rounded-full overflow-hidden mb-3">
           <div class="bg-white/30 rounded-l-full" style="width:${pctClaros}%"></div>
-          <div class="bg-[hsl(38,55%,59%)]" style="width:${pctMedios}%"></div>
+          <div class="bg-[#d88800]" style="width:${pctMedios}%"></div>
           <div class="bg-black/50 rounded-r-full" style="width:${pctEscuros}%"></div>
         </div>
         <div class="flex justify-between text-xs text-muted">
@@ -1441,7 +1443,7 @@
                 </div>
                 <div>
                   <label class="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" id="rl-inversao-toggle" onchange="rlOnInversao()" class="accent-[hsl(38,55%,59%)] w-4 h-4" />
+                    <input type="checkbox" id="rl-inversao-toggle" onchange="rlOnInversao()" class="accent-[#d88800] w-4 h-4" />
                     <span class="text-sm">Inverter cores (fundo branco)</span>
                   </label>
                   <p class="text-xs text-muted mt-1 ml-7">Linhas pretas em fundo branco — ideal para impressão e desenho na tela.</p>
@@ -1469,9 +1471,9 @@
             </button>
             <button id="rl-btn-download" onclick="rlBaixarImagem()"
               class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors"
-              style="background:hsl(38 55% 59%);color:hsl(0 0% 4%)"
-              onmouseenter="this.style.background='hsl(38 55% 50%)'"
-              onmouseleave="this.style.background='hsl(38 55% 59%)'">
+              style="background:#d88800;color:hsl(0 0% 4%)"
+              onmouseenter="this.style.background='#c07800'"
+              onmouseleave="this.style.background='#d88800'">
               Baixar Risco Linear (PNG)
             </button>
             <button onclick="document.getElementById('rl-file-input').click()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
@@ -1768,7 +1770,7 @@
                   <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Mapeamento na Escala</p>
                   <div id="iso-scale-bar" class="relative flex rounded-lg overflow-hidden border border-white/10" style="height:24px">
                     ${escalaCinza.map(v => `<div class="flex-1" style="background-color:${v.hex}"></div>`).join('')}
-                    <div id="iso-scale-marker" class="absolute top-[-2px] w-1 h-[28px] rounded-sm transition-all duration-100 ease-out" style="background:hsl(38 55% 59%);box-shadow:0 0 8px hsl(38 55% 59%);left:50%;display:none"></div>
+                    <div id="iso-scale-marker" class="absolute top-[-2px] w-1 h-[28px] rounded-sm transition-all duration-100 ease-out" style="background:#d88800;box-shadow:0 0 8px #d88800;left:50%;display:none"></div>
                   </div>
                   <div class="mt-2 flex justify-between text-[10px] text-muted font-mono">
                     <span>0 (Branco)</span><span>5</span><span>10 (Preto)</span>
@@ -1791,7 +1793,7 @@
                 <div class="space-y-6">
                   <h3 class="font-display text-xl mb-4">Isolar Faixa de Valores</h3>
                   <label class="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" id="iso-modo-toggle" onchange="isoOnModoIsolacao()" class="accent-[hsl(38,55%,59%)] w-4 h-4" />
+                    <input type="checkbox" id="iso-modo-toggle" onchange="isoOnModoIsolacao()" class="accent-[#d88800] w-4 h-4" />
                     <span class="text-sm">Ativar isolamento tonal</span>
                   </label>
                   <p class="text-xs text-muted">Quando ativo, apenas os pixels dentro da faixa selecionada ficam visíveis — o resto fica dessaturado.</p>
@@ -1848,9 +1850,9 @@
               </button>
               <button onclick="isoBaixarImagem()"
                 class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors"
-                style="background:hsl(38 55% 59%);color:hsl(0 0% 4%)"
-                onmouseenter="this.style.background='hsl(38 55% 50%)'"
-                onmouseleave="this.style.background='hsl(38 55% 59%)'">
+                style="background:#d88800;color:hsl(0 0% 4%)"
+                onmouseenter="this.style.background='#c07800'"
+                onmouseleave="this.style.background='#d88800'">
                 Baixar Resultado (PNG)
               </button>
               <button onclick="document.getElementById('iso-file-input').click()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
@@ -2037,7 +2039,7 @@
 
     // Centro
     const cxIdx = cx - x0, cyIdx = cy - y0;
-    ctxMag.strokeStyle = 'hsl(38 55% 59%)';
+    ctxMag.strokeStyle = '#d88800';
     ctxMag.lineWidth = 2;
     ctxMag.strokeRect(cxIdx * 20, cyIdx * 20, 20, 20);
   }
@@ -2236,9 +2238,9 @@
               </button>
               <button onclick="jnBaixarImagem()"
                 class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors"
-                style="background:hsl(38 55% 59%);color:hsl(0 0% 4%)"
-                onmouseenter="this.style.background='hsl(38 55% 50%)'"
-                onmouseleave="this.style.background='hsl(38 55% 59%)'">
+                style="background:#d88800;color:hsl(0 0% 4%)"
+                onmouseenter="this.style.background='#c07800'"
+                onmouseleave="this.style.background='#d88800'">
                 Baixar Resultado (PNG)
               </button>
               <button onclick="document.getElementById('jn-file-input').click()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
@@ -2421,9 +2423,9 @@
           <div class="flex flex-col sm:flex-row gap-4 no-print">
             <button onclick="window.print()"
               class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors"
-              style="background:hsl(38 55% 59%);color:hsl(0 0% 4%)"
-              onmouseenter="this.style.background='hsl(38 55% 50%)'"
-              onmouseleave="this.style.background='hsl(38 55% 59%)'">
+              style="background:#d88800;color:hsl(0 0% 4%)"
+              onmouseenter="this.style.background='#c07800'"
+              onmouseleave="this.style.background='#d88800'">
               🖨 Imprimir esta folha
             </button>
           </div>
