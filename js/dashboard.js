@@ -1,12 +1,12 @@
-  // -- Data --------------------------------------------------------------
+// ── Data ──────────────────────────────────────────────────────────────
   const escalaCinza = [
     { valor:0,  hex:'#FFFFFF', branco:10, preto:0,  nome:'Branco Puro'       },
     { valor:1,  hex:'#E6E6E6', branco:9,  preto:1,  nome:'Cinza Claro 1'     },
     { valor:2,  hex:'#CCCCCC', branco:8,  preto:2,  nome:'Cinza Claro 2'     },
     { valor:3,  hex:'#B3B3B3', branco:7,  preto:3,  nome:'Cinza Claro 3'     },
-    { valor:4,  hex:'#999999', branco:6,  preto:4,  nome:'Cinza M�dio Claro' },
-    { valor:5,  hex:'#808080', branco:5,  preto:5,  nome:'Cinza M�dio'       },
-    { valor:6,  hex:'#666666', branco:4,  preto:6,  nome:'Cinza M�dio Escuro'},
+    { valor:4,  hex:'#999999', branco:6,  preto:4,  nome:'Cinza Médio Claro' },
+    { valor:5,  hex:'#808080', branco:5,  preto:5,  nome:'Cinza Médio'       },
+    { valor:6,  hex:'#666666', branco:4,  preto:6,  nome:'Cinza Médio Escuro'},
     { valor:7,  hex:'#4D4D4D', branco:3,  preto:7,  nome:'Cinza Escuro 1'    },
     { valor:8,  hex:'#333333', branco:2,  preto:8,  nome:'Cinza Escuro 2'    },
     { valor:9,  hex:'#191919', branco:1,  preto:9,  nome:'Cinza Escuro 3'    },
@@ -15,23 +15,23 @@
 
   const dicas = [
     'Comece sempre com a cor mais clara (branco) e adicione o preto aos poucos.',
-    'Use uma espessura limpa para cada mistura � contamina altera o valor.',
+    'Use uma espessura limpa para cada mistura — contamina altera o valor.',
     'Teste o tom sobre um papel de papel branco para avaliar corretamente.',
-    'O olho se adapta rapidamente: observe cada mistura por no m�ximo 5 segundos.',
+    'O olho se adapta rapidamente: observe cada mistura por no máximo 5 segundos.',
     'Prepare todos os 11 valores de uma vez para ter a escala completa.',
   ];
 
   const pigmentos = {
-    branco: { nome: 'Branco de Tit�nio', codigo: 'PW6', desc: 'O branco mais opaco e usado em pintura hiper realista; cobertura m�xima e neutralidade de tom.' },
-    preto:  { nome: 'Negro de Marfim',   codigo: 'PBk9', desc: 'Preto neutro e levemente amadeirado, n�o puxa a mistura para o azul ou o marrom como outros pretos.' },
+    branco: { nome: 'Branco de Titónio', codigo: 'PW6', desc: 'O branco mais opaco e usado em pintura hiper realista; cobertura míxima e neutralidade de tom.' },
+    preto:  { nome: 'Negro de Marfim',   codigo: 'PBk9', desc: 'Preto neutro e levemente amadeirado, não puxa a mistura para o azul ou o marrom como outros pretos.' },
   };
   const pigmentosAlternativos = [
-    { nome: 'Branco de Zinco',  codigo: 'PW4',  papel: 'Alternativa ao Branco de Tit�nio', desc: 'Mais transparente e frio; produz cinzas ligeiramente mais suaves.' },
-    { nome: 'Preto Marte',      codigo: 'PBk11', papel: 'Alternativa ao Negro de Marfim', desc: 'Preto opaco levemente avermelhado, seca mais r�pido em �leo.' },
+    { nome: 'Branco de Zinco',  codigo: 'PW4',  papel: 'Alternativa ao Branco de Titónio', desc: 'Mais transparente e frio; produz cinzas ligeiramente mais suaves.' },
+    { nome: 'Preto Marte',      codigo: 'PBk11', papel: 'Alternativa ao Negro de Marfim', desc: 'Preto opaco levemente avermelhado, seca mais rípido em óleo.' },
     { nome: 'Negro Fumo',       codigo: 'PBk6/7', papel: 'Alternativa ao Negro de Marfim', desc: 'Muito intenso e frio; cobre bem, mas domina a mistura em pequenas quantidades.' },
   ];
 
-  // -- Router ------------------------------------------------------------
+  // ── Router ────────────────────────────────────────────────────────────
   const maisPages = ['posterizar','zonas','riscoLinear','isolador','janela','quadricular','comparador','ilusao'];
 
   function toggleMais() {
@@ -66,29 +66,29 @@
     window.scrollTo(0, 0);
   }
 
-  // -- Home --------------------------------------------------------------
+  // ── Home ──────────────────────────────────────────────────────────────
   function renderHome() {
     const app = document.getElementById('app');
     const strip = escalaCinza.map(v => `<div class="flex-1 swatch-grow" style="background-color:${v.hex};animation-delay:${0.05*v.valor}s"></div>`).join('');
     const modulos = [
-      { id:'escala',   icon:'?', title:'Escala de Cinzas',    desc:'Estude a escala completa de 11 valores, do branco puro ao preto absoluto.' },
-      { id:'treino',   icon:'?', title:'Treino de Valores',   desc:'Pratique identificar valores tonais e avalie sua precis�o visual.' },
-      { id:'misturas', icon:'?', title:'Guia de Misturas',    desc:'Propor��es exatas de branco e preto para obter cada tom de cinza.' },
-      { id:'converter',icon:'?', title:'Converter para Cinzas', desc:'Transforme qualquer imagem de refer�ncia em escala de cinzas para estudar valores tonais.' },
-      { id:'posterizar',icon:'?', title:'Posterizar',           desc:'Reduza a imagem a poucos tons para enxergar as regi�es de valor como blocos distintos.' },
-      { id:'zonas',     icon:'?', title:'Mapear Zonas',          desc:'Divida a imagem em zonas e identifique o valor dominante de cada regi��o � como um mapa tonal.' },
-      { id:'riscoLinear',icon:'?', title:'Risco Linear',          desc:'Extraia o contorno da imagem como um desenho de linha � ideal para estudar formas e preparar a tela.' },
-      { id:'isolador',  icon:'?', title:'Isolador Tonal',       desc:'Clique em qualquer ponto da imagem e descubra seu valor tonal exato. Isole uma faixa de valores para estudar.' },
-      { id:'janela',    icon:'?', title:'Janela F�sica',        desc:'Isole uma �rea da imagem com uma m�scara � como um cart��o vazado. Arraste e redimensione para estudar detalhes.' },
-      { id:'quadricular',icon:'#', title:'Quadricular Imagem',   desc:'Sobreponha uma grade na imagem para copiar quadrado por quadrado � t�cnica cl�ssica para desenhar com precis�o.' },
-      { id:'comparador',icon:'?', title:'Comparar Amostras',   desc:'Clique em um ponto da refer�ncia e no mesmo ponto da sua pintura para comparar valores tonais com precis�o.' },
-      { id:'ilusao',    icon:'?', title:'Ilus�o de �ptica',    desc:'Veja como o c�rebro engana � o mesmo cinza parece diferente conforme o fundo. Contraste simult�neo na pr�tica.' },
+      { id:'escala',   icon:'▮', title:'Escala de Cinzas',    desc:'Estude a escala completa de 11 valores, do branco puro ao preto absoluto.' },
+      { id:'treino',   icon:'▤', title:'Treino de Valores',   desc:'Pratique identificar valores tonais e avalie sua precisão visual.' },
+      { id:'misturas', icon:'◇', title:'Guia de Misturas',    desc:'Proporções exatas de branco e preto para obter cada tom de cinza.' },
+      { id:'converter',icon:'⊑', title:'Converter para Cinzas', desc:'Transforme qualquer imagem de referência em escala de cinzas para estudar valores tonais.' },
+      { id:'posterizar',icon:'◧', title:'Posterizar',           desc:'Reduza a imagem a poucos tons para enxergar as regiões de valor como blocos distintos.' },
+      { id:'zonas',     icon:'▦', title:'Mapear Zonas',          desc:'Divida a imagem em zonas e identifique o valor dominante de cada regiãão — como um mapa tonal.' },
+      { id:'riscoLinear',icon:'◐', title:'Risco Linear',          desc:'Extraia o contorno da imagem como um desenho de linha — ideal para estudar formas e preparar a tela.' },
+      { id:'isolador',  icon:'◉', title:'Isolador Tonal',       desc:'Clique em qualquer ponto da imagem e descubra seu valor tonal exato. Isole uma faixa de valores para estudar.' },
+      { id:'janela',    icon:'⊞', title:'Janela Física',        desc:'Isole uma írea da imagem com uma míscara — como um cartãão vazado. Arraste e redimensione para estudar detalhes.' },
+      { id:'quadricular',icon:'#', title:'Quadricular Imagem',   desc:'Sobreponha uma grade na imagem para copiar quadrado por quadrado — técnica clássica para desenhar com precisão.' },
+      { id:'comparador',icon:'⊕', title:'Comparar Amostras',   desc:'Clique em um ponto da referência e no mesmo ponto da sua pintura para comparar valores tonais com precisão.' },
+      { id:'ilusao',    icon:'◐', title:'Ilusão de Óptica',    desc:'Veja como o cérebro engana — o mesmo cinza parece diferente conforme o fundo. Contraste simultâneo na prática.' },
     ].map(m => `
       <button onclick="navigate('${m.id}')" class="group text-left block h-full p-8 rounded-2xl border border-white/10 hover:border-accent/40 bg-white/[0.02] hover:bg-white/[0.04] transition-all">
         <div class="text-accent mb-6 text-2xl">${m.icon}</div>
         <h3 class="font-display text-2xl mb-3">${m.title}</h3>
         <p class="text-muted text-sm leading-relaxed mb-6 font-light">${m.desc}</p>
-        <span class="inline-flex items-center gap-2 text-sm text-accent group-hover:gap-3 transition-all">Acessar ?</span>
+        <span class="inline-flex items-center gap-2 text-sm text-accent group-hover:gap-3 transition-all">Acessar →</span>
       </button>`).join('');
 
     app.innerHTML = `
@@ -96,10 +96,10 @@
         <section class="relative flex flex-col items-center justify-center px-6 py-24 md:py-40 text-center overflow-hidden">
           <div class="absolute top-0 left-0 right-0 flex" style="height:6px">${strip}</div>
           <div class="fade-in relative z-10 max-w-3xl">
-            <p class="text-accent text-xs md:text-sm tracking-[0.3em] uppercase mb-6">M�todo LEOB</p>
-            <h1 class="font-display text-4xl md:text-7xl leading-[1.05] mb-8">Dashboard de<br>An�lise Realista</h1>
+            <p class="text-accent text-xs md:text-sm tracking-[0.3em] uppercase mb-6">Método LEOB</p>
+            <h1 class="font-display text-4xl md:text-7xl leading-[1.05] mb-8">Dashboard de<br>Análise Realista</h1>
             <p class="text-muted text-lg md:text-xl leading-relaxed mb-12 max-w-2xl mx-auto font-light">
-              Aprenda a enxergar, classificar e misturar cada nuance de cinza. A base de toda pintura hiper realista come�a no dom�nio dos valores.
+              Aprenda a enxergar, classificar e misturar cada nuance de cinza. A base de toda pintura hiper realista começa no domínio dos valores.
             </p>
             <button onclick="navigate('escala')" class="inline-flex items-center gap-2 px-8 py-4 bg-fg text-bg rounded-full text-sm tracking-wide hover:bg-accent transition-colors">
               Quero Aprender Agora!
@@ -115,7 +115,7 @@
       </div>`;
   }
 
-  // -- Escala ------------------------------------------------------------
+  // ── Escala ────────────────────────────────────────────────────────────
   let selecionadoIdx = 5;
 
   function renderEscala() {
@@ -125,7 +125,7 @@
         <div class="max-w-6xl mx-auto">
           <div class="fade-in mb-12">
             <h1 class="font-display text-4xl md:text-5xl mb-4">Escala de Cinzas</h1>
-            <p class="text-muted max-w-2xl font-light">A escala de valores � a espinha dorsal da pintura hiper realista. Toque em qualquer tom para explorar suas propriedades e misturas.</p>
+            <p class="text-muted max-w-2xl font-light">A escala de valores é a espinha dorsal da pintura hiper realista. Toque em qualquer tom para explorar suas propriedades e misturas.</p>
           </div>
           <div id="escala-preview" class="mb-8"></div>
           <div id="escala-strip"   class="mb-8"></div>
@@ -193,7 +193,7 @@
       </div>`;
   }
 
-  // -- Treino ------------------------------------------------------------
+  // ── Treino ────────────────────────────────────────────────────────────
   const TOTAL_RODADAS = 10;
   let treinoState = { rodada:1, acertos:0, alvo:null, resposta:null, fase:'jogando' };
 
@@ -213,26 +213,26 @@
     const app = document.getElementById('app');
     const { rodada, acertos, alvo, resposta, fase } = treinoState;
 
-    // -- Resultado final
+    // ── Resultado final
     if (fase === 'resultado') {
       const pct  = Math.round((acertos / TOTAL_RODADAS) * 100);
-      const msg  = pct >= 80 ? 'Excelente percep��o tonal!' : pct >= 50 ? 'Bom progresso, continue praticando.' : 'Revise a escala de cinzas e tente novamente.';
+      const msg  = pct >= 80 ? 'Excelente percepção tonal!' : pct >= 50 ? 'Bom progresso, continue praticando.' : 'Revise a escala de cinzas e tente novamente.';
       app.innerHTML = `
         <div style="min-height:calc(100vh - 4rem)" class="flex items-center justify-center px-6 py-12">
           <div class="max-w-lg w-full text-center fade-in">
             <div class="inline-flex items-center justify-center w-20 h-20 rounded-full border-2 border-accent mb-8">
-              <span class="text-accent text-3xl">?</span>
+              <span class="text-accent text-3xl">⊑</span>
             </div>
             <h1 class="font-display text-5xl md:text-6xl mb-3">${pct}%</h1>
-            <p class="text-muted mb-2">Voc� acertou <span class="text-fg">${acertos}</span> de ${TOTAL_RODADAS} valores</p>
+            <p class="text-muted mb-2">Vocã acertou <span class="text-fg">${acertos}</span> de ${TOTAL_RODADAS} valores</p>
             <p class="text-accent text-sm mb-12">${msg}</p>
-            <button onclick="navigate('treino')" class="inline-flex items-center gap-2 px-8 py-4 bg-fg text-bg rounded-full text-sm hover:bg-accent transition-colors">? Tentar novamente</button>
+            <button onclick="navigate('treino')" class="inline-flex items-center gap-2 px-8 py-4 bg-fg text-bg rounded-full text-sm hover:bg-accent transition-colors">→ Tentar novamente</button>
           </div>
         </div>`;
       return;
     }
 
-    // -- Bot��es de resposta (11 em linha, com bolinha colorida)
+    // ── Botções de resposta (11 em linha, com bolinha colorida)
     const botoesHtml = escalaCinza.map(cor => {
       let bg = 'hsl(0 0% 6%)', border = 'hsl(0 0% 14%)', numColor = 'hsl(40 10% 94%)', opacity = '1';
       if (resposta !== null) {
@@ -252,17 +252,17 @@
         </button>`;
     }).join('');
 
-    // -- Feedback
+    // ── Feedback
     let feedbackHtml = '';
     if (resposta !== null) {
       const ok = resposta === alvo.valor;
       feedbackHtml = `
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 rounded-xl border border-white/10 bg-white/[0.02] fade-in">
           <span style="color:${ok?'#d88800':'hsl(0 72% 51%)'}">
-            ${ok ? `? Correto! Valor ${alvo.valor} � ${alvo.nome}` : `? Incorreto. Correto: ${alvo.valor} � ${alvo.nome}`}
+            ${ok ? `✔ Correto! Valor ${alvo.valor} — ${alvo.nome}` : `✘ Incorreto. Correto: ${alvo.valor} — ${alvo.nome}`}
           </span>
           <button onclick="proximaRodadaTreino()" class="px-6 py-3 bg-fg text-bg rounded-full text-sm whitespace-nowrap hover:bg-accent transition-colors">
-            ${rodada >= TOTAL_RODADAS ? 'Ver resultado' : 'Pr�ximo ?'}
+            ${rodada >= TOTAL_RODADAS ? 'Ver resultado' : 'Próximo →'}
           </button>
         </div>`;
     }
@@ -289,7 +289,7 @@
           </div>
           <!-- Swatch largo -->
           <div class="w-full rounded-2xl mb-10 fade-in" style="background-color:${alvo.hex};height:220px;border:1px solid hsl(0 0% 14%)"></div>
-          <!-- Bot��es de resposta -->
+          <!-- Botções de resposta -->
           <div class="grid grid-cols-5 md:grid-cols-11 mb-8" style="gap:0.5rem">
             ${botoesHtml}
           </div>
@@ -314,7 +314,7 @@
     renderTreinoView();
   }
 
-  // -- Misturas ----------------------------------------------------------
+  // ── Misturas ──────────────────────────────────────────────────────────
   function renderMisturas() {
     const app = document.getElementById('app');
     const rows = escalaCinza.map((v,i) => `
@@ -335,7 +335,7 @@
           <span class="text-muted ml-1">${v.branco===0?'100% preto':v.preto===0?'100% branco':`${v.branco}:${v.preto}`}</span>
         </div>
       </div>`).join('');
-    const tips = dicas.map(d => `<li>� ${d}</li>`).join('');
+    const tips = dicas.map(d => `<li>— ${d}</li>`).join('');
     const alternativas = pigmentosAlternativos.map(p => `
       <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
         <div class="flex items-center justify-between mb-1">
@@ -351,10 +351,10 @@
         <div class="max-w-6xl mx-auto">
           <div class="fade-in mb-12">
             <h1 class="font-display text-4xl md:text-5xl mb-4">Guia de Misturas</h1>
-            <p class="text-muted max-w-2xl font-light">Cada valor tonal � obtido misturando ${pigmentos.branco.nome} e ${pigmentos.preto.nome} em propor��es precisas. Use este guia como refer�ncia ao preparar suas tintas.</p>
+            <p class="text-muted max-w-2xl font-light">Cada valor tonal é obtido misturando ${pigmentos.branco.nome} e ${pigmentos.preto.nome} em proporções precisas. Use este guia como referência ao preparar suas tintas.</p>
           </div>
 
-          <!-- Pigmentos de refer�ncia -->
+          <!-- Pigmentos de referência -->
           <div class="grid md:grid-cols-2 gap-4 mb-10 fade-in">
             <div class="p-6 rounded-xl border border-white/10 bg-white/[0.02] flex items-start gap-4">
               <div class="w-10 h-10 rounded-lg flex-shrink-0 border border-white/10" style="background-color:#FFFFFF"></div>
@@ -382,7 +382,7 @@
 
           <div class="mt-16 p-8 rounded-2xl border border-accent/20 bg-accent/[0.03] fade-in">
             <div class="flex items-start gap-4">
-              <span class="text-accent flex-shrink-0 mt-1 text-2xl">?</span>
+              <span class="text-accent flex-shrink-0 mt-1 text-2xl">◇</span>
               <div>
                 <h3 class="font-display text-xl mb-4">Dicas de Mistura</h3>
                 <ul class="space-y-2 text-sm text-muted">${tips}</ul>
@@ -392,14 +392,14 @@
 
           <div class="mt-6 p-8 rounded-2xl border border-white/10 bg-white/[0.02] fade-in">
             <h3 class="font-display text-xl mb-1">Pigmentos Alternativos</h3>
-            <p class="text-sm text-muted mb-5 font-light">Caso n�o tenha os pigmentos de refer�ncia, estas s�o substitui��es comuns � o resultado tonal muda ligeiramente de temperatura.</p>
+            <p class="text-sm text-muted mb-5 font-light">Caso não tenha os pigmentos de referência, estas são substituições comuns — o resultado tonal muda ligeiramente de temperatura.</p>
             <div class="grid md:grid-cols-3 gap-4">${alternativas}</div>
           </div>
         </div>
       </div>`;
   }
 
-  // -- Converter para Cinzas ---------------------------------------------
+  // ── Converter para Cinzas ─────────────────────────────────────────────
   let converterState = {
     originalImageData: null,
     originalImg: null,
@@ -416,7 +416,7 @@
           <!-- Header -->
           <div class="fade-in mb-10">
             <h1 class="font-display text-4xl md:text-5xl mb-4">Converter para Cinzas</h1>
-            <p class="text-muted max-w-2xl font-light">Fa+�a o upload de uma foto de refer�ncia e converta-a para escala de cinzas para estudar valores tonais. Ajuste brilho e contraste para focar nos valores que importam.</p>
+            <p class="text-muted max-w-2xl font-light">Fa├ºa o upload de uma foto de referência e converta-a para escala de cinzas para estudar valores tonais. Ajuste brilho e contraste para focar nos valores que importam.</p>
           </div>
 
           <!-- Upload zone -->
@@ -433,7 +433,7 @@
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               </div>
               <p class="font-display text-xl">Clique ou arraste uma imagem</p>
-              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado at� 10MB.</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
             </div>
           </div>
 
@@ -454,20 +454,20 @@
           <!-- Stats (hidden until image) -->
           <div id="stats-section" class="hidden mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
-              <p class="text-xs uppercase tracking-[0.2em] text-accent mb-1">Valor M�dio</p>
-              <p id="stat-valor" class="font-display text-2xl">�</p>
+              <p class="text-xs uppercase tracking-[0.2em] text-accent mb-1">Valor Médio</p>
+              <p id="stat-valor" class="font-display text-2xl">—</p>
             </div>
             <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
               <p class="text-xs uppercase tracking-[0.2em] text-accent mb-1">Luminosidade</p>
-              <p id="stat-lumi" class="font-display text-2xl">�</p>
+              <p id="stat-lumi" class="font-display text-2xl">—</p>
             </div>
             <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
               <p class="text-xs uppercase tracking-[0.2em] text-accent mb-1">Faixa Dominante</p>
-              <p id="stat-faixa" class="font-display text-xl">�</p>
+              <p id="stat-faixa" class="font-display text-xl">—</p>
             </div>
             <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
               <p class="text-xs uppercase tracking-[0.2em] text-accent mb-1">Contraste</p>
-              <p id="stat-contraste" class="font-display text-xl">�</p>
+              <p id="stat-contraste" class="font-display text-xl">—</p>
             </div>
           </div>
 
@@ -498,18 +498,18 @@
                     <span id="val-intensidade" class="text-accent font-mono">100%</span>
                   </div>
                   <input type="range" id="sl-intensidade" min="0" max="100" value="100" class="w-full" oninput="onSlider('intensidade', this.value)" />
-                  <p class="text-xs text-muted mt-1">0% = cor original -� 100% = cinza completo</p>
+                  <p class="text-xs text-muted mt-1">0% = cor original ┬À 100% = cinza completo</p>
                 </div>
               </div>
 
-              <!-- M�todo -->
+              <!-- Método -->
               <div>
-                <h3 class="font-display text-xl mb-4">M�todo de Convers�o</h3>
+                <h3 class="font-display text-xl mb-4">Método de Conversão</h3>
                 <div class="space-y-3">
                   ${[
-                    { id:'luminancia', label:'Lumin�ncia <span class="text-accent text-xs">(recomendado)</span>', desc:'Pesos ITU-R BT.601: 0.299R + 0.587G + 0.114B. Mais pr�ximo da percep��o humana.' },
-                    { id:'media',      label:'M�dia simples',         desc:'M�dia aritm�tica dos canais R, G e B.' },
-                    { id:'maximo',     label:'Valor m�ximo',          desc:'Usa o canal com maior valor entre R, G e B.' },
+                    { id:'luminancia', label:'Luminância <span class="text-accent text-xs">(recomendado)</span>', desc:'Pesos ITU-R BT.601: 0.299R + 0.587G + 0.114B. Mais próximo da percepção humana.' },
+                    { id:'media',      label:'Média simples',         desc:'Média aritmêtica dos canais R, G e B.' },
+                    { id:'maximo',     label:'Valor míximo',          desc:'Usa o canal com maior valor entre R, G e B.' },
                   ].map(m => `
                     <label class="flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all ${m.id==='luminancia'?'border-accent/40 bg-accent/[0.04]':'border-white/10 hover:border-white/20'}" id="lbl-${m.id}">
                       <input type="radio" name="metodo" value="${m.id}" ${m.id==='luminancia'?'checked':''} class="mt-1 accent-[#d88800]" onchange="onMetodo('${m.id}')" />
@@ -523,7 +523,7 @@
             </div>
           </div>
 
-          <!-- Bot��es -->
+          <!-- Botções -->
           <div class="flex flex-col sm:flex-row gap-4">
             <button onclick="resetarAjustes()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
               Redefinir Ajustes
@@ -544,7 +544,7 @@
       </div>`;
   }
 
-  // -- Converter: handlers -----------------------------------------------
+  // ── Converter: handlers ───────────────────────────────────────────────
   function handleDragOver(e) { e.preventDefault(); document.getElementById('upload-zone').classList.add('drag-over'); }
   function handleDragLeave(e) { document.getElementById('upload-zone').classList.remove('drag-over'); }
   function handleDrop(e) {
@@ -556,8 +556,8 @@
   function handleFileChange(e) { if (e.target.files[0]) processFile(e.target.files[0]); }
 
   function processFile(file) {
-    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato n�o suportado. Use JPG, PNG ou WebP.'); return; }
-    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de at� 10MB.'); return; }
+    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
@@ -667,8 +667,8 @@
     const avgGray = totalGray / pixels;
     const avgVal  = Math.round((avgGray / 255) * 10 * 10) / 10;
     const range   = maxGray - minGray;
-    const faixa   = avgGray < 85 ? 'Escuro' : avgGray < 170 ? 'M�dio' : 'Claro';
-    const ctStr   = range < 80 ? 'Baixo' : range < 160 ? 'M�dio' : 'Alto';
+    const faixa   = avgGray < 85 ? 'Escuro' : avgGray < 170 ? 'Médio' : 'Claro';
+    const ctStr   = range < 80 ? 'Baixo' : range < 160 ? 'Médio' : 'Alto';
 
     const sv = document.getElementById('stat-valor');
     const sl = document.getElementById('stat-lumi');
@@ -693,7 +693,7 @@
     }, 'image/png');
   }
 
-  // -- Posterizar ------------------------------------------------------
+  // ── Posterizar ──────────────────────────────────────────────────────
   let posterizeState = {
     originalImageData: null,
     niveis: 4,
@@ -709,7 +709,7 @@
           <!-- Header -->
           <div class="fade-in mb-10">
             <h1 class="font-display text-4xl md:text-5xl mb-4">Posterizar</h1>
-            <p class="text-muted max-w-2xl font-light">Reduza qualquer imagem a poucos tons de cinza para enxergar apenas as regi�es de valor � como blocos. Essa � a forma mais eficaz de treinar o olhar para pintar.</p>
+            <p class="text-muted max-w-2xl font-light">Reduza qualquer imagem a poucos tons de cinza para enxergar apenas as regiões de valor — como blocos. Essa é a forma mais eficaz de treinar o olhar para pintar.</p>
           </div>
 
           <!-- Upload zone -->
@@ -726,7 +726,7 @@
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               </div>
               <p class="font-display text-xl">Clique ou arraste uma imagem</p>
-              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado at� 10MB.</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
             </div>
           </div>
 
@@ -748,7 +748,7 @@
           <div id="pz-controls-section" class="hidden p-4 md:p-8 rounded-2xl border border-white/10 bg-white/[0.02] mb-6">
             <div class="grid md:grid-cols-2 gap-8">
               <div class="space-y-6">
-                <h3 class="font-display text-xl mb-4">N�mero de Tons</h3>
+                <h3 class="font-display text-xl mb-4">Número de Tons</h3>
                 <div class="flex flex-wrap gap-3" id="pz-levels">
                   ${[3,4,5,7,11].map(n => `
                     <button onclick="pzSetNiveis(${n})" data-nivel="${n}"
@@ -756,13 +756,13 @@
                       ${n} tons
                     </button>`).join('')}
                 </div>
-                <p class="text-xs text-muted mt-2">Menos tons = formas mais simplificadas. 3�5 � ideal para estudo.</p>
+                <p class="text-xs text-muted mt-2">Menos tons = formas mais simplificadas. 3—5 é ideal para estudo.</p>
 
-                <h3 class="font-display text-xl mt-6 mb-4">M�todo de Convers�o</h3>
+                <h3 class="font-display text-xl mt-6 mb-4">Método de Conversão</h3>
                 <div class="space-y-3">
                   ${[
-                    { id:'luminancia', label:'Lumin�ncia <span class="text-accent text-xs">(recomendado)</span>', desc:'Pesos ITU-R BT.601. Mais pr�ximo da percep��o humana.' },
-                    { id:'media',      label:'M�dia simples',         desc:'M�dia aritm�tica dos canais R, G e B.' },
+                    { id:'luminancia', label:'Luminância <span class="text-accent text-xs">(recomendado)</span>', desc:'Pesos ITU-R BT.601. Mais próximo da percepção humana.' },
+                    { id:'media',      label:'Média simples',         desc:'Média aritmêtica dos canais R, G e B.' },
                   ].map(m => `
                     <label class="flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all ${m.id==='luminancia'?'border-accent/40 bg-accent/[0.04]':'border-white/10 hover:border-white/20'}" id="pz-lbl-${m.id}">
                       <input type="radio" name="pz-metodo" value="${m.id}" ${m.id==='luminancia'?'checked':''} class="mt-1 accent-[#d88800]" onchange="pzOnMetodo('${m.id}')" />
@@ -781,7 +781,7 @@
             </div>
           </div>
 
-          <!-- Bot��es -->
+          <!-- Botções -->
           <div id="pz-actions" class="hidden flex flex-col sm:flex-row gap-4">
             <button id="pz-btn-download" onclick="pzBaixarImagem()"
               class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors"
@@ -836,8 +836,8 @@
   function pzHandleFileChange(e) { if (e.target.files[0]) pzProcessFile(e.target.files[0]); }
 
   function pzProcessFile(file) {
-    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato n�o suportado. Use JPG, PNG ou WebP.'); return; }
-    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de at� 10MB.'); return; }
+    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
@@ -889,7 +889,7 @@
       const clampIdx = Math.min(idx, niveis - 1);
       const posterGray = Math.round(clampIdx * passo);
 
-      // Se 11 n�veis, mapear diretamente para a escala 0�10
+      // Se 11 níveis, mapear diretamente para a escala 0—10
       let finalGray;
       if (niveis === 11) {
         const escIdx = Math.min(Math.round((gray / 255) * 10), 10);
@@ -926,7 +926,7 @@
         </div>
       </div>`;
 
-    // Event delegation para grade r�pida (funciona em mobile)
+    // Event delegation para grade rápida (funciona em mobile)
     setTimeout(() => {
       const quick = document.getElementById('qd-quick');
       if (quick) quick.addEventListener('click', e => {
@@ -951,7 +951,7 @@
     }, 'image/png');
   }
 
-  // -- Mapear Zonas ------------------------------------------------------
+  // ── Mapear Zonas ──────────────────────────────────────────────────────
   let zonasState = {
     originalImageData: null,
     cols: 5,
@@ -969,7 +969,7 @@
           <!-- Header -->
           <div class="fade-in mb-10">
             <h1 class="font-display text-4xl md:text-5xl mb-4">Mapear Zonas</h1>
-            <p class="text-muted max-w-2xl font-light">Divida a imagem em uma grade e descubra o valor tonal dominante de cada zona. � o mapa que voc� monta antes de colocar tinta na tela.</p>
+            <p class="text-muted max-w-2xl font-light">Divida a imagem em uma grade e descubra o valor tonal dominante de cada zona. É o mapa que vocã monta antes de colocar tinta na tela.</p>
           </div>
 
           <!-- Upload zone -->
@@ -986,7 +986,7 @@
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               </div>
               <p class="font-display text-xl">Clique ou arraste uma imagem</p>
-              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado at� 10MB.</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
             </div>
           </div>
 
@@ -997,7 +997,7 @@
               <canvas id="zn-canvas" class="w-full rounded-xl border border-white/10" style="max-height:500px;object-fit:contain"></canvas>
             </div>
 
-            <!-- Grade num�rica (abaixo da imagem) -->
+            <!-- Grade numérica (abaixo da imagem) -->
             <div id="zn-grid-numbers" class="mb-8"></div>
 
             <!-- Legenda de zonas -->
@@ -1010,30 +1010,30 @@
                   <h3 class="font-display text-xl mb-4">Tamanho da Grade</h3>
                   <div class="flex flex-wrap gap-3" id="zn-grid-btns">
                     ${[
-                      { c:3, r:3, label:'3�3' },
-                      { c:4, r:4, label:'4�4' },
-                      { c:5, r:5, label:'5�5' },
-                      { c:6, r:6, label:'6�6' },
-                      { c:7, r:7, label:'7�7' },
+                      { c:3, r:3, label:'3×3' },
+                      { c:4, r:4, label:'4×4' },
+                      { c:5, r:5, label:'5×5' },
+                      { c:6, r:6, label:'6×6' },
+                      { c:7, r:7, label:'7×7' },
                     ].map(g => `
                       <button onclick="znSetGrid(${g.c},${g.r})" data-c="${g.c}"
                         class="px-4 py-3 rounded-xl text-sm font-medium transition-all ${g.c===5?'border-accent/40 bg-accent/[0.04] text-accent border':'border-white/10 text-muted hover:border-white/20'}">
                         ${g.label}
                       </button>`).join('')}
                   </div>
-                  <p class="text-xs text-muted mt-2">Menos zonas = vis�o mais simplificada. Comece com 3�3 e aumente conforme a necessidade.</p>
+                  <p class="text-xs text-muted mt-2">Menos zonas = visão mais simplificada. Comece com 3×3 e aumente conforme a necessidade.</p>
 
-                  <h3 class="font-display text-xl mt-6 mb-4">Sobreposi��o</h3>
+                  <h3 class="font-display text-xl mt-6 mb-4">Sobreposição</h3>
                   <label class="flex items-center gap-3 cursor-pointer">
                     <input type="checkbox" id="zn-overlay-toggle" checked onchange="znToggleOverlay()" class="accent-[#d88800] w-4 h-4" />
-                    <span class="text-sm">Mostrar cores por faixa (escuro / m�dio / claro)</span>
+                    <span class="text-sm">Mostrar cores por faixa (escuro / médio / claro)</span>
                   </label>
 
-                  <h3 class="font-display text-xl mt-6 mb-4">M�todo</h3>
+                  <h3 class="font-display text-xl mt-6 mb-4">Método</h3>
                   <div class="space-y-3">
                     ${[
-                      { id:'luminancia', label:'Lumin�ncia <span class="text-accent text-xs">(recomendado)</span>' },
-                      { id:'media',      label:'M�dia simples' },
+                      { id:'luminancia', label:'Luminância <span class="text-accent text-xs">(recomendado)</span>' },
+                      { id:'media',      label:'Média simples' },
                     ].map(m => `
                       <label class="flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all ${m.id==='luminancia'?'border-accent/40 bg-accent/[0.04]':'border-white/10 hover:border-white/20'}" id="zn-lbl-${m.id}">
                         <input type="radio" name="zn-metodo" value="${m.id}" ${m.id==='luminancia'?'checked':''} class="mt-1 accent-[#d88800]" onchange="znOnMetodo('${m.id}')" />
@@ -1049,7 +1049,7 @@
               </div>
             </div>
 
-            <!-- Bot��es -->
+            <!-- Botções -->
             <div class="flex flex-col sm:flex-row gap-4">
               <button onclick="znBaixarImagem()"
                 class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors"
@@ -1111,8 +1111,8 @@
   function znHandleFileChange(e) { if (e.target.files[0]) znProcessFile(e.target.files[0]); }
 
   function znProcessFile(file) {
-    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato n�o suportado. Use JPG, PNG ou WebP.'); return; }
-    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de at� 10MB.'); return; }
+    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
@@ -1200,7 +1200,7 @@
       ctx.beginPath(); ctx.moveTo(0, r2 * cellH); ctx.lineTo(cols * cellW, r2 * cellH); ctx.stroke();
     }
 
-    // N�meros nas c�lulas
+    // Números nas células
     for (let r = 0; r < rows; r++) {
       for (let col = 0; col < cols; col++) {
         const v = zonasValores[r][col];
@@ -1214,7 +1214,7 @@
       }
     }
 
-    // Grade num�rica abaixo da imagem
+    // Grade numérica abaixo da imagem
     const gridNumEl = document.getElementById('zn-grid-numbers');
     let gridHtml = `<div class="grid gap-1.5" style="grid-template-columns:repeat(${cols},1fr)">`;
     for (let r = 0; r < rows; r++) {
@@ -1233,9 +1233,9 @@
     // Legenda de cores
     document.getElementById('zn-legend').innerHTML = `
       <div class="flex flex-wrap gap-4 text-sm">
-        <span class="flex items-center gap-2"><span class="w-4 h-4 rounded" style="background:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.2)"></span> Claros (0�3)</span>
-        <span class="flex items-center gap-2"><span class="w-4 h-4 rounded" style="background:rgba(216,136,0,0.25);border:1px solid rgba(216,136,0,0.3)"></span> M�dios (4�7)</span>
-        <span class="flex items-center gap-2"><span class="w-4 h-4 rounded" style="background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.15)"></span> Escuros (8�10)</span>
+        <span class="flex items-center gap-2"><span class="w-4 h-4 rounded" style="background:rgba(255,255,255,0.35);border:1px solid rgba(255,255,255,0.2)"></span> Claros (0—3)</span>
+        <span class="flex items-center gap-2"><span class="w-4 h-4 rounded" style="background:rgba(216,136,0,0.25);border:1px solid rgba(216,136,0,0.3)"></span> Médios (4—7)</span>
+        <span class="flex items-center gap-2"><span class="w-4 h-4 rounded" style="background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.15)"></span> Escuros (8—10)</span>
       </div>`;
 
     // Resumo
@@ -1256,7 +1256,7 @@
         <p class="font-display text-2xl">${faixaDominante}</p>
       </div>
       <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
-        <p class="text-xs uppercase tracking-[0.2em] text-muted mb-2">Distribui��o</p>
+        <p class="text-xs uppercase tracking-[0.2em] text-muted mb-2">Distribuição</p>
         <div class="flex gap-1 h-3 rounded-full overflow-hidden mb-3">
           <div class="bg-white/30 rounded-l-full" style="width:${pctClaros}%"></div>
           <div class="bg-[#d88800]" style="width:${pctMedios}%"></div>
@@ -1264,14 +1264,14 @@
         </div>
         <div class="flex justify-between text-xs text-muted">
           <span>${pctClaros}% claros</span>
-          <span>${pctMedios}% m�dios</span>
+          <span>${pctMedios}% médios</span>
           <span>${pctEscuros}% escuros</span>
         </div>
       </div>
       <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
         <p class="text-xs uppercase tracking-[0.2em] text-muted mb-2">Valores Mais Frequentes</p>
         <div class="flex flex-wrap gap-2 mt-2">
-          ${contagem.map((cnt, i) => cnt > 0 ? `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs" style="background:${escalaCinza[i].hex};color:${i>5?'#333':'#eee'}"><span class="font-mono font-bold">${i}</span><span class="opacity-70">+�${cnt}</span></span>` : '').join('')}
+          ${contagem.map((cnt, i) => cnt > 0 ? `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs" style="background:${escalaCinza[i].hex};color:${i>5?'#333':'#eee'}"><span class="font-mono font-bold">${i}</span><span class="opacity-70">├ù${cnt}</span></span>` : '').join('')}
         </div>
       </div>`;
   }
@@ -1289,7 +1289,7 @@
     }, 'image/png');
   }
 
-  // -- Risco Linear ------------------------------------------------------
+  // ── Risco Linear ──────────────────────────────────────────────────────
   let riscoState = {
     originalImageData: null,
     limiar: 30,
@@ -1306,7 +1306,7 @@
           <!-- Header -->
           <div class="fade-in mb-10">
             <h1 class="font-display text-4xl md:text-5xl mb-4">Risco Linear</h1>
-            <p class="text-muted max-w-2xl font-light">Extraia os contornos de qualquer imagem como um desenho de linha. Ideal para estudar formas, preparar a tela com o contorno base, ou simplificar uma refer�ncia complexa.</p>
+            <p class="text-muted max-w-2xl font-light">Extraia os contornos de qualquer imagem como um desenho de linha. Ideal para estudar formas, preparar a tela com o contorno base, ou simplificar uma referência complexa.</p>
           </div>
 
           <!-- Upload zone -->
@@ -1323,7 +1323,7 @@
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               </div>
               <p class="font-display text-xl">Clique ou arraste uma imagem</p>
-              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado at� 10MB.</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
             </div>
           </div>
 
@@ -1352,22 +1352,22 @@
                     <span id="rl-val-limiar" class="text-accent font-mono">30</span>
                   </div>
                   <input type="range" id="rl-sl-limiar" min="5" max="120" value="30" class="w-full" oninput="rlOnSlider('limiar', this.value)" />
-                  <p class="text-xs text-muted mt-1">Menor = mais detalhes -� Maior = apenas contornos fortes</p>
+                  <p class="text-xs text-muted mt-1">Menor = mais detalhes ┬À Maior = apenas contornos fortes</p>
                 </div>
                 <div>
                   <div class="flex justify-between text-sm mb-2">
-                    <span>Suaviza��o (Gauss)</span>
+                    <span>Suavização (Gauss)</span>
                     <span id="rl-val-suavizacao" class="text-accent font-mono">2</span>
                   </div>
                   <input type="range" id="rl-sl-suavizacao" min="0" max="6" value="2" class="w-full" oninput="rlOnSlider('suavizacao', this.value)" />
-                  <p class="text-xs text-muted mt-1">Remove ru�do antes da detec��o. 0 = sem suaviza��o.</p>
+                  <p class="text-xs text-muted mt-1">Remove ruído antes da detecção. 0 = sem suavização.</p>
                 </div>
                 <div>
                   <label class="flex items-center gap-3 cursor-pointer">
                     <input type="checkbox" id="rl-inversao-toggle" onchange="rlOnInversao()" class="accent-[#d88800] w-4 h-4" />
                     <span class="text-sm">Inverter cores (fundo branco)</span>
                   </label>
-                  <p class="text-xs text-muted mt-1 ml-7">Linhas pretas em fundo branco � ideal para impress�o e desenho na tela.</p>
+                  <p class="text-xs text-muted mt-1 ml-7">Linhas pretas em fundo branco — ideal para impressão e desenho na tela.</p>
                 </div>
               </div>
 
@@ -1375,17 +1375,17 @@
                 <h3 class="font-display text-xl mb-4">Sobre o Algoritmo</h3>
                 <div class="p-5 rounded-xl border border-white/10 bg-white/[0.02]">
                   <p class="text-sm text-muted leading-relaxed">
-                    O algoritmo <span class="text-fg font-medium">Sobel</span> detecta bordas calculando o gradiente de intensidade em cada pixel. Primeiro, a imagem � convertida para cinzas e suavizada (filtro Gaussiano). Depois, duas m�scaras 3�3 calculam a varia��o horizontal e vertical. A intensidade do contorno � dada pela magnitude do gradiente � pixels com varia��o alta s�o bordas.
+                    O algoritmo <span class="text-fg font-medium">Sobel</span> detecta bordas calculando o gradiente de intensidade em cada pixel. Primeiro, a imagem é convertida para cinzas e suavizada (filtro Gaussiano). Depois, duas míscaras 3×3 calculam a variação horizontal e vertical. A intensidade do contorno é dada pela magnitude do gradiente — pixels com variação alta são bordas.
                   </p>
                   <p class="text-sm text-muted leading-relaxed mt-3">
-                    <span class="text-accent font-medium">Dica pr�tica:</span> Para preparar a tela, use suaviza��o 2�3 e limiar 25�40. Para um estudo detalhado, diminua o limiar e aumente a suaviza��o.
+                    <span class="text-accent font-medium">Dica prítica:</span> Para preparar a tela, use suavização 2—3 e limiar 25—40. Para um estudo detalhado, diminua o limiar e aumente a suavização.
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Bot��es -->
+          <!-- Botções -->
           <div id="rl-actions" class="hidden flex flex-col sm:flex-row gap-4">
             <button onclick="rlResetarAjustes()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
               Redefinir Ajustes
@@ -1406,7 +1406,7 @@
       </div>`;
   }
 
-  // -- Risco Linear: handlers --------------------------------------------
+  // ── Risco Linear: handlers ────────────────────────────────────────────
   function rlHandleDragOver(e) { e.preventDefault(); document.getElementById('rl-upload-zone').classList.add('drag-over'); }
   function rlHandleDragLeave(e) { document.getElementById('rl-upload-zone').classList.remove('drag-over'); }
   function rlHandleDrop(e) {
@@ -1417,8 +1417,8 @@
   function rlHandleFileChange(e) { if (e.target.files[0]) rlProcessFile(e.target.files[0]); }
 
   function rlProcessFile(file) {
-    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato n�o suportado. Use JPG, PNG ou WebP.'); return; }
-    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de at� 10MB.'); return; }
+    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
@@ -1475,10 +1475,10 @@
     rlAplicar();
   }
 
-  // -- Filtro Gaussiano 3�3 ---------------------------------------------
+  // ── Filtro Gaussiano 3×3 ─────────────────────────────────────────────
   function rlGaussianBlur(src, w, h, sigma) {
     if (sigma <= 0) return src;
-    // Kernel 5�5 adaptativo ao sigma
+    // Kernel 5×5 adaptativo ao sigma
     const s = Math.max(0.5, sigma);
     const k = 5;
     const kernel = [];
@@ -1526,7 +1526,7 @@
     return out;
   }
 
-  // -- Sobel edge detection ----------------------------------------------
+  // ── Sobel edge detection ──────────────────────────────────────────────
   function rlSobel(gray, w, h) {
     const mag = new Float32Array(w * h);
     // Gx e Gy kernels
@@ -1549,7 +1549,7 @@
     return mag;
   }
 
-  // -- Aplicar risco linear ----------------------------------------------
+  // ── Aplicar risco linear ──────────────────────────────────────────────
   function rlAplicar() {
     if (!riscoState.originalImageData) return;
     const { originalImageData, limiar, inversao, suavizacao } = riscoState;
@@ -1561,19 +1561,19 @@
     const out = ctx.createImageData(W, H);
     const d = out.data;
 
-    // 1. Converter para cinzas (lumin�ncia)
+    // 1. Converter para cinzas (luminôncia)
     const gray = new Float32Array(W * H);
     for (let i = 0; i < src.length; i += 4) {
       gray[i / 4] = 0.299 * src[i] + 0.587 * src[i + 1] + 0.114 * src[i + 2];
     }
 
-    // 2. Suaviza��o Gaussiana
+    // 2. Suavização Gaussiana
     const smoothed = rlGaussianBlur(gray, W, H, suavizacao);
 
     // 3. Sobel
     const edges = rlSobel(smoothed, W, H);
 
-    // 4. Encontrar magnitude m�xima para normaliza��o
+    // 4. Encontrar magnitude míxima para normalização
     let maxMag = 0;
     for (let i = 0; i < edges.length; i++) {
       if (edges[i] > maxMag) maxMag = edges[i];
@@ -1611,8 +1611,8 @@
     }, 'image/png');
   }
 
-  // -- Isolador Tonal Din�mico ------------------------------------------
-  // Escala: 0 = Branco (luz), 10 = Preto (sombra) � padr��o art�stico
+  // ── Isolador Tonal Dinâmico ──────────────────────────────────────────
+  // Escala: 0 = Branco (luz), 10 = Preto (sombra) — padrãão artístico
   let isoladorState = {
     originalImageData: null,
     grayData: null,
@@ -1635,8 +1635,8 @@
 
           <!-- Header -->
           <div class="fade-in mb-10">
-            <h1 class="font-display text-4xl md:text-5xl mb-4">Isolador Tonal Din�mico</h1>
-            <p class="text-muted max-w-2xl font-light">Passe o mouse ou arraste o dedo sobre a imagem para isolar o valor tonal exato de qualquer ponto � destrua as ilus��es de �tica.</p>
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Isolador Tonal Dinâmico</h1>
+            <p class="text-muted max-w-2xl font-light">Passe o mouse ou arraste o dedo sobre a imagem para isolar o valor tonal exato de qualquer ponto — destrua as ilusções de ótica.</p>
           </div>
 
           <!-- Upload zone -->
@@ -1653,7 +1653,7 @@
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               </div>
               <p class="font-display text-xl">Clique ou arraste uma imagem</p>
-              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado at� 10MB.</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
             </div>
           </div>
 
@@ -1678,7 +1678,7 @@
                   </div>
                 </div>
 
-                <!-- Dados num�ricos -->
+                <!-- Dados numêricos -->
                 <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
                   <p class="text-xs uppercase tracking-[0.2em] text-muted mb-4">Dados do Pixel</p>
                   <div id="iso-picked-content" class="space-y-3">
@@ -1698,9 +1698,9 @@
                   </div>
                 </div>
 
-                <!-- Amplia��o -->
+                <!-- Ampliação -->
                 <div class="p-4 rounded-2xl border border-white/10 bg-white/[0.02]">
-                  <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Amplia��o (7�7)</p>
+                  <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Ampliação (7×7)</p>
                   <div class="flex justify-center">
                     <canvas id="iso-canvas-mag" width="140" height="140" class="rounded-lg border border-white/10" style="image-rendering:pixelated"></canvas>
                   </div>
@@ -1717,19 +1717,19 @@
                     <input type="checkbox" id="iso-modo-toggle" onchange="isoOnModoIsolacao()" class="accent-[#d88800] w-4 h-4" />
                     <span class="text-sm">Ativar isolamento tonal</span>
                   </label>
-                  <p class="text-xs text-muted">Quando ativo, apenas os pixels dentro da faixa selecionada ficam vis�veis � o resto fica dessaturado.</p>
+                  <p class="text-xs text-muted">Quando ativo, apenas os pixels dentro da faixa selecionada ficam visíveis — o resto fica dessaturado.</p>
 
                   <div class="space-y-3">
                     <div>
                       <div class="flex justify-between text-sm mb-2">
-                        <span>Valor M�nimo (Claro)</span>
+                        <span>Valor Mínimo (Claro)</span>
                         <span id="iso-val-min" class="text-accent font-mono">0</span>
                       </div>
                       <input type="range" id="iso-sl-min" min="0" max="10" value="0" class="w-full" oninput="isoOnFaixa()" />
                     </div>
                     <div>
                       <div class="flex justify-between text-sm mb-2">
-                        <span>Valor M�ximo (Escuro)</span>
+                        <span>Valor Míximo (Escuro)</span>
                         <span id="iso-val-max" class="text-accent font-mono">10</span>
                       </div>
                       <input type="range" id="iso-sl-max" min="0" max="10" value="10" class="w-full" oninput="isoOnFaixa()" />
@@ -1737,11 +1737,11 @@
                   </div>
 
                   <div>
-                    <p class="text-xs text-muted mb-2">Atalhos r�pidos:</p>
+                    <p class="text-xs text-muted mb-2">Atalhos rípidos:</p>
                     <div class="flex flex-wrap gap-2">
-                      <button onclick="isoSetFaixa(0,3)" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">Claros (0�3)</button>
-                      <button onclick="isoSetFaixa(4,7)" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">M�dios (4�7)</button>
-                      <button onclick="isoSetFaixa(8,10)" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">Escuros (8�10)</button>
+                      <button onclick="isoSetFaixa(0,3)" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">Claros (0—3)</button>
+                      <button onclick="isoSetFaixa(4,7)" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">Médios (4—7)</button>
+                      <button onclick="isoSetFaixa(8,10)" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">Escuros (8—10)</button>
                       <button onclick="isoSetFaixa(0,10)" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">Todos</button>
                     </div>
                   </div>
@@ -1752,19 +1752,19 @@
                       <span id="iso-val-opacidade" class="text-accent font-mono">80%</span>
                     </div>
                     <input type="range" id="iso-sl-opacidade" min="0" max="100" value="80" class="w-full" oninput="isoOnOpacidade()" />
-                    <p class="text-xs text-muted mt-1">Quanto do fundo dessaturado permanece vis�vel.</p>
+                    <p class="text-xs text-muted mt-1">Quanto do fundo dessaturado permanece visível.</p>
                   </div>
                 </div>
 
                 <div class="space-y-6">
-                  <h3 class="font-display text-xl mb-4">Distribui��o de Valores</h3>
+                  <h3 class="font-display text-xl mb-4">Distribuição de Valores</h3>
                   <div id="iso-histograma" class="space-y-2"></div>
                   <p class="text-xs text-muted">Quantos pixels da imagem pertencem a cada faixa tonal.</p>
                 </div>
               </div>
             </div>
 
-            <!-- Bot��es -->
+            <!-- Botções -->
             <div class="flex flex-col sm:flex-row gap-4">
               <button onclick="isoLimparIsolamento()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
                 Limpar Isolamento
@@ -1786,7 +1786,7 @@
       </div>`;
   }
 
-  // -- Isolador: handlers ------------------------------------------------
+  // ── Isolador: handlers ────────────────────────────────────────────────
   function isoHandleDragOver(e) { e.preventDefault(); document.getElementById('iso-upload-zone').classList.add('drag-over'); }
   function isoHandleDragLeave(e) { document.getElementById('iso-upload-zone').classList.remove('drag-over'); }
   function isoHandleDrop(e) {
@@ -1797,8 +1797,8 @@
   function isoHandleFileChange(e) { if (e.target.files[0]) isoProcessFile(e.target.files[0]); }
 
   function isoProcessFile(file) {
-    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato n�o suportado. Use JPG, PNG ou WebP.'); return; }
-    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de at� 10MB.'); return; }
+    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
@@ -1829,7 +1829,7 @@
         isoRenderHistograma();
         isoRenderOriginal();
 
-        // -- Eventos de intera��o (mouse + touch) --
+        // ── Eventos de interação (mouse + touch) ──
         // Remove listeners anteriores via AbortController
         if (c._isoAbort) c._isoAbort.abort();
         c._isoAbort = new AbortController();
@@ -1884,7 +1884,7 @@
     const sampleBox = document.getElementById('iso-sample-box');
     if (sampleBox) sampleBox.style.backgroundColor = hex;
 
-    // Dados num�ricos
+    // Dados numêricos
     const panel = document.getElementById('iso-picked-content');
     if (panel) {
       panel.innerHTML = `
@@ -1909,15 +1909,15 @@
           </div>
           <div class="p-3 rounded-lg border border-white/10 bg-white/[0.02]">
             <p class="text-[10px] uppercase tracking-wider text-muted">Faixa</p>
-            <p class="font-mono text-fg">${valor <= 3 ? 'Claro' : valor <= 7 ? 'M�dio' : 'Escuro'}</p>
+            <p class="font-mono text-fg">${valor <= 3 ? 'Claro' : valor <= 7 ? 'Médio' : 'Escuro'}</p>
           </div>
         </div>
         <div class="p-3 rounded-lg border border-accent/20 bg-accent/[0.04]">
-          <p class="text-xs text-accent">Mistura: <span class="font-medium">${escala.branco} partes branco -� ${escala.preto} partes preto</span></p>
+          <p class="text-xs text-accent">Mistura: <span class="font-medium">${escala.branco} partes branco ┬À ${escala.preto} partes preto</span></p>
         </div>`;
     }
 
-    // Marcador animado na escala (0=branco � esquerda, 10=preto � direita)
+    // Marcador animado na escala (0=branco â esquerda, 10=preto â direita)
     const marker = document.getElementById('iso-scale-marker');
     if (marker) {
       marker.style.display = 'block';
@@ -1925,7 +1925,7 @@
       marker.style.left = `calc(${posEscala}% - 2px)`;
     }
 
-    // Amplia��o
+    // Ampliação
     isoRenderMagnifier(cx, cy);
   }
 
@@ -2091,7 +2091,7 @@
     }, 'image/png');
   }
 
-  // -- Simulador de Janela F�sica ---------------------------------------
+  // ── Simulador de Janela Física ───────────────────────────────────────
   let janelaState = {
     originalImageData: null,
     imgW: 0, imgH: 0,
@@ -2108,8 +2108,8 @@
 
           <!-- Header -->
           <div class="fade-in mb-10">
-            <h1 class="font-display text-4xl md:text-5xl mb-4">Simulador de Janela F�sica</h1>
-            <p class="text-muted max-w-2xl font-light">Isole detalhes bloqueando o contexto ao redor. Arraste o bloco vazado sobre a foto para estudar valores, texturas e micro-anatomias sem sofrer interfer�ncia das luzes ao redor.</p>
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Simulador de Janela Física</h1>
+            <p class="text-muted max-w-2xl font-light">Isole detalhes bloqueando o contexto ao redor. Arraste o bloco vazado sobre a foto para estudar valores, texturas e micro-anatomias sem sofrer interferãncia das luzes ao redor.</p>
           </div>
 
           <!-- Upload zone -->
@@ -2126,7 +2126,7 @@
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/><path d="M21 15l-5-5L5 21"/></svg>
               </div>
               <p class="font-display text-xl">Clique ou arraste uma imagem</p>
-              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado at� 10MB.</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
             </div>
           </div>
 
@@ -2152,7 +2152,7 @@
               <canvas id="jn-canvas" class="block" style="max-width:100%;height:auto"></canvas>
             </div>
 
-            <!-- Bot��es -->
+            <!-- Botções -->
             <div class="flex flex-col sm:flex-row gap-4 mt-6">
               <button onclick="jnResetar()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
                 Centralizar Janela
@@ -2174,7 +2174,7 @@
       </div>`;
   }
 
-  // -- Janela: handlers --------------------------------------------------
+  // ── Janela: handlers ──────────────────────────────────────────────────
   function jnHandleDragOver(e) { e.preventDefault(); document.getElementById('jn-upload-zone').classList.add('drag-over'); }
   function jnHandleDragLeave(e) { document.getElementById('jn-upload-zone').classList.remove('drag-over'); }
   function jnHandleDrop(e) {
@@ -2185,8 +2185,8 @@
   function jnHandleFileChange(e) { if (e.target.files[0]) jnProcessFile(e.target.files[0]); }
 
   function jnProcessFile(file) {
-    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato n�o suportado. Use JPG, PNG ou WebP.'); return; }
-    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de at� 10MB.'); return; }
+    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
@@ -2211,7 +2211,7 @@
 
         jnDesenharMascara();
 
-        // -- Eventos de arrasto --
+        // ── Eventos de arrasto ──
         const wrapper = document.getElementById('jn-canvas-wrapper');
         if (wrapper._jnAbort) wrapper._jnAbort.abort();
         wrapper._jnAbort = new AbortController();
@@ -2274,7 +2274,7 @@
     // Restaura a imagem original
     ctx.putImageData(janelaState.originalImageData, 0, 0);
 
-    // M�scara escura ao redor (96% opaco)
+    // Míscara escura ao redor (96% opaco)
     ctx.fillStyle = 'rgba(10, 10, 10, 0.96)';
     // Bloco superior
     ctx.fillRect(0, 0, W, janelaY - metade);
@@ -2310,7 +2310,7 @@
     }, 'image/png');
   }
 
-  // -- Quadricular Imagem ------------------------------------------------
+  // ── Quadricular Imagem ────────────────────────────────────────────────
   let quadricularState = {
     originalImageData: null,
     cols: 5,
@@ -2329,7 +2329,7 @@
           <!-- Header -->
           <div class="fade-in mb-10">
             <h1 class="font-display text-4xl md:text-5xl mb-4">Quadricular Imagem</h1>
-            <p class="text-muted max-w-2xl font-light">Sobreponha uma grade na refer�ncia para copiar a imagem quadrado por quadrado � a t�cnica cl�ssica para quem quer desenhar com precis�o sem precisar saber desenhar.</p>
+            <p class="text-muted max-w-2xl font-light">Sobreponha uma grade na referência para copiar a imagem quadrado por quadrado — a técnica clássica para quem quer desenhar com precisão sem precisar saber desenhar.</p>
           </div>
 
           <!-- Upload zone -->
@@ -2346,7 +2346,7 @@
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               </div>
               <p class="font-display text-xl">Clique ou arraste uma imagem</p>
-              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado at� 10MB.</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
             </div>
           </div>
 
@@ -2384,7 +2384,7 @@
                   <input type="range" id="qd-sl-rows" min="2" max="20" value="5" class="w-full" oninput="qdOnRows(this.value)" />
                 </div>
 
-                <h3 class="font-display text-xl mt-6 mb-4">Apar�ncia</h3>
+                <h3 class="font-display text-xl mt-6 mb-4">Aparência</h3>
                 <div>
                   <p class="text-sm mb-2">Cor da grade</p>
                   <div class="flex gap-3" id="qd-cores">
@@ -2403,7 +2403,7 @@
                 </div>
                 <label class="flex items-center gap-3 cursor-pointer">
                   <input type="checkbox" id="qd-labels-toggle" checked onchange="qdOnLabels()" class="accent-[#d88800] w-4 h-4" />
-                  <span class="text-sm">Mostrar n�meros nas c�lulas (A1, B2...)</span>
+                  <span class="text-sm">Mostrar números nas células (A1, B2...)</span>
                 </label>
               </div>
 
@@ -2411,17 +2411,17 @@
                 <h3 class="font-display text-xl mb-4">Dica de Uso</h3>
                 <div class="p-5 rounded-xl border border-white/10 bg-white/[0.02]">
                   <p class="text-sm text-muted leading-relaxed">
-                    Crie uma grade <span class="text-fg font-medium">id�ntica</span> na sua tela ou papel. Cada c�lula � um peda�o pequeno para desenhar separadamente. Comece com <span class="text-accent font-medium">5�5</span> e aumente para mais detalhe.
+                    Crie uma grade <span class="text-fg font-medium">idêntica</span> na sua tela ou papel. Cada célula é um pedaço pequeno para desenhar separadamente. Comece com <span class="text-accent font-medium">5×5</span> e aumente para mais detalhe.
                   </p>
                   <p class="text-sm text-muted leading-relaxed mt-3">
-                    <span class="text-accent font-medium">Propor��o:</span> Se a refer�ncia tem 20cm de largura e a grade tem 5 colunas, cada c�lula tem 4cm. Mantenha a mesma propor��o no papel.
+                    <span class="text-accent font-medium">Proporção:</span> Se a referência tem 20cm de largura e a grade tem 5 colunas, cada célula tem 4cm. Mantenha a mesma proporção no papel.
                   </p>
                 </div>
                 <div class="p-5 rounded-xl border border-accent/20 bg-accent/[0.03]">
-                  <p class="text-xs text-accent font-medium mb-2">Grade r�pida</p>
+                  <p class="text-xs text-accent font-medium mb-2">Grade rápida</p>
                   <div class="flex flex-wrap gap-2" id="qd-quick">
                     ${[{c:3,r:3},{c:4,r:4},{c:5,r:5},{c:6,r:6},{c:8,r:8},{c:10,r:10}].map(g =>
-                      `<button data-c="${g.c}" data-r="${g.r}" class="px-4 py-2.5 sm:py-1.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent active:border-accent active:text-accent active:scale-95 transition-all">${g.c}�${g.r}</button>`
+                      `<button data-c="${g.c}" data-r="${g.r}" class="px-4 py-2.5 sm:py-1.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent active:border-accent active:text-accent active:scale-95 transition-all">${g.c}×${g.r}</button>`
                     ).join('')}
                   </div>
                 </div>
@@ -2429,7 +2429,7 @@
             </div>
           </div>
 
-          <!-- Bot�es -->
+          <!-- Botões -->
           <div id="qd-actions" class="hidden flex flex-col sm:flex-row gap-4">
             <button onclick="qdResetar()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
               Redefinir Grade
@@ -2521,8 +2521,8 @@
   function qdHandleFileChange(e) { if (e.target.files[0]) qdProcessFile(e.target.files[0]); }
 
   function qdProcessFile(file) {
-    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato n�o suportado. Use JPG, PNG ou WebP.'); return; }
-    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de at� 10MB.'); return; }
+    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
@@ -2618,7 +2618,7 @@
   }
 
 
-  // -- Comparador de Amostras ----------------------------------------------
+  // ── Comparador de Amostras ──────────────────────────────────────────────
   let comparadorState = {
     refImageData: null,
     refGray: null,
@@ -2644,13 +2644,13 @@
           <!-- Header -->
           <div class="fade-in mb-10">
             <h1 class="font-display text-4xl md:text-5xl mb-4">Comparar Amostras</h1>
-            <p class="text-muted max-w-2xl font-light">Fa�a upload da foto de refer�ncia e da sua pintura. Clique no mesmo ponto em cada imagem para descobrir a diferen�a exata entre os valores tonais.</p>
+            <p class="text-muted max-w-2xl font-light">Faça upload da foto de referência e da sua pintura. Clique no mesmo ponto em cada imagem para descobrir a diferença exata entre os valores tonais.</p>
           </div>
 
           <!-- Upload zones -->
           <div class="grid md:grid-cols-2 gap-6 mb-8">
             <div>
-              <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Foto de Refer�ncia</p>
+              <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Foto de Referência</p>
               <div id="cp-upload-ref"
                 class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-3 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]"
                 style="min-height:180px"
@@ -2663,7 +2663,7 @@
                   <div class="w-12 h-12 rounded-full bg-white/[0.06] flex items-center justify-center">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                   </div>
-                  <p class="font-display text-lg">Refer�ncia</p>
+                  <p class="font-display text-lg">Referência</p>
                   <p class="text-muted text-xs">Arraste ou clique</p>
                 </div>
               </div>
@@ -2698,7 +2698,7 @@
           <div id="cp-canvas-section" class="hidden mb-8">
             <div class="grid md:grid-cols-2 gap-6">
               <div>
-                <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Refer�ncia</p>
+                <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Referência</p>
                 <canvas id="cp-canvas-ref" class="w-full rounded-xl border border-white/10 cursor-crosshair" style="max-height:400px;object-fit:contain"></canvas>
               </div>
               <div>
@@ -2713,40 +2713,40 @@
             <div class="grid grid-cols-3 gap-4 mb-4">
               <!-- Ref card -->
               <div id="cp-ref-card" class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
-                <p class="text-[10px] uppercase tracking-[0.15em] text-muted mb-2">Refer�ncia</p>
+                <p class="text-[10px] uppercase tracking-[0.15em] text-muted mb-2">Referência</p>
                 <div id="cp-ref-swatch" class="w-12 h-12 rounded-lg mx-auto mb-2 border border-white/10"></div>
-                <p id="cp-ref-valor" class="font-display text-2xl text-fg">�</p>
+                <p id="cp-ref-valor" class="font-display text-2xl text-fg">—</p>
                 <p id="cp-ref-nome" class="text-xs text-muted mt-1"></p>
               </div>
               <!-- Pin card -->
               <div id="cp-pin-card" class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
                 <p class="text-[10px] uppercase tracking-[0.15em] text-muted mb-2">Sua Pintura</p>
                 <div id="cp-pin-swatch" class="w-12 h-12 rounded-lg mx-auto mb-2 border border-white/10"></div>
-                <p id="cp-pin-valor" class="font-display text-2xl text-fg">�</p>
+                <p id="cp-pin-valor" class="font-display text-2xl text-fg">—</p>
                 <p id="cp-pin-nome" class="text-xs text-muted mt-1"></p>
               </div>
               <!-- Diff card -->
               <div id="cp-diff-card" class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
-                <p class="text-[10px] uppercase tracking-[0.15em] text-muted mb-2">Diferen�a</p>
+                <p class="text-[10px] uppercase tracking-[0.15em] text-muted mb-2">Diferença</p>
                 <div id="cp-diff-icon" class="w-12 h-12 rounded-lg mx-auto mb-2 flex items-center justify-center border border-white/10 bg-white/[0.04]">
-                  <span id="cp-diff-symbol" class="text-2xl">?</span>
+                  <span id="cp-diff-symbol" class="text-2xl">→</span>
                 </div>
-                <p id="cp-diff-valor" class="font-display text-2xl text-fg">�</p>
+                <p id="cp-diff-valor" class="font-display text-2xl text-fg">—</p>
                 <p id="cp-diff-msg" class="text-xs text-muted mt-1 leading-snug"></p>
               </div>
             </div>
             <!-- Visual bar -->
             <div id="cp-diff-bar-wrap" class="hidden p-4 rounded-xl border border-white/10 bg-white/[0.02]">
               <div class="flex justify-between text-[10px] text-muted mb-2">
-                <span>0 (Branco)</span><span>5 (M�dio)</span><span>10 (Preto)</span>
+                <span>0 (Branco)</span><span>5 (Médio)</span><span>10 (Preto)</span>
               </div>
               <div class="relative h-4 rounded-full overflow-hidden" style="background:linear-gradient(to right,#fff,#888,#000)">
                 <div id="cp-marker-ref" class="absolute top-0 w-0.5 h-full bg-accent transition-all duration-300" style="left:50%"></div>
                 <div id="cp-marker-pin" class="absolute top-0 w-0.5 h-full bg-blue-400 transition-all duration-300" style="left:50%"></div>
               </div>
               <div class="flex justify-between mt-2 text-[10px]">
-                <span class="text-accent font-medium">? Ref</span>
-                <span class="text-blue-400 font-medium">? Sua Pintura</span>
+                <span class="text-accent font-medium">● Ref</span>
+                <span class="text-blue-400 font-medium">● Sua Pintura</span>
               </div>
             </div>
           </div>
@@ -2754,7 +2754,7 @@
           <!-- History -->
           <div id="cp-history-section" class="hidden mb-8">
             <div class="flex items-center justify-between mb-4">
-              <h3 class="font-display text-xl">Hist�rico</h3>
+              <h3 class="font-display text-xl">Histórico</h3>
               <button onclick="cpLimparHistorico()" class="text-xs text-muted hover:text-fg transition-colors">Limpar</button>
             </div>
             <div id="cp-history-grid" class="grid grid-cols-3 sm:grid-cols-6 gap-3"></div>
@@ -2764,14 +2764,14 @@
           <div id="cp-controls-section" class="hidden p-4 md:p-8 rounded-2xl border border-white/10 bg-white/[0.02] mb-6">
             <div class="flex flex-wrap items-center gap-6">
               <div>
-                <p class="text-sm mb-2">M�todo</p>
+                <p class="text-sm mb-2">Método</p>
                 <div class="flex gap-2">
-                  <button onclick="cpSetMetodo('luminancia')" id="cp-btn-luminancia" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-accent text-accent transition-all">Lumin�ncia</button>
-                  <button onclick="cpSetMetodo('media')" id="cp-btn-media" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted transition-all">M�dia</button>
+                  <button onclick="cpSetMetodo('luminancia')" id="cp-btn-luminancia" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-accent text-accent transition-all">Luminância</button>
+                  <button onclick="cpSetMetodo('media')" id="cp-btn-media" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted transition-all">Média</button>
                 </div>
               </div>
               <div class="flex-1"></div>
-              <button onclick="cpExportarComparacao()" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent active:scale-95 transition-all">Baixar Compara��o (PNG)</button>
+              <button onclick="cpExportarComparacao()" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent active:scale-95 transition-all">Baixar Comparação (PNG)</button>
               <button onclick="cpLimparPontos()" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent active:scale-95 transition-all">Limpar Pontos</button>
               <button onclick="cpRedefinir()" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted hover:border-red-500/40 hover:text-red-400 active:scale-95 transition-all">Redefinir Tudo</button>
             </div>
@@ -2781,7 +2781,7 @@
       </div>`;
   }
 
-  // -- Upload handlers -----------------------------------------------------
+  // ── Upload handlers ─────────────────────────────────────────────────────
   function cpHandleDragRefOver(e) { e.preventDefault(); document.getElementById('cp-upload-ref').classList.add('border-accent/60','bg-accent/[0.02]'); }
   function cpHandleDragRefLeave(e) { document.getElementById('cp-upload-ref').classList.remove('border-accent/60','bg-accent/[0.02]'); }
   function cpHandleDropRef(e) { e.preventDefault(); document.getElementById('cp-upload-ref').classList.remove('border-accent/60','bg-accent/[0.02]'); if (e.dataTransfer.files[0]) cpProcessFile(e.dataTransfer.files[0], 'ref'); }
@@ -2793,8 +2793,8 @@
   function cpHandleFilePin(e) { if (e.target.files[0]) cpProcessFile(e.target.files[0], 'pin'); }
 
   function cpProcessFile(file, target) {
-    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato n�o suportado. Use JPG, PNG ou WebP.'); return; }
-    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de at� 10MB.'); return; }
+    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
@@ -2846,7 +2846,7 @@
           document.getElementById('cp-canvas-section').classList.remove('hidden');
           document.getElementById('cp-controls-section').classList.remove('hidden');
           cpSetupCanvasEvents();
-          cpShowHint('Clique em um ponto na refer�ncia para come�ar');
+          cpShowHint('Clique em um ponto na referência para começar');
         }
       };
       img.src = e.target.result;
@@ -2854,7 +2854,7 @@
     reader.readAsDataURL(file);
   }
 
-  // -- Canvas events -------------------------------------------------------
+  // ── Canvas events ───────────────────────────────────────────────────────
   function cpSetupCanvasEvents() {
     const cRef = document.getElementById('cp-canvas-ref');
     const cPin = document.getElementById('cp-canvas-pin');
@@ -2905,7 +2905,7 @@
     cpDrawMarker(ctx, x, y, '#d88800');
 
     comparadorState.fase = 'picked-ref';
-    cpShowHint('Agora clique no mesmo ponto na sua pintura ?');
+    cpShowHint('Agora clique no mesmo ponto na sua pintura →');
   }
 
   function cpClickPin(e) {
@@ -2954,7 +2954,7 @@
     ctx.fill();
   }
 
-  // -- Export comparison as PNG ---------------------------------------------
+  // ── Export comparison as PNG ─────────────────────────────────────────────
   function cpExportarComparacao() {
     const { pontoRef: ref, pontoPin: pin } = comparadorState;
     if (!ref || !pin) return;
@@ -2980,7 +2980,7 @@
     ctx.font = '600 16px Inter, system-ui, sans-serif';
     ctx.fillStyle = '#999';
     ctx.textAlign = 'left';
-    ctx.fillText('Refer�ncia', 0, 30);
+    ctx.fillText('Referência', 0, 30);
     ctx.textAlign = 'left';
     ctx.fillText('Sua Pintura', cRef.width + gap, 30);
 
@@ -2988,7 +2988,7 @@
     ctx.drawImage(cRef, 0, headerH);
     ctx.drawImage(cPin, cRef.width + gap, headerH);
 
-    // Footer � comparison data
+    // Footer — comparison data
     const fy = headerH + Math.max(cRef.height, cPin.height) + 16;
 
     // Ref swatch + value
@@ -3015,10 +3015,10 @@
     const diffCor = diff <= 1 ? '#4ade80' : diff <= 3 ? '#facc15' : diff <= 5 ? '#f97316' : '#ef4444';
     ctx.fillStyle = diffCor;
     ctx.font = '700 18px Inter, system-ui, sans-serif';
-    ctx.fillText(`? ${diff.toFixed(1)}`, totalW / 2 - 20, fy + 15);
+    ctx.fillText(`Δ ${diff.toFixed(1)}`, totalW / 2 - 20, fy + 15);
 
     // Diff message
-    const diffMsg = diff === 0 ? 'Valor id�ntico!' :
+    const diffMsg = diff === 0 ? 'Valor idêntico!' :
       ref.valor > pin.valor ? 'Adicione mais grafite/tinta preta' :
       'Reduza a intensidade';
     ctx.font = '400 12px Inter, system-ui, sans-serif';
@@ -3036,7 +3036,7 @@
     }, 'image/png');
   }
 
-  // -- Comparison display --------------------------------------------------
+  // ── Comparison display ──────────────────────────────────────────────────
   function cpMostrarComparacao() {
     const { pontoRef: ref, pontoPin: pin } = comparadorState;
     if (!ref || !pin) return;
@@ -3060,16 +3060,16 @@
     const corClasse = diff <= 1 ? 'text-green-400' : diff <= 3 ? 'text-yellow-400' : diff <= 5 ? 'text-orange-400' : 'text-red-400';
 
     let msg = '';
-    if (diff === 0) msg = 'Valor id�ntico!';
+    if (diff === 0) msg = 'Valor idêntico!';
     else if (diff <= 1) msg = 'Excelente! Praticamente igual.';
-    else if (diff <= 3) msg = `Quase l�. Adicione ${direcao} intensidade.`;
-    else if (diff <= 5) msg = `Diferen�a moderada. ${ref.valor > pin.valor ? 'Escure�a' : 'Clareie'} um pouco.`;
-    else msg = ref.valor > pin.valor ? 'Adicione mais grafite/tinta preta.' : 'Reduza a intensidade � est� escurecido demais.';
+    else if (diff <= 3) msg = `Quase lá. Adicione ${direcao} intensidade.`;
+    else if (diff <= 5) msg = `Diferença moderada. ${ref.valor > pin.valor ? 'Escureça' : 'Clareie'} um pouco.`;
+    else msg = ref.valor > pin.valor ? 'Adicione mais grafite/tinta preta.' : 'Reduza a intensidade — está escurecido demais.';
 
     document.getElementById('cp-diff-valor').textContent = diff.toFixed(1);
     document.getElementById('cp-diff-valor').className = `font-display text-2xl ${corClasse}`;
     document.getElementById('cp-diff-msg').textContent = msg;
-    document.getElementById('cp-diff-symbol').textContent = diff === 0 ? '=' : ref.valor > pin.valor ? '?' : '?';
+    document.getElementById('cp-diff-symbol').textContent = diff === 0 ? '=' : ref.valor > pin.valor ? '↑' : '↓';
 
     // Visual bar
     document.getElementById('cp-diff-bar-wrap').classList.remove('hidden');
@@ -3079,7 +3079,7 @@
     document.getElementById('cp-marker-pin').style.left = pinPos + '%';
   }
 
-  // -- History -------------------------------------------------------------
+  // ── History ─────────────────────────────────────────────────────────────
   function cpAdicionarHistorico() {
     const { pontoRef: ref, pontoPin: pin } = comparadorState;
     if (!ref || !pin) return;
@@ -3102,16 +3102,16 @@
         <div class="p-3 rounded-xl border ${corBg} bg-white/[0.02] text-center fade-in" style="animation-delay:${i * 0.03}s">
           <div class="flex items-center justify-center gap-1 mb-2">
             <div class="w-4 h-4 rounded border border-white/10" style="background:${item.ref.hex}"></div>
-            <span class="text-[10px] text-muted">?</span>
+            <span class="text-[10px] text-muted">→</span>
             <div class="w-4 h-4 rounded border border-white/10" style="background:${item.pin.hex}"></div>
           </div>
-          <p class="text-xs font-mono text-fg">${item.ref.valor}?${item.pin.valor}</p>
-          <p class="text-[10px] text-muted mt-0.5">?${item.diff.toFixed(1)}</p>
+          <p class="text-xs font-mono text-fg">${item.ref.valor}→${item.pin.valor}</p>
+          <p class="text-[10px] text-muted mt-0.5">Δ${item.diff.toFixed(1)}</p>
         </div>`;
     }).join('');
   }
 
-  // -- Controls ------------------------------------------------------------
+  // ── Controls ────────────────────────────────────────────────────────────
   function cpSetMetodo(m) {
     comparadorState.metodo = m;
     document.getElementById('cp-btn-luminancia').className = `px-4 py-2.5 min-h-[44px] rounded-lg text-xs border ${m === 'luminancia' ? 'border-accent text-accent' : 'border-white/10 text-muted'} transition-all`;
@@ -3151,7 +3151,7 @@
     else state.pinGray = grayArr;
   }
 
-  // -- Hint ----------------------------------------------------------------
+  // ── Hint ────────────────────────────────────────────────────────────────
   function cpShowHint(text) {
     const el = document.getElementById('cp-hint');
     const txt = document.getElementById('cp-hint-text');
@@ -3160,7 +3160,7 @@
     txt.textContent = text;
   }
 
-  // -- Reset ---------------------------------------------------------------
+  // ── Reset ───────────────────────────────────────────────────────────────
   function cpLimparPontos() {
     comparadorState.pontoRef = null;
     comparadorState.pontoPin = null;
@@ -3177,20 +3177,20 @@
     }
 
     // Reset comparison display
-    document.getElementById('cp-ref-valor').textContent = '�';
+    document.getElementById('cp-ref-valor').textContent = '—';
     document.getElementById('cp-ref-nome').textContent = '';
     document.getElementById('cp-ref-swatch').style.backgroundColor = '';
-    document.getElementById('cp-pin-valor').textContent = '�';
+    document.getElementById('cp-pin-valor').textContent = '—';
     document.getElementById('cp-pin-nome').textContent = '';
     document.getElementById('cp-pin-swatch').style.backgroundColor = '';
-    document.getElementById('cp-diff-valor').textContent = '�';
+    document.getElementById('cp-diff-valor').textContent = '—';
     document.getElementById('cp-diff-valor').className = 'font-display text-2xl text-fg';
     document.getElementById('cp-diff-msg').textContent = '';
-    document.getElementById('cp-diff-symbol').textContent = '?';
+    document.getElementById('cp-diff-symbol').textContent = '→';
     document.getElementById('cp-diff-bar-wrap').classList.add('hidden');
     document.getElementById('cp-comparison-section').classList.add('hidden');
 
-    cpShowHint('Clique em um ponto na refer�ncia para come�ar');
+    cpShowHint('Clique em um ponto na referência para começar');
   }
 
   function cpRedefinir() {
@@ -3223,7 +3223,7 @@
   }
 
 
-  // -- Ilus�o de �ptica do Valor -------------------------------------------
+  // ── Ilusão de Óptica do Valor ───────────────────────────────────────────
   let ilusaoState = { valor: 5, revealed: false };
 
   function renderIlusao() {
@@ -3244,56 +3244,56 @@
 
           <!-- Header -->
           <div class="fade-in mb-10">
-            <h1 class="font-display text-4xl md:text-5xl mb-4">Ilus�o de �ptica do Valor</h1>
-            <p class="text-muted max-w-2xl font-light">O maior inimigo do hiper-realismo n�o � a falta de coordena��o � � o pr�prio <span class="text-fg font-medium">c�rebro</span>, que tenta "corrigir" o que vemos. Tr�s passos para treinar o olho.</p>
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Ilusão de Óptica do Valor</h1>
+            <p class="text-muted max-w-2xl font-light">O maior inimigo do hiper-realismo não é a falta de coordenação — é o próprio <span class="text-fg font-medium">cérebro</span>, que tenta "corrigir" o que vemos. Três passos para treinar o olho.</p>
           </div>
 
-          <!-- --- PASSO 1: Teoria � Ilus�o de Profundidade --- -->
+          <!-- ═══ PASSO 1: Teoria — Ilusão de Profundidade ═══ -->
           <div class="mb-12">
             <div class="flex items-center gap-3 mb-6">
               <span class="w-8 h-8 rounded-full bg-accent/10 text-accent flex items-center justify-center text-sm font-bold">1</span>
-              <h2 class="font-display text-2xl">A Teoria: O c�rebro constr�i profundidade</h2>
+              <h2 class="font-display text-2xl">A Teoria: O cérebro constrói profundidade</h2>
             </div>
             <div class="grid md:grid-cols-2 gap-8 items-start">
               <div>
                 <div class="rounded-2xl overflow-hidden border border-white/10 bg-white">
-                  <img src="../images/ilusao.webp" alt="Ilus�o �ptica de profundidade � grade quadriculada distorcida cria a sensa��o de um t�nel"
-                    class="w-full" style="display:block" loading="lazy" />
+                  <img src="../images/ilusao.webp" alt="Ilusão óptica de profundidade — grade quadriculada distorcida cria a sensação de um túnel"
+                    class="w-full" style="display:block" />
                 </div>
               </div>
               <div class="space-y-4">
                 <p class="text-sm text-muted leading-relaxed">
-                  Esta imagem � uma <span class="text-fg font-medium">grade quadriculada distorcida</span> que o c�rebro interpreta como um t�nel tridimensional � mas � uma superf�cie completamente plana.
+                  Esta imagem é uma <span class="text-fg font-medium">grade quadriculada distorcida</span> que o cérebro interpreta como um túnel tridimensional — mas é uma superfície completamente plana.
                 </p>
 
                 <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
                   <p class="text-xs text-accent font-medium mb-1">1. Gradiente de textura</p>
-                  <p class="text-sm text-muted leading-relaxed">Os quadrados ficam <span class="text-fg font-medium">progressivamente menores</span> em dire��o ao centro. O c�rebro associa tamanho menor a maior dist�ncia � e cria profundidade.</p>
+                  <p class="text-sm text-muted leading-relaxed">Os quadrados ficam <span class="text-fg font-medium">progressivamente menores</span> em direção ao centro. O cérebro associa tamanho menor a maior distância — e cria profundidade.</p>
                 </div>
 
                 <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
-                  <p class="text-xs text-accent font-medium mb-1">2. Deforma��o da grade</p>
-                  <p class="text-sm text-muted leading-relaxed">As linhas rectas s�o <span class="text-fg font-medium">curvadas em arcos conc�ntricos</span>. Esta curvatura simula a deforma��o de uma superf�cie el�stica empurrada para baixo � um funil.</p>
+                  <p class="text-xs text-accent font-medium mb-1">2. Deformação da grade</p>
+                  <p class="text-sm text-muted leading-relaxed">As linhas rectas são <span class="text-fg font-medium">curvadas em arcos concêntricos</span>. Esta curvatura simula a deformação de uma superfície elástica empurrada para baixo — um funil.</p>
                 </div>
 
                 <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
                   <p class="text-xs text-accent font-medium mb-1">3. Gradiente de luz e sombra</p>
-                  <p class="text-sm text-muted leading-relaxed">A ilumina��o n�o � uniforme: as bordas parecem <span class="text-fg font-medium">mais iluminadas</span> e o centro escurece progressivamente. O contraste cria a sensa��o de uma cavidade profunda e escura.</p>
+                  <p class="text-sm text-muted leading-relaxed">A iluminação não é uniforme: as bordas parecem <span class="text-fg font-medium">mais iluminadas</span> e o centro escurece progressivamente. O contraste cria a sensação de uma cavidade profunda e escura.</p>
                 </div>
 
                 <div class="p-4 rounded-xl border border-accent/20 bg-accent/[0.03]">
                   <p class="text-xs text-accent font-medium mb-1">Na pintura</p>
-                  <p class="text-sm text-muted leading-relaxed">Estes mesmos mecanismos � gradiente de textura, curvatura e sombreamento � s�o exactamente o que usamos para pintar profundidade numa tela plana. O c�rebro � "hackeado" por estas pistas visuais.</p>
+                  <p class="text-sm text-muted leading-relaxed">Estes mesmos mecanismos — gradiente de textura, curvatura e sombreamento — são exactamente o que usamos para pintar profundidade numa tela plana. O cérebro é "hackeado" por estas pistas visuais.</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- --- PASSO 2: Pr�tica � Simulador --- -->
+          <!-- ═══ PASSO 2: Prática — Simulador ═══ -->
           <div class="mb-12">
             <div class="flex items-center gap-3 mb-6">
               <span class="w-8 h-8 rounded-full bg-accent/10 text-accent flex items-center justify-center text-sm font-bold">2</span>
-              <h2 class="font-display text-2xl">A Pr�tica: Veja com os seus olhos</h2>
+              <h2 class="font-display text-2xl">A Prática: Veja com os seus olhos</h2>
             </div>
 
             <!-- Slider -->
@@ -3313,7 +3313,7 @@
                 style="background:linear-gradient(to right,#fff,#888,#000)"
                 oninput="ioSetValor(+this.value)" />
               <div class="flex justify-between text-[10px] text-muted mt-1">
-                <span>0 (Branco)</span><span>5 (M�dio)</span><span>10 (Preto)</span>
+                <span>0 (Branco)</span><span>5 (Médio)</span><span>10 (Preto)</span>
               </div>
             </div>
 
@@ -3342,8 +3342,8 @@
 
             <!-- Demo estendida: 11 fundos -->
             <div>
-              <h3 class="font-display text-xl mb-2">Todos os fundos � mesmo valor no centro</h3>
-              <p class="text-sm text-muted mb-4">Todos os quadrados centrais s�o <span class="text-fg font-medium">exactamente</span> o cinza ${v}.</p>
+              <h3 class="font-display text-xl mb-2">Todos os fundos — mesmo valor no centro</h3>
+              <p class="text-sm text-muted mb-4">Todos os quadrados centrais são <span class="text-fg font-medium">exactamente</span> o cinza ${v}.</p>
               <div class="overflow-x-auto pb-2 -mx-2 px-2">
                 <div class="flex gap-2" style="min-width:max-content">
                   ${escalaCinza.map((f, i) => `
@@ -3359,14 +3359,14 @@
             </div>
           </div>
 
-          <!-- --- PASSO 3: Solu��o � M�scara + Isolador --- -->
+          <!-- ═══ PASSO 3: Solução — Máscara + Isolador ═══ -->
           <div class="mb-8">
             <div class="flex items-center gap-3 mb-6">
               <span class="w-8 h-8 rounded-full bg-accent/10 text-accent flex items-center justify-center text-sm font-bold">3</span>
-              <h2 class="font-display text-2xl">A Solu��o: Como vencer o c�rebro</h2>
+              <h2 class="font-display text-2xl">A Solução: Como vencer o cérebro</h2>
             </div>
             <div class="grid md:grid-cols-3 gap-6">
-              <!-- M�scara de valor -->
+              <!-- Máscara de valor -->
               <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
                 <div class="w-full h-32 rounded-xl border border-white/10 bg-white flex items-center justify-center mb-4 relative overflow-hidden">
                   <div class="absolute inset-0 flex items-center justify-center">
@@ -3374,9 +3374,9 @@
                   </div>
                   <div class="absolute w-10 h-10 rounded-full border-2 border-dashed border-accent" style="background:#333"></div>
                 </div>
-                <h3 class="font-display text-lg mb-2">M�scara de Valor</h3>
-                <p class="text-sm text-muted leading-relaxed mb-3">Corte um rect�ngulo de papel <span class="text-fg font-medium">cinza neutro</span> (valor 5). Fa�a um furo de 2cm no centro.</p>
-                <p class="text-sm text-muted leading-relaxed">Segure sobre a refer�ncia e sobre a tela para ver o valor puro, sem interfer�ncia do c�rebro.</p>
+                <h3 class="font-display text-lg mb-2">Máscara de Valor</h3>
+                <p class="text-sm text-muted leading-relaxed mb-3">Corte um rectângulo de papel <span class="text-fg font-medium">cinza neutro</span> (valor 5). Faça um furo de 2cm no centro.</p>
+                <p class="text-sm text-muted leading-relaxed">Segure sobre a referência e sobre a tela para ver o valor puro, sem interferência do cérebro.</p>
               </div>
 
               <!-- Squint -->
@@ -3388,8 +3388,8 @@
                   </svg>
                 </div>
                 <h3 class="font-display text-lg mb-2">Squint</h3>
-                <p class="text-sm text-muted leading-relaxed mb-3"><span class="text-fg font-medium">Aperte levemente os olhos</span> ao avaliar valores na refer�ncia.</p>
-                <p class="text-sm text-muted leading-relaxed">Isto reduz o contraste abrupto e permite ver os valores reais, sem o c�rebro "corrigir".</p>
+                <p class="text-sm text-muted leading-relaxed mb-3"><span class="text-fg font-medium">Aperte levemente os olhos</span> ao avaliar valores na referência.</p>
+                <p class="text-sm text-muted leading-relaxed">Isto reduz o contraste abrupto e permite ver os valores reais, sem o cérebro "corrigir".</p>
               </div>
 
               <!-- Isolador -->
@@ -3400,9 +3400,9 @@
                   </div>
                 </div>
                 <h3 class="font-display text-lg mb-2">Isolador Digital</h3>
-                <p class="text-sm text-muted leading-relaxed mb-3">O <span class="text-accent font-medium">Isolador Tonal</span> faz exactamente a mesma coisa que a m�scara � mas digitalmente.</p>
+                <p class="text-sm text-muted leading-relaxed mb-3">O <span class="text-accent font-medium">Isolador Tonal</span> faz exactamente a mesma coisa que a máscara — mas digitalmente.</p>
                 <button onclick="navigate('isolador')" class="w-full px-4 py-3 min-h-[44px] rounded-xl text-sm font-medium bg-accent text-bg hover:brightness-110 active:scale-95 transition-all">
-                  Experimentar o Isolador ?
+                  Experimentar o Isolador →
                 </button>
               </div>
             </div>
@@ -3411,10 +3411,10 @@
         </div>
       </div>`;
 
-    // Imagem directa � sem canvas
+    // Imagem directa — sem canvas
   }
 
-  // -- Simulador handlers --------------------------------------------------
+  // ── Simulador handlers ──────────────────────────────────────────────────
   function ioSetValor(v) {
     ilusaoState.valor = v;
     renderIlusao();
