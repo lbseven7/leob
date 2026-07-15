@@ -29,6 +29,7 @@
 </head>
 
 <body class="bg-white text-black dark:bg-black dark:text-white transition-colors duration-500 antialiased">
+    <div id="custom-cursor"></div>
 
     <!-- Header -->
     <header
@@ -290,6 +291,28 @@
         } else {
             document.documentElement.classList.add('dark');
             icon.className = 'fas fa-moon text-blue-300';
+        }
+    </script>
+    <script>
+        const cursor = document.getElementById('custom-cursor');
+        const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+        if (!isTouchDevice && cursor) {
+            document.addEventListener('mousemove', e => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            });
+            document.querySelectorAll('a, button').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursor.style.transform = 'translate(-50%, -50%) scale(2.4)';
+                    cursor.style.backgroundColor = 'rgba(249, 115, 22, 0.28)';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                    cursor.style.backgroundColor = 'rgba(249, 115, 22, 0.28)';
+                });
+            });
+        } else if (cursor) {
+            cursor.style.display = 'none';
         }
     </script>
 </body>

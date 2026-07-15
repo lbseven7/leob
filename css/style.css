@@ -52,6 +52,11 @@
             transition: transform 0.12s ease, background-color 0.12s ease, opacity 0.12s ease;
         }
 
+        .dark #custom-cursor {
+            background: rgba(249, 115, 22, 0.5);
+            border: 1px solid rgba(249, 115, 22, 0.75);
+        }
+
         .filter-btn.active {
             background-color: #d88800;
             color: white;
