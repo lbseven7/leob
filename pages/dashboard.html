@@ -86,6 +86,7 @@
         <button onclick="navigate('riscoLinear')" data-nav="riscoLinear" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Risco</button>
         <button onclick="navigate('isolador')" data-nav="isolador" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Isolador</button>
         <button onclick="navigate('janela')" data-nav="janela" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Janela</button>
+        <button onclick="navigate('quadricular')" data-nav="quadricular" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Quadricular</button>
 
       </div>
     </div>
@@ -113,6 +114,7 @@
         <button onclick="navigate('riscoLinear')" class="mob-mais-item flex flex-col items-center gap-1.5 p-3 rounded-xl border border-white/10 bg-white/[0.03] text-[11px] text-muted"><span class="text-lg leading-none">◐</span><span>Risco</span></button>
         <button onclick="navigate('isolador')"    class="mob-mais-item flex flex-col items-center gap-1.5 p-3 rounded-xl border border-white/10 bg-white/[0.03] text-[11px] text-muted"><span class="text-lg leading-none">◉</span><span>Isolador</span></button>
         <button onclick="navigate('janela')"      class="mob-mais-item flex flex-col items-center gap-1.5 p-3 rounded-xl border border-white/10 bg-white/[0.03] text-[11px] text-muted"><span class="text-lg leading-none">⊞</span><span>Janela</span></button>
+        <button onclick="navigate('quadricular')"  class="mob-mais-item flex flex-col items-center gap-1.5 p-3 rounded-xl border border-white/10 bg-white/[0.03] text-[11px] text-muted"><span class="text-lg leading-none">#</span><span>Quadricular</span></button>
       </div>
     </div>
   </div>
@@ -128,9 +130,9 @@
     { valor:1,  hex:'#E6E6E6', branco:9,  preto:1,  nome:'Cinza Claro 1'     },
     { valor:2,  hex:'#CCCCCC', branco:8,  preto:2,  nome:'Cinza Claro 2'     },
     { valor:3,  hex:'#B3B3B3', branco:7,  preto:3,  nome:'Cinza Claro 3'     },
-    { valor:4,  hex:'#999999', branco:6,  preto:4,  nome:'Cinza Mêdio Claro' },
-    { valor:5,  hex:'#808080', branco:5,  preto:5,  nome:'Cinza Mêdio'       },
-    { valor:6,  hex:'#666666', branco:4,  preto:6,  nome:'Cinza Mêdio Escuro'},
+    { valor:4,  hex:'#999999', branco:6,  preto:4,  nome:'Cinza Médio Claro' },
+    { valor:5,  hex:'#808080', branco:5,  preto:5,  nome:'Cinza Médio'       },
+    { valor:6,  hex:'#666666', branco:4,  preto:6,  nome:'Cinza Médio Escuro'},
     { valor:7,  hex:'#4D4D4D', branco:3,  preto:7,  nome:'Cinza Escuro 1'    },
     { valor:8,  hex:'#333333', branco:2,  preto:8,  nome:'Cinza Escuro 2'    },
     { valor:9,  hex:'#191919', branco:1,  preto:9,  nome:'Cinza Escuro 3'    },
@@ -156,7 +158,7 @@
   ];
 
   // ── Router ────────────────────────────────────────────────────────────
-  const maisPages = ['posterizar','zonas','riscoLinear','isolador','janela'];
+  const maisPages = ['posterizar','zonas','riscoLinear','isolador','janela','quadricular'];
 
   function toggleMais() {
     const drawer = document.getElementById('mob-mais-drawer');
@@ -172,7 +174,7 @@
   });
 
   function navigate(page) {
-    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, isolador: renderIsolador, janela: renderJanela };
+    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, isolador: renderIsolador, janela: renderJanela, quadricular: renderQuadricular };
     document.getElementById('app').innerHTML = '';
     (map[page] || renderHome)();
     document.querySelectorAll('.nav-link').forEach(el => {
@@ -199,11 +201,12 @@
       { id:'treino',   icon:'▤', title:'Treino de Valores',   desc:'Pratique identificar valores tonais e avalie sua precisão visual.' },
       { id:'misturas', icon:'◇', title:'Guia de Misturas',    desc:'Proporções exatas de branco e preto para obter cada tom de cinza.' },
       { id:'converter',icon:'⊑', title:'Converter para Cinzas', desc:'Transforme qualquer imagem de referência em escala de cinzas para estudar valores tonais.' },
-      { id:'posterizar',icon:'◧', title:'Posterizar',           desc:'Reduza a imagem a poucos tons para enxergar as regições de valor como blocos distintos.' },
+      { id:'posterizar',icon:'◧', title:'Posterizar',           desc:'Reduza a imagem a poucos tons para enxergar as regiões de valor como blocos distintos.' },
       { id:'zonas',     icon:'▦', title:'Mapear Zonas',          desc:'Divida a imagem em zonas e identifique o valor dominante de cada regiãão — como um mapa tonal.' },
       { id:'riscoLinear',icon:'◐', title:'Risco Linear',          desc:'Extraia o contorno da imagem como um desenho de linha — ideal para estudar formas e preparar a tela.' },
       { id:'isolador',  icon:'◉', title:'Isolador Tonal',       desc:'Clique em qualquer ponto da imagem e descubra seu valor tonal exato. Isole uma faixa de valores para estudar.' },
       { id:'janela',    icon:'⊞', title:'Janela Física',        desc:'Isole uma írea da imagem com uma míscara — como um cartãão vazado. Arraste e redimensione para estudar detalhes.' },
+      { id:'quadricular',icon:'#', title:'Quadricular Imagem',   desc:'Sobreponha uma grade na imagem para copiar quadrado por quadrado — técnica clássica para desenhar com precisão.' },
     ].map(m => `
       <button onclick="navigate('${m.id}')" class="group text-left block h-full p-8 rounded-2xl border border-white/10 hover:border-accent/40 bg-white/[0.02] hover:bg-white/[0.04] transition-all">
         <div class="text-accent mb-6 text-2xl">${m.icon}</div>
@@ -246,7 +249,7 @@
         <div class="max-w-6xl mx-auto">
           <div class="fade-in mb-12">
             <h1 class="font-display text-4xl md:text-5xl mb-4">Escala de Cinzas</h1>
-            <p class="text-muted max-w-2xl font-light">A escala de valores ê a espinha dorsal da pintura hiper realista. Toque em qualquer tom para explorar suas propriedades e misturas.</p>
+            <p class="text-muted max-w-2xl font-light">A escala de valores é a espinha dorsal da pintura hiper realista. Toque em qualquer tom para explorar suas propriedades e misturas.</p>
           </div>
           <div id="escala-preview" class="mb-8"></div>
           <div id="escala-strip"   class="mb-8"></div>
@@ -554,7 +557,7 @@
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               </div>
               <p class="font-display text-xl">Clique ou arraste uma imagem</p>
-              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado atê 10MB.</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
             </div>
           </div>
 
@@ -575,7 +578,7 @@
           <!-- Stats (hidden until image) -->
           <div id="stats-section" class="hidden mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
-              <p class="text-xs uppercase tracking-[0.2em] text-accent mb-1">Valor Mêdio</p>
+              <p class="text-xs uppercase tracking-[0.2em] text-accent mb-1">Valor Médio</p>
               <p id="stat-valor" class="font-display text-2xl">—</p>
             </div>
             <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
@@ -623,13 +626,13 @@
                 </div>
               </div>
 
-              <!-- Mêtodo -->
+              <!-- Método -->
               <div>
-                <h3 class="font-display text-xl mb-4">Mêtodo de Conversão</h3>
+                <h3 class="font-display text-xl mb-4">Método de Conversão</h3>
                 <div class="space-y-3">
                   ${[
                     { id:'luminancia', label:'Luminância <span class="text-accent text-xs">(recomendado)</span>', desc:'Pesos ITU-R BT.601: 0.299R + 0.587G + 0.114B. Mais próximo da percepção humana.' },
-                    { id:'media',      label:'Média simples',         desc:'Mêdia aritmêtica dos canais R, G e B.' },
+                    { id:'media',      label:'Média simples',         desc:'Média aritmêtica dos canais R, G e B.' },
                     { id:'maximo',     label:'Valor míximo',          desc:'Usa o canal com maior valor entre R, G e B.' },
                   ].map(m => `
                     <label class="flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all ${m.id==='luminancia'?'border-accent/40 bg-accent/[0.04]':'border-white/10 hover:border-white/20'}" id="lbl-${m.id}">
@@ -678,7 +681,7 @@
 
   function processFile(file) {
     if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
-    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de atê 10MB.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
@@ -788,8 +791,8 @@
     const avgGray = totalGray / pixels;
     const avgVal  = Math.round((avgGray / 255) * 10 * 10) / 10;
     const range   = maxGray - minGray;
-    const faixa   = avgGray < 85 ? 'Escuro' : avgGray < 170 ? 'Mêdio' : 'Claro';
-    const ctStr   = range < 80 ? 'Baixo' : range < 160 ? 'Mêdio' : 'Alto';
+    const faixa   = avgGray < 85 ? 'Escuro' : avgGray < 170 ? 'Médio' : 'Claro';
+    const ctStr   = range < 80 ? 'Baixo' : range < 160 ? 'Médio' : 'Alto';
 
     const sv = document.getElementById('stat-valor');
     const sl = document.getElementById('stat-lumi');
@@ -830,7 +833,7 @@
           <!-- Header -->
           <div class="fade-in mb-10">
             <h1 class="font-display text-4xl md:text-5xl mb-4">Posterizar</h1>
-            <p class="text-muted max-w-2xl font-light">Reduza qualquer imagem a poucos tons de cinza para enxergar apenas as regições de valor — como blocos. Essa ê a forma mais eficaz de treinar o olhar para pintar.</p>
+            <p class="text-muted max-w-2xl font-light">Reduza qualquer imagem a poucos tons de cinza para enxergar apenas as regiões de valor — como blocos. Essa é a forma mais eficaz de treinar o olhar para pintar.</p>
           </div>
 
           <!-- Upload zone -->
@@ -847,7 +850,7 @@
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               </div>
               <p class="font-display text-xl">Clique ou arraste uma imagem</p>
-              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado atê 10MB.</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
             </div>
           </div>
 
@@ -879,11 +882,11 @@
                 </div>
                 <p class="text-xs text-muted mt-2">Menos tons = formas mais simplificadas. 3—5 é ideal para estudo.</p>
 
-                <h3 class="font-display text-xl mt-6 mb-4">Mêtodo de Conversão</h3>
+                <h3 class="font-display text-xl mt-6 mb-4">Método de Conversão</h3>
                 <div class="space-y-3">
                   ${[
                     { id:'luminancia', label:'Luminância <span class="text-accent text-xs">(recomendado)</span>', desc:'Pesos ITU-R BT.601. Mais próximo da percepção humana.' },
-                    { id:'media',      label:'Média simples',         desc:'Mêdia aritmêtica dos canais R, G e B.' },
+                    { id:'media',      label:'Média simples',         desc:'Média aritmêtica dos canais R, G e B.' },
                   ].map(m => `
                     <label class="flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all ${m.id==='luminancia'?'border-accent/40 bg-accent/[0.04]':'border-white/10 hover:border-white/20'}" id="pz-lbl-${m.id}">
                       <input type="radio" name="pz-metodo" value="${m.id}" ${m.id==='luminancia'?'checked':''} class="mt-1 accent-[#d88800]" onchange="pzOnMetodo('${m.id}')" />
@@ -958,7 +961,7 @@
 
   function pzProcessFile(file) {
     if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
-    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de atê 10MB.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
@@ -1098,7 +1101,7 @@
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               </div>
               <p class="font-display text-xl">Clique ou arraste uma imagem</p>
-              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado atê 10MB.</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
             </div>
           </div>
 
@@ -1138,10 +1141,10 @@
                   <h3 class="font-display text-xl mt-6 mb-4">Sobreposição</h3>
                   <label class="flex items-center gap-3 cursor-pointer">
                     <input type="checkbox" id="zn-overlay-toggle" checked onchange="znToggleOverlay()" class="accent-[#d88800] w-4 h-4" />
-                    <span class="text-sm">Mostrar cores por faixa (escuro / mêdio / claro)</span>
+                    <span class="text-sm">Mostrar cores por faixa (escuro / médio / claro)</span>
                   </label>
 
-                  <h3 class="font-display text-xl mt-6 mb-4">Mêtodo</h3>
+                  <h3 class="font-display text-xl mt-6 mb-4">Método</h3>
                   <div class="space-y-3">
                     ${[
                       { id:'luminancia', label:'Luminância <span class="text-accent text-xs">(recomendado)</span>' },
@@ -1224,7 +1227,7 @@
 
   function znProcessFile(file) {
     if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
-    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de atê 10MB.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
@@ -1376,7 +1379,7 @@
         </div>
         <div class="flex justify-between text-xs text-muted">
           <span>${pctClaros}% claros</span>
-          <span>${pctMedios}% mêdios</span>
+          <span>${pctMedios}% médios</span>
           <span>${pctEscuros}% escuros</span>
         </div>
       </div>
@@ -1435,7 +1438,7 @@
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               </div>
               <p class="font-display text-xl">Clique ou arraste uma imagem</p>
-              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado atê 10MB.</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
             </div>
           </div>
 
@@ -1487,7 +1490,7 @@
                 <h3 class="font-display text-xl mb-4">Sobre o Algoritmo</h3>
                 <div class="p-5 rounded-xl border border-white/10 bg-white/[0.02]">
                   <p class="text-sm text-muted leading-relaxed">
-                    O algoritmo <span class="text-fg font-medium">Sobel</span> detecta bordas calculando o gradiente de intensidade em cada pixel. Primeiro, a imagem ê convertida para cinzas e suavizada (filtro Gaussiano). Depois, duas míscaras 3×3 calculam a variação horizontal e vertical. A intensidade do contorno ê dada pela magnitude do gradiente — pixels com variação alta são bordas.
+                    O algoritmo <span class="text-fg font-medium">Sobel</span> detecta bordas calculando o gradiente de intensidade em cada pixel. Primeiro, a imagem é convertida para cinzas e suavizada (filtro Gaussiano). Depois, duas míscaras 3×3 calculam a variação horizontal e vertical. A intensidade do contorno é dada pela magnitude do gradiente — pixels com variação alta são bordas.
                   </p>
                   <p class="text-sm text-muted leading-relaxed mt-3">
                     <span class="text-accent font-medium">Dica prítica:</span> Para preparar a tela, use suavização 2—3 e limiar 25—40. Para um estudo detalhado, diminua o limiar e aumente a suavização.
@@ -1530,7 +1533,7 @@
 
   function rlProcessFile(file) {
     if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
-    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de atê 10MB.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
@@ -1765,7 +1768,7 @@
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               </div>
               <p class="font-display text-xl">Clique ou arraste uma imagem</p>
-              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado atê 10MB.</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
             </div>
           </div>
 
@@ -1910,7 +1913,7 @@
 
   function isoProcessFile(file) {
     if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
-    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de atê 10MB.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
@@ -2021,7 +2024,7 @@
           </div>
           <div class="p-3 rounded-lg border border-white/10 bg-white/[0.02]">
             <p class="text-[10px] uppercase tracking-wider text-muted">Faixa</p>
-            <p class="font-mono text-fg">${valor <= 3 ? 'Claro' : valor <= 7 ? 'Mêdio' : 'Escuro'}</p>
+            <p class="font-mono text-fg">${valor <= 3 ? 'Claro' : valor <= 7 ? 'Médio' : 'Escuro'}</p>
           </div>
         </div>
         <div class="p-3 rounded-lg border border-accent/20 bg-accent/[0.04]">
@@ -2238,7 +2241,7 @@
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><path d="M8.5 10a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/><path d="M21 15l-5-5L5 21"/></svg>
               </div>
               <p class="font-display text-xl">Clique ou arraste uma imagem</p>
-              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado atê 10MB.</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
             </div>
           </div>
 
@@ -2298,7 +2301,7 @@
 
   function jnProcessFile(file) {
     if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
-    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de atê 10MB.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
@@ -2416,6 +2419,313 @@
       const url = URL.createObjectURL(blob);
       const a   = document.createElement('a');
       a.href = url; a.download = 'janela-fisica.png';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
+
+  // ── Quadricular Imagem ────────────────────────────────────────────────
+  let quadricularState = {
+    originalImageData: null,
+    cols: 5,
+    rows: 5,
+    corGrid: '#ffffff',
+    espessura: 1,
+    labels: true,
+  };
+
+  function renderQuadricular() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-6xl mx-auto">
+
+          <!-- Header -->
+          <div class="fade-in mb-10">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Quadricular Imagem</h1>
+            <p class="text-muted max-w-2xl font-light">Sobreponha uma grade na referência para copiar a imagem quadrado por quadrado — a técnica clássica para quem quer desenhar com precisão sem precisar saber desenhar.</p>
+          </div>
+
+          <!-- Upload zone -->
+          <div id="qd-upload-zone"
+            class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 mb-8 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]"
+            style="min-height:220px"
+            onclick="document.getElementById('qd-file-input').click()"
+            ondragover="qdHandleDragOver(event)"
+            ondragleave="qdHandleDragLeave(event)"
+            ondrop="qdHandleDrop(event)">
+            <input type="file" id="qd-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="qdHandleFileChange(event)" />
+            <div id="qd-upload-placeholder" class="flex flex-col items-center gap-3 text-center p-8">
+              <div class="w-14 h-14 rounded-full bg-white/[0.06] flex items-center justify-center">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </div>
+              <p class="font-display text-xl">Clique ou arraste uma imagem</p>
+              <p class="text-muted text-sm">Aceita JPG, PNG e WebP. Recomendado até 10MB.</p>
+            </div>
+          </div>
+
+          <!-- Canvases -->
+          <div id="qd-canvas-section" class="hidden mb-8">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Original</p>
+                <canvas id="qd-canvas-original" class="w-full rounded-xl border border-white/10" style="max-height:400px;object-fit:contain"></canvas>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-accent mb-3">Quadriculada</p>
+                <canvas id="qd-canvas-resultado" class="w-full rounded-xl border border-white/10" style="max-height:400px;object-fit:contain"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div id="qd-controls-section" class="hidden p-8 rounded-2xl border border-white/10 bg-white/[0.02] mb-6">
+            <div class="grid md:grid-cols-2 gap-8">
+              <div class="space-y-6">
+                <h3 class="font-display text-xl mb-4">Tamanho da Grade</h3>
+                <div>
+                  <div class="flex justify-between text-sm mb-2">
+                    <span>Colunas</span>
+                    <span id="qd-val-cols" class="text-accent font-mono">5</span>
+                  </div>
+                  <input type="range" id="qd-sl-cols" min="2" max="20" value="5" class="w-full" oninput="qdOnCols(this.value)" />
+                </div>
+                <div>
+                  <div class="flex justify-between text-sm mb-2">
+                    <span>Linhas</span>
+                    <span id="qd-val-rows" class="text-accent font-mono">5</span>
+                  </div>
+                  <input type="range" id="qd-sl-rows" min="2" max="20" value="5" class="w-full" oninput="qdOnRows(this.value)" />
+                </div>
+
+                <h3 class="font-display text-xl mt-6 mb-4">Aparência</h3>
+                <div>
+                  <p class="text-sm mb-2">Cor da grade</p>
+                  <div class="flex gap-3" id="qd-cores">
+                    <button onclick="qdSetCor('#ffffff')" data-cor="#ffffff" class="w-9 h-9 rounded-lg border-2 border-accent bg-white transition-all"></button>
+                    <button onclick="qdSetCor('#000000')" data-cor="#000000" class="w-9 h-9 rounded-lg border-2 border-white/10 bg-black transition-all"></button>
+                    <button onclick="qdSetCor('#d88800')" data-cor="#d88800" class="w-9 h-9 rounded-lg border-2 border-white/10 transition-all" style="background:#d88800"></button>
+                    <button onclick="qdSetCor('#ff0000')" data-cor="#ff0000" class="w-9 h-9 rounded-lg border-2 border-white/10 bg-red-600 transition-all"></button>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-sm mb-2">
+                    <span>Espessura</span>
+                    <span id="qd-val-esp" class="text-accent font-mono">1px</span>
+                  </div>
+                  <input type="range" id="qd-sl-esp" min="1" max="5" value="1" class="w-full" oninput="qdOnEsp(this.value)" />
+                </div>
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <input type="checkbox" id="qd-labels-toggle" checked onchange="qdOnLabels()" class="accent-[#d88800] w-4 h-4" />
+                  <span class="text-sm">Mostrar números nas células (A1, B2...)</span>
+                </label>
+              </div>
+
+              <div class="space-y-6">
+                <h3 class="font-display text-xl mb-4">Dica de Uso</h3>
+                <div class="p-5 rounded-xl border border-white/10 bg-white/[0.02]">
+                  <p class="text-sm text-muted leading-relaxed">
+                    Crie uma grade <span class="text-fg font-medium">idêntica</span> na sua tela ou papel. Cada célula é um pedaço pequeno para desenhar separadamente. Comece com <span class="text-accent font-medium">5×5</span> e aumente para mais detalhe.
+                  </p>
+                  <p class="text-sm text-muted leading-relaxed mt-3">
+                    <span class="text-accent font-medium">Proporção:</span> Se a referência tem 20cm de largura e a grade tem 5 colunas, cada célula tem 4cm. Mantenha a mesma proporção no papel.
+                  </p>
+                </div>
+                <div class="p-5 rounded-xl border border-accent/20 bg-accent/[0.03]">
+                  <p class="text-xs text-accent font-medium mb-2">Grade rápida</p>
+                  <div class="flex flex-wrap gap-2" id="qd-quick">
+                    ${[{c:3,r:3},{c:4,r:4},{c:5,r:5},{c:6,r:6},{c:8,r:8},{c:10,r:10}].map(g =>
+                      `<button onclick="qdSetGrid(${g.c},${g.r})" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">${g.c}×${g.r}</button>`
+                    ).join('')}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botões -->
+          <div id="qd-actions" class="hidden flex flex-col sm:flex-row gap-4">
+            <button onclick="qdResetar()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
+              Redefinir Grade
+            </button>
+            <button id="qd-btn-download" onclick="qdBaixarImagem()"
+              class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors"
+              style="background:#d88800;color:hsl(0 0% 4%)"
+              onmouseenter="this.style.background='#c07800'"
+              onmouseleave="this.style.background='#d88800'">
+              Baixar Quadriculada (PNG)
+            </button>
+            <button onclick="document.getElementById('qd-file-input').click()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
+              Trocar Imagem
+            </button>
+          </div>
+
+        </div>
+      </div>`;
+  }
+
+  function qdSetGrid(c, r) {
+    quadricularState.cols = c;
+    quadricularState.rows = r;
+    const slCols = document.getElementById('qd-sl-cols');
+    const slRows = document.getElementById('qd-sl-rows');
+    if (slCols) slCols.value = c;
+    if (slRows) slRows.value = r;
+    document.getElementById('qd-val-cols').textContent = c;
+    document.getElementById('qd-val-rows').textContent = r;
+    qdAplicarGrade();
+  }
+
+  function qdOnCols(v) {
+    quadricularState.cols = Number(v);
+    document.getElementById('qd-val-cols').textContent = v;
+    qdAplicarGrade();
+  }
+  function qdOnRows(v) {
+    quadricularState.rows = Number(v);
+    document.getElementById('qd-val-rows').textContent = v;
+    qdAplicarGrade();
+  }
+  function qdSetCor(c) {
+    quadricularState.corGrid = c;
+    document.querySelectorAll('#qd-cores button').forEach(b => {
+      b.classList.toggle('border-accent', b.dataset.cor === c);
+      b.classList.toggle('border-white/10', b.dataset.cor !== c);
+    });
+    qdAplicarGrade();
+  }
+  function qdOnEsp(v) {
+    quadricularState.espessura = Number(v);
+    document.getElementById('qd-val-esp').textContent = v + 'px';
+    qdAplicarGrade();
+  }
+  function qdOnLabels() {
+    quadricularState.labels = document.getElementById('qd-labels-toggle').checked;
+    qdAplicarGrade();
+  }
+
+  function qdResetar() {
+    quadricularState.cols = 5;
+    quadricularState.rows = 5;
+    quadricularState.corGrid = '#ffffff';
+    quadricularState.espessura = 1;
+    quadricularState.labels = true;
+    const slC = document.getElementById('qd-sl-cols');
+    const slR = document.getElementById('qd-sl-rows');
+    const slE = document.getElementById('qd-sl-esp');
+    if (slC) slC.value = 5;
+    if (slR) slR.value = 5;
+    if (slE) slE.value = 1;
+    document.getElementById('qd-val-cols').textContent = '5';
+    document.getElementById('qd-val-rows').textContent = '5';
+    document.getElementById('qd-val-esp').textContent = '1px';
+    document.getElementById('qd-labels-toggle').checked = true;
+    qdSetCor('#ffffff');
+    qdAplicarGrade();
+  }
+
+  // Handlers de upload
+  function qdHandleDragOver(e) { e.preventDefault(); document.getElementById('qd-upload-zone').classList.add('drag-over'); }
+  function qdHandleDragLeave(e) { document.getElementById('qd-upload-zone').classList.remove('drag-over'); }
+  function qdHandleDrop(e) {
+    e.preventDefault();
+    document.getElementById('qd-upload-zone').classList.remove('drag-over');
+    if (e.dataTransfer.files[0]) qdProcessFile(e.dataTransfer.files[0]);
+  }
+  function qdHandleFileChange(e) { if (e.target.files[0]) qdProcessFile(e.target.files[0]); }
+
+  function qdProcessFile(file) {
+    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const cOrig = document.getElementById('qd-canvas-original');
+        const maxW = 800, maxH = 600;
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
+        cOrig.width = w; cOrig.height = h;
+        const ctx = cOrig.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        quadricularState.originalImageData = ctx.getImageData(0, 0, w, h);
+
+        document.getElementById('qd-canvas-section').classList.remove('hidden');
+        document.getElementById('qd-controls-section').classList.remove('hidden');
+        document.getElementById('qd-actions').classList.remove('hidden');
+        document.getElementById('qd-upload-placeholder').innerHTML =
+          `<p class="text-muted text-sm">Imagem carregada: <span class="text-fg">${file.name}</span></p>`;
+
+        qdAplicarGrade();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function qdAplicarGrade() {
+    if (!quadricularState.originalImageData) return;
+    const { originalImageData, cols, rows, corGrid, espessura, labels } = quadricularState;
+    const W = originalImageData.width, H = originalImageData.height;
+    const cRes = document.getElementById('qd-canvas-resultado');
+    cRes.width = W; cRes.height = H;
+    const ctx = cRes.getContext('2d');
+    ctx.putImageData(originalImageData, 0, 0);
+
+    const cellW = W / cols, cellH = H / rows;
+
+    // Linhas verticais
+    ctx.strokeStyle = corGrid;
+    ctx.lineWidth = espessura;
+    for (let c = 1; c < cols; c++) {
+      ctx.beginPath();
+      ctx.moveTo(Math.round(c * cellW) + 0.5, 0);
+      ctx.lineTo(Math.round(c * cellW) + 0.5, H);
+      ctx.stroke();
+    }
+    // Linhas horizontais
+    for (let r = 1; r < rows; r++) {
+      ctx.beginPath();
+      ctx.moveTo(0, Math.round(r * cellH) + 0.5);
+      ctx.lineTo(W, Math.round(r * cellH) + 0.5);
+      ctx.stroke();
+    }
+
+    // Labels (A1, B2...)
+    if (labels) {
+      const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const fontSize = Math.max(10, Math.min(cellW, cellH) * 0.18);
+      ctx.font = `600 ${fontSize}px Inter, system-ui, sans-serif`;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+
+      // Cor do texto: preto na imagem, com fundo semi-transparente
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const label = letras[c] + (r + 1);
+          const x = c * cellW + 3;
+          const y = r * cellH + 2;
+          // Fundo semi-transparente
+          const bgAlpha = corGrid === '#000000' ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)';
+          ctx.fillStyle = bgAlpha;
+          ctx.fillRect(x - 1, y - 1, fontSize * label.length * 0.65 + 4, fontSize + 4);
+          // Texto
+          ctx.fillStyle = corGrid === '#000000' ? '#ffffff' : '#000000';
+          ctx.fillText(label, x, y);
+        }
+      }
+    }
+  }
+
+  function qdBaixarImagem() {
+    const canvas = document.getElementById('qd-canvas-resultado');
+    if (!canvas) return;
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href = url; a.download = 'imagem-quadriculada.png';
       document.body.appendChild(a); a.click();
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
