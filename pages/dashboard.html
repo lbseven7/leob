@@ -3389,9 +3389,13 @@
                 <div class="relative rounded-2xl overflow-hidden border border-white/10 bg-white" id="io-adelson-wrap">
                   <img id="io-adelson-img" src="../images/adelson_checkershadow.svg" alt="Ilusão do Tabuleiro de Adelson — quadrados A e B são o mesmo cinza"
                     class="w-full cursor-pointer" style="display:block" onclick="ioRevealConnection()" />
-                  <!-- Overlay de prova: barras de conexão -->
-                  <div id="io-adelson-proof" class="absolute inset-0 pointer-events-none hidden"
-                    style="background:linear-gradient(180deg, transparent 28%, rgba(216,136,0,0.85) 30%, rgba(216,136,0,0.85) 34%, transparent 36%, transparent 52%, rgba(216,136,0,0.85) 54%, rgba(216,136,0,0.85) 58%, transparent 60%)">
+                  <!-- Overlay de prova: faixas cinza ligando A e B -->
+                  <div id="io-adelson-proof" class="absolute inset-0 pointer-events-none hidden flex flex-col justify-between items-stretch">
+                    <div style="flex:0 0 31%; background:transparent"></div>
+                    <div style="flex:0 0 4%; background:#787878; margin:0 15%; border-radius:2px"></div>
+                    <div style="flex:0 0 21%; background:transparent"></div>
+                    <div style="flex:0 0 4%; background:#787878; margin:0 42%; border-radius:2px"></div>
+                    <div style="flex:1"></div>
                   </div>
                 </div>
                 <p class="mt-3 text-xs text-muted text-center">Clique na imagem para revelar a prova</p>
