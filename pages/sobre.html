@@ -301,14 +301,14 @@
                 cursor.style.left = e.clientX + 'px';
                 cursor.style.top = e.clientY + 'px';
             });
-            document.querySelectorAll('a, button').forEach(el => {
+            document.querySelectorAll('a, button, .group').forEach(el => {
                 el.addEventListener('mouseenter', () => {
                     cursor.style.transform = 'translate(-50%, -50%) scale(2.4)';
                     cursor.style.backgroundColor = 'rgba(249, 115, 22, 0.28)';
                 });
                 el.addEventListener('mouseleave', () => {
                     cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-                    cursor.style.backgroundColor = 'rgba(249, 115, 22, 0.28)';
+                    cursor.style.backgroundColor = '';
                 });
             });
         } else if (cursor) {
