@@ -87,6 +87,8 @@
         <button onclick="navigate('isolador')" data-nav="isolador" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Isolador</button>
         <button onclick="navigate('janela')" data-nav="janela" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Janela</button>
         <button onclick="navigate('quadricular')" data-nav="quadricular" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Quadricular</button>
+        <button onclick="navigate('comparador')" data-nav="comparador" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Comparador</button>
+        <button onclick="navigate('ilusao')" data-nav="ilusao" class="nav-link px-4 py-2 text-sm tracking-wide transition-colors rounded-lg text-muted hover:text-fg">Ilusão</button>
 
       </div>
     </div>
@@ -115,6 +117,8 @@
         <button onclick="navigate('isolador')"    class="mob-mais-item flex flex-col items-center gap-1.5 p-3 rounded-xl border border-white/10 bg-white/[0.03] text-[11px] text-muted"><span class="text-lg leading-none">◉</span><span>Isolador</span></button>
         <button onclick="navigate('janela')"      class="mob-mais-item flex flex-col items-center gap-1.5 p-3 rounded-xl border border-white/10 bg-white/[0.03] text-[11px] text-muted"><span class="text-lg leading-none">⊞</span><span>Janela</span></button>
         <button onclick="navigate('quadricular')"  class="mob-mais-item flex flex-col items-center gap-1.5 p-3 rounded-xl border border-white/10 bg-white/[0.03] text-[11px] text-muted"><span class="text-lg leading-none">#</span><span>Quadricular</span></button>
+        <button onclick="navigate('comparador')"  class="mob-mais-item flex flex-col items-center gap-1.5 p-3 rounded-xl border border-white/10 bg-white/[0.03] text-[11px] text-muted"><span class="text-lg leading-none">⊕</span><span>Comparar</span></button>
+        <button onclick="navigate('ilusao')"  class="mob-mais-item flex flex-col items-center gap-1.5 p-3 rounded-xl border border-white/10 bg-white/[0.03] text-[11px] text-muted"><span class="text-lg leading-none">◐</span><span>Ilusão</span></button>
       </div>
     </div>
   </div>
@@ -158,7 +162,7 @@
   ];
 
   // ── Router ────────────────────────────────────────────────────────────
-  const maisPages = ['posterizar','zonas','riscoLinear','isolador','janela','quadricular'];
+  const maisPages = ['posterizar','zonas','riscoLinear','isolador','janela','quadricular','comparador','ilusao'];
 
   function toggleMais() {
     const drawer = document.getElementById('mob-mais-drawer');
@@ -174,7 +178,7 @@
   });
 
   function navigate(page) {
-    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, isolador: renderIsolador, janela: renderJanela, quadricular: renderQuadricular };
+    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, isolador: renderIsolador, janela: renderJanela, quadricular: renderQuadricular, comparador: renderComparador, ilusao: renderIlusao };
     document.getElementById('app').innerHTML = '';
     (map[page] || renderHome)();
     document.querySelectorAll('.nav-link').forEach(el => {
@@ -207,6 +211,8 @@
       { id:'isolador',  icon:'◉', title:'Isolador Tonal',       desc:'Clique em qualquer ponto da imagem e descubra seu valor tonal exato. Isole uma faixa de valores para estudar.' },
       { id:'janela',    icon:'⊞', title:'Janela Física',        desc:'Isole uma írea da imagem com uma míscara — como um cartãão vazado. Arraste e redimensione para estudar detalhes.' },
       { id:'quadricular',icon:'#', title:'Quadricular Imagem',   desc:'Sobreponha uma grade na imagem para copiar quadrado por quadrado — técnica clássica para desenhar com precisão.' },
+      { id:'comparador',icon:'⊕', title:'Comparar Amostras',   desc:'Clique em um ponto da referência e no mesmo ponto da sua pintura para comparar valores tonais com precisão.' },
+      { id:'ilusao',    icon:'◐', title:'Ilusão de Óptica',    desc:'Veja como o cérebro engana — o mesmo cinza parece diferente conforme o fundo. Contraste simultâneo na prática.' },
     ].map(m => `
       <button onclick="navigate('${m.id}')" class="group text-left block h-full p-8 rounded-2xl border border-white/10 hover:border-accent/40 bg-white/[0.02] hover:bg-white/[0.04] transition-all">
         <div class="text-accent mb-6 text-2xl">${m.icon}</div>
@@ -1047,9 +1053,18 @@
           </div>
           <div class="text-right flex-shrink-0">
             <p class="text-xs text-muted">${branco}B : ${preto}P</p>
-          </div>
-        </div>`;
-    }
+        </div>
+      </div>`;
+
+    // Event delegation para grade rápida (funciona em mobile)
+    setTimeout(() => {
+      const quick = document.getElementById('qd-quick');
+      if (quick) quick.addEventListener('click', e => {
+        const btn = e.target.closest('button[data-c]');
+        if (btn) qdSetGrid(+btn.dataset.c, +btn.dataset.r);
+      });
+    }, 0);
+  }
     legenda.innerHTML = html;
   }
 
@@ -2536,7 +2551,7 @@
                   <p class="text-xs text-accent font-medium mb-2">Grade rápida</p>
                   <div class="flex flex-wrap gap-2" id="qd-quick">
                     ${[{c:3,r:3},{c:4,r:4},{c:5,r:5},{c:6,r:6},{c:8,r:8},{c:10,r:10}].map(g =>
-                      `<button onclick="qdSetGrid(${g.c},${g.r})" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">${g.c}×${g.r}</button>`
+                      `<button data-c="${g.c}" data-r="${g.r}" class="px-4 py-2.5 sm:py-1.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent active:border-accent active:text-accent active:scale-95 transition-all">${g.c}×${g.r}</button>`
                     ).join('')}
                   </div>
                 </div>
@@ -2730,6 +2745,1002 @@
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }, 'image/png');
+  }
+
+
+  // ── Comparador de Amostras ──────────────────────────────────────────────
+  let comparadorState = {
+    refImageData: null,
+    refGray: null,
+    refW: 0, refH: 0,
+    pinImageData: null,
+    pinGray: null,
+    pinW: 0, pinH: 0,
+    pontoRef: null,
+    pontoPin: null,
+    metodo: 'luminancia',
+    historico: [],
+    fase: 'upload-ref',
+    abortRef: null,
+    abortPin: null,
+  };
+
+  function renderComparador() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-6xl mx-auto">
+
+          <!-- Header -->
+          <div class="fade-in mb-10">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Comparar Amostras</h1>
+            <p class="text-muted max-w-2xl font-light">Faça upload da foto de referência e da sua pintura. Clique no mesmo ponto em cada imagem para descobrir a diferença exata entre os valores tonais.</p>
+          </div>
+
+          <!-- Upload zones -->
+          <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div>
+              <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Foto de Referência</p>
+              <div id="cp-upload-ref"
+                class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-3 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]"
+                style="min-height:180px"
+                onclick="document.getElementById('cp-file-ref').click()"
+                ondragover="cpHandleDragRefOver(event)"
+                ondragleave="cpHandleDragRefLeave(event)"
+                ondrop="cpHandleDropRef(event)">
+                <input type="file" id="cp-file-ref" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="cpHandleFileRef(event)" />
+                <div id="cp-upload-ref-placeholder" class="flex flex-col items-center gap-2 text-center p-6">
+                  <div class="w-12 h-12 rounded-full bg-white/[0.06] flex items-center justify-center">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  </div>
+                  <p class="font-display text-lg">Referência</p>
+                  <p class="text-muted text-xs">Arraste ou clique</p>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Sua Pintura</p>
+              <div id="cp-upload-pin"
+                class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-3 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]"
+                style="min-height:180px"
+                onclick="document.getElementById('cp-file-pin').click()"
+                ondragover="cpHandleDragPinOver(event)"
+                ondragleave="cpHandleDragPinLeave(event)"
+                ondrop="cpHandleDropPin(event)">
+                <input type="file" id="cp-file-pin" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="cpHandleFilePin(event)" />
+                <div id="cp-upload-pin-placeholder" class="flex flex-col items-center gap-2 text-center p-6">
+                  <div class="w-12 h-12 rounded-full bg-white/[0.06] flex items-center justify-center">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  </div>
+                  <p class="font-display text-lg">Sua Pintura</p>
+                  <p class="text-muted text-xs">Arraste ou clique</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hint -->
+          <div id="cp-hint" class="hidden mb-6 p-4 rounded-xl border border-accent/20 bg-accent/[0.03] text-center">
+            <p id="cp-hint-text" class="text-sm text-accent font-medium"></p>
+          </div>
+
+          <!-- Canvases -->
+          <div id="cp-canvas-section" class="hidden mb-8">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Referência</p>
+                <canvas id="cp-canvas-ref" class="w-full rounded-xl border border-white/10 cursor-crosshair" style="max-height:400px;object-fit:contain"></canvas>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Sua Pintura</p>
+                <canvas id="cp-canvas-pin" class="w-full rounded-xl border border-white/10 cursor-crosshair" style="max-height:400px;object-fit:contain"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comparison panel -->
+          <div id="cp-comparison-section" class="hidden mb-8">
+            <div class="grid grid-cols-3 gap-4 mb-4">
+              <!-- Ref card -->
+              <div id="cp-ref-card" class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
+                <p class="text-[10px] uppercase tracking-[0.15em] text-muted mb-2">Referência</p>
+                <div id="cp-ref-swatch" class="w-12 h-12 rounded-lg mx-auto mb-2 border border-white/10"></div>
+                <p id="cp-ref-valor" class="font-display text-2xl text-fg">—</p>
+                <p id="cp-ref-nome" class="text-xs text-muted mt-1"></p>
+              </div>
+              <!-- Pin card -->
+              <div id="cp-pin-card" class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
+                <p class="text-[10px] uppercase tracking-[0.15em] text-muted mb-2">Sua Pintura</p>
+                <div id="cp-pin-swatch" class="w-12 h-12 rounded-lg mx-auto mb-2 border border-white/10"></div>
+                <p id="cp-pin-valor" class="font-display text-2xl text-fg">—</p>
+                <p id="cp-pin-nome" class="text-xs text-muted mt-1"></p>
+              </div>
+              <!-- Diff card -->
+              <div id="cp-diff-card" class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
+                <p class="text-[10px] uppercase tracking-[0.15em] text-muted mb-2">Diferença</p>
+                <div id="cp-diff-icon" class="w-12 h-12 rounded-lg mx-auto mb-2 flex items-center justify-center border border-white/10 bg-white/[0.04]">
+                  <span id="cp-diff-symbol" class="text-2xl">→</span>
+                </div>
+                <p id="cp-diff-valor" class="font-display text-2xl text-fg">—</p>
+                <p id="cp-diff-msg" class="text-xs text-muted mt-1 leading-snug"></p>
+              </div>
+            </div>
+            <!-- Visual bar -->
+            <div id="cp-diff-bar-wrap" class="hidden p-4 rounded-xl border border-white/10 bg-white/[0.02]">
+              <div class="flex justify-between text-[10px] text-muted mb-2">
+                <span>0 (Branco)</span><span>5 (Médio)</span><span>10 (Preto)</span>
+              </div>
+              <div class="relative h-4 rounded-full overflow-hidden" style="background:linear-gradient(to right,#fff,#888,#000)">
+                <div id="cp-marker-ref" class="absolute top-0 w-0.5 h-full bg-accent transition-all duration-300" style="left:50%"></div>
+                <div id="cp-marker-pin" class="absolute top-0 w-0.5 h-full bg-blue-400 transition-all duration-300" style="left:50%"></div>
+              </div>
+              <div class="flex justify-between mt-2 text-[10px]">
+                <span class="text-accent font-medium">● Ref</span>
+                <span class="text-blue-400 font-medium">● Sua Pintura</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- History -->
+          <div id="cp-history-section" class="hidden mb-8">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-display text-xl">Histórico</h3>
+              <button onclick="cpLimparHistorico()" class="text-xs text-muted hover:text-fg transition-colors">Limpar</button>
+            </div>
+            <div id="cp-history-grid" class="grid grid-cols-3 sm:grid-cols-6 gap-3"></div>
+          </div>
+
+          <!-- Controls -->
+          <div id="cp-controls-section" class="hidden p-4 md:p-8 rounded-2xl border border-white/10 bg-white/[0.02] mb-6">
+            <div class="flex flex-wrap items-center gap-6">
+              <div>
+                <p class="text-sm mb-2">Método</p>
+                <div class="flex gap-2">
+                  <button onclick="cpSetMetodo('luminancia')" id="cp-btn-luminancia" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-accent text-accent transition-all">Luminância</button>
+                  <button onclick="cpSetMetodo('media')" id="cp-btn-media" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted transition-all">Média</button>
+                </div>
+              </div>
+              <div class="flex-1"></div>
+              <button onclick="cpExportarComparacao()" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent active:scale-95 transition-all">Baixar Comparação (PNG)</button>
+              <button onclick="cpLimparPontos()" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent active:scale-95 transition-all">Limpar Pontos</button>
+              <button onclick="cpRedefinir()" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted hover:border-red-500/40 hover:text-red-400 active:scale-95 transition-all">Redefinir Tudo</button>
+            </div>
+          </div>
+
+        </div>
+      </div>`;
+  }
+
+  // ── Upload handlers ─────────────────────────────────────────────────────
+  function cpHandleDragRefOver(e) { e.preventDefault(); document.getElementById('cp-upload-ref').classList.add('border-accent/60','bg-accent/[0.02]'); }
+  function cpHandleDragRefLeave(e) { document.getElementById('cp-upload-ref').classList.remove('border-accent/60','bg-accent/[0.02]'); }
+  function cpHandleDropRef(e) { e.preventDefault(); document.getElementById('cp-upload-ref').classList.remove('border-accent/60','bg-accent/[0.02]'); if (e.dataTransfer.files[0]) cpProcessFile(e.dataTransfer.files[0], 'ref'); }
+  function cpHandleFileRef(e) { if (e.target.files[0]) cpProcessFile(e.target.files[0], 'ref'); }
+
+  function cpHandleDragPinOver(e) { e.preventDefault(); document.getElementById('cp-upload-pin').classList.add('border-accent/60','bg-accent/[0.02]'); }
+  function cpHandleDragPinLeave(e) { document.getElementById('cp-upload-pin').classList.remove('border-accent/60','bg-accent/[0.02]'); }
+  function cpHandleDropPin(e) { e.preventDefault(); document.getElementById('cp-upload-pin').classList.remove('border-accent/60','bg-accent/[0.02]'); if (e.dataTransfer.files[0]) cpProcessFile(e.dataTransfer.files[0], 'pin'); }
+  function cpHandleFilePin(e) { if (e.target.files[0]) cpProcessFile(e.target.files[0], 'pin'); }
+
+  function cpProcessFile(file, target) {
+    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
+    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const maxW = 800, maxH = 600;
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
+
+        const canvasId = target === 'ref' ? 'cp-canvas-ref' : 'cp-canvas-pin';
+        const c = document.getElementById(canvasId);
+        c.width = w; c.height = h;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const imgData = ctx.getImageData(0, 0, w, h);
+
+        // Pre-compute grayscale
+        const src = imgData.data;
+        const grayArr = new Float32Array(w * h);
+        for (let i = 0; i < src.length; i += 4) {
+          grayArr[i / 4] = comparadorState.metodo === 'luminancia'
+            ? 0.299 * src[i] + 0.587 * src[i + 1] + 0.114 * src[i + 2]
+            : (src[i] + src[i + 1] + src[i + 2]) / 3;
+        }
+
+        if (target === 'ref') {
+          comparadorState.refImageData = imgData;
+          comparadorState.refGray = grayArr;
+          comparadorState.refW = w;
+          comparadorState.refH = h;
+          document.getElementById('cp-upload-ref-placeholder').innerHTML =
+            `<p class="text-muted text-sm">Carregada: <span class="text-fg">${file.name}</span></p>`;
+          document.getElementById('cp-upload-ref').classList.remove('hover:border-accent/60','hover:bg-white/[0.02]','cursor-pointer');
+          document.getElementById('cp-upload-ref').classList.add('border-accent/30');
+        } else {
+          comparadorState.pinImageData = imgData;
+          comparadorState.pinGray = grayArr;
+          comparadorState.pinW = w;
+          comparadorState.pinH = h;
+          document.getElementById('cp-upload-pin-placeholder').innerHTML =
+            `<p class="text-muted text-sm">Carregada: <span class="text-fg">${file.name}</span></p>`;
+          document.getElementById('cp-upload-pin').classList.remove('hover:border-accent/60','hover:bg-white/[0.02]','cursor-pointer');
+          document.getElementById('cp-upload-pin').classList.add('border-accent/30');
+        }
+
+        // If both loaded, show canvases + controls
+        if (comparadorState.refImageData && comparadorState.pinImageData) {
+          comparadorState.fase = 'ready';
+          document.getElementById('cp-canvas-section').classList.remove('hidden');
+          document.getElementById('cp-controls-section').classList.remove('hidden');
+          cpSetupCanvasEvents();
+          cpShowHint('Clique em um ponto na referência para começar');
+        }
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ── Canvas events ───────────────────────────────────────────────────────
+  function cpSetupCanvasEvents() {
+    const cRef = document.getElementById('cp-canvas-ref');
+    const cPin = document.getElementById('cp-canvas-pin');
+
+    if (comparadorState.abortRef) comparadorState.abortRef.abort();
+    if (comparadorState.abortPin) comparadorState.abortPin.abort();
+    comparadorState.abortRef = new AbortController();
+    comparadorState.abortPin = new AbortController();
+
+    const signalRef = comparadorState.abortRef.signal;
+    const signalPin = comparadorState.abortPin.signal;
+
+    cRef.addEventListener('click', cpClickRef, { signal: signalRef });
+    cPin.addEventListener('click', cpClickPin, { signal: signalPin });
+    cRef.addEventListener('touchstart', cpClickRef, { passive: false, signal: signalRef });
+    cPin.addEventListener('touchstart', cpClickPin, { passive: false, signal: signalPin });
+  }
+
+  function cpGetCoords(e, canvas) {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return {
+      x: Math.min(canvas.width - 1, Math.max(0, Math.floor(((clientX - rect.left) / rect.width) * canvas.width))),
+      y: Math.min(canvas.height - 1, Math.max(0, Math.floor(((clientY - rect.top) / rect.height) * canvas.height)))
+    };
+  }
+
+  function cpClickRef(e) {
+    if (!comparadorState.refGray) return;
+    e.preventDefault();
+    const c = document.getElementById('cp-canvas-ref');
+    const { x, y } = cpGetCoords(e, c);
+    const gray = comparadorState.refGray[y * comparadorState.refW + x];
+    const pi = (y * comparadorState.refW + x) * 4;
+    const src = comparadorState.refImageData.data;
+    const valor = Math.min(10, Math.max(0, Math.round((1 - gray / 255) * 10)));
+    const r = src[pi], g = src[pi + 1], b = src[pi + 2];
+    const hex = '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+    const nomeIdx = Math.min(10, Math.max(0, Math.round((gray / 255) * 10)));
+    const nome = escalaCinza[nomeIdx].nome;
+
+    comparadorState.pontoRef = { x, y, gray, valor, r, g, b, hex, nome };
+
+    // Redraw canvas + marker
+    const ctx = c.getContext('2d');
+    ctx.putImageData(comparadorState.refImageData, 0, 0);
+    cpDrawMarker(ctx, x, y, '#d88800');
+
+    comparadorState.fase = 'picked-ref';
+    cpShowHint('Agora clique no mesmo ponto na sua pintura →');
+  }
+
+  function cpClickPin(e) {
+    if (!comparadorState.pinGray) return;
+    e.preventDefault();
+    const c = document.getElementById('cp-canvas-pin');
+    const { x, y } = cpGetCoords(e, c);
+    const gray = comparadorState.pinGray[y * comparadorState.pinW + x];
+    const pi = (y * comparadorState.pinW + x) * 4;
+    const src = comparadorState.pinImageData.data;
+    const valor = Math.min(10, Math.max(0, Math.round((1 - gray / 255) * 10)));
+    const r = src[pi], g = src[pi + 1], b = src[pi + 2];
+    const hex = '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+    const nomeIdx = Math.min(10, Math.max(0, Math.round((gray / 255) * 10)));
+    const nome = escalaCinza[nomeIdx].nome;
+
+    comparadorState.pontoPin = { x, y, gray, valor, r, g, b, hex, nome };
+
+    // Redraw canvas + marker
+    const ctx = c.getContext('2d');
+    ctx.putImageData(comparadorState.pinImageData, 0, 0);
+    cpDrawMarker(ctx, x, y, '#60a5fa');
+
+    comparadorState.fase = 'picked-both';
+    cpShowHint('');
+    document.getElementById('cp-hint').classList.add('hidden');
+
+    cpMostrarComparacao();
+    cpAdicionarHistorico();
+  }
+
+  function cpDrawMarker(ctx, x, y, color) {
+    ctx.beginPath();
+    ctx.arc(x, y, 8, 0, Math.PI * 2);
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(x, y, 8, 0, Math.PI * 2);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, Math.PI * 2);
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+
+  // ── Export comparison as PNG ─────────────────────────────────────────────
+  function cpExportarComparacao() {
+    const { pontoRef: ref, pontoPin: pin } = comparadorState;
+    if (!ref || !pin) return;
+
+    const cRef = document.getElementById('cp-canvas-ref');
+    const cPin = document.getElementById('cp-canvas-pin');
+    const gap = 16;
+    const headerH = 50;
+    const footerH = 80;
+    const totalW = cRef.width + gap + cPin.width;
+    const totalH = headerH + Math.max(cRef.height, cPin.height) + footerH;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = totalW;
+    canvas.height = totalH;
+    const ctx = canvas.getContext('2d');
+
+    // Background
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(0, 0, totalW, totalH);
+
+    // Header labels
+    ctx.font = '600 16px Inter, system-ui, sans-serif';
+    ctx.fillStyle = '#999';
+    ctx.textAlign = 'left';
+    ctx.fillText('Referência', 0, 30);
+    ctx.textAlign = 'left';
+    ctx.fillText('Sua Pintura', cRef.width + gap, 30);
+
+    // Draw canvases
+    ctx.drawImage(cRef, 0, headerH);
+    ctx.drawImage(cPin, cRef.width + gap, headerH);
+
+    // Footer — comparison data
+    const fy = headerH + Math.max(cRef.height, cPin.height) + 16;
+
+    // Ref swatch + value
+    ctx.fillStyle = ref.hex;
+    ctx.fillRect(0, fy, 20, 20);
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.strokeRect(0, fy, 20, 20);
+    ctx.font = '600 14px Inter, system-ui, sans-serif';
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'left';
+    ctx.fillText(`Ref: ${ref.valor}/10 (${ref.nome})`, 28, fy + 15);
+
+    // Pin swatch + value
+    const pinX = cRef.width + gap;
+    ctx.fillStyle = pin.hex;
+    ctx.fillRect(pinX, fy, 20, 20);
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.strokeRect(pinX, fy, 20, 20);
+    ctx.fillStyle = '#fff';
+    ctx.fillText(`Sua: ${pin.valor}/10 (${pin.nome})`, pinX + 28, fy + 15);
+
+    // Diff
+    const diff = Math.abs(ref.valor - pin.valor);
+    const diffCor = diff <= 1 ? '#4ade80' : diff <= 3 ? '#facc15' : diff <= 5 ? '#f97316' : '#ef4444';
+    ctx.fillStyle = diffCor;
+    ctx.font = '700 18px Inter, system-ui, sans-serif';
+    ctx.fillText(`Δ ${diff.toFixed(1)}`, totalW / 2 - 20, fy + 15);
+
+    // Diff message
+    const diffMsg = diff === 0 ? 'Valor idêntico!' :
+      ref.valor > pin.valor ? 'Adicione mais grafite/tinta preta' :
+      'Reduza a intensidade';
+    ctx.font = '400 12px Inter, system-ui, sans-serif';
+    ctx.fillStyle = '#777';
+    ctx.fillText(diffMsg, 0, fy + 40);
+
+    // Download
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'comparacao-tonal.png';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
+
+  // ── Comparison display ──────────────────────────────────────────────────
+  function cpMostrarComparacao() {
+    const { pontoRef: ref, pontoPin: pin } = comparadorState;
+    if (!ref || !pin) return;
+
+    document.getElementById('cp-comparison-section').classList.remove('hidden');
+
+    // Ref card
+    document.getElementById('cp-ref-swatch').style.backgroundColor = ref.hex;
+    document.getElementById('cp-ref-valor').textContent = ref.valor + '/10';
+    document.getElementById('cp-ref-nome').textContent = ref.nome;
+
+    // Pin card
+    document.getElementById('cp-pin-swatch').style.backgroundColor = pin.hex;
+    document.getElementById('cp-pin-valor').textContent = pin.valor + '/10';
+    document.getElementById('cp-pin-nome').textContent = pin.nome;
+
+    // Diff
+    const diff = Math.abs(ref.valor - pin.valor);
+    const diffPct = Math.abs(ref.gray - pin.gray) / 255 * 100;
+    const direcao = ref.valor > pin.valor ? 'mais' : 'menos';
+    const corClasse = diff <= 1 ? 'text-green-400' : diff <= 3 ? 'text-yellow-400' : diff <= 5 ? 'text-orange-400' : 'text-red-400';
+
+    let msg = '';
+    if (diff === 0) msg = 'Valor idêntico!';
+    else if (diff <= 1) msg = 'Excelente! Praticamente igual.';
+    else if (diff <= 3) msg = `Quase lá. Adicione ${direcao} intensidade.`;
+    else if (diff <= 5) msg = `Diferença moderada. ${ref.valor > pin.valor ? 'Escureça' : 'Clareie'} um pouco.`;
+    else msg = ref.valor > pin.valor ? 'Adicione mais grafite/tinta preta.' : 'Reduza a intensidade — está escurecido demais.';
+
+    document.getElementById('cp-diff-valor').textContent = diff.toFixed(1);
+    document.getElementById('cp-diff-valor').className = `font-display text-2xl ${corClasse}`;
+    document.getElementById('cp-diff-msg').textContent = msg;
+    document.getElementById('cp-diff-symbol').textContent = diff === 0 ? '=' : ref.valor > pin.valor ? '↑' : '↓';
+
+    // Visual bar
+    document.getElementById('cp-diff-bar-wrap').classList.remove('hidden');
+    const refPos = (ref.valor / 10) * 100;
+    const pinPos = (pin.valor / 10) * 100;
+    document.getElementById('cp-marker-ref').style.left = refPos + '%';
+    document.getElementById('cp-marker-pin').style.left = pinPos + '%';
+  }
+
+  // ── History ─────────────────────────────────────────────────────────────
+  function cpAdicionarHistorico() {
+    const { pontoRef: ref, pontoPin: pin } = comparadorState;
+    if (!ref || !pin) return;
+    const diff = Math.abs(ref.valor - pin.valor);
+    comparadorState.historico.push({
+      ref: { ...ref },
+      pin: { ...pin },
+      diff,
+    });
+    if (comparadorState.historico.length > 12) comparadorState.historico.shift();
+    document.getElementById('cp-history-section').classList.remove('hidden');
+    cpRenderHistorico();
+  }
+
+  function cpRenderHistorico() {
+    const grid = document.getElementById('cp-history-grid');
+    grid.innerHTML = comparadorState.historico.map((item, i) => {
+      const corBg = item.diff <= 1 ? 'border-green-500/30' : item.diff <= 3 ? 'border-yellow-500/30' : item.diff <= 5 ? 'border-orange-500/30' : 'border-red-500/30';
+      return `
+        <div class="p-3 rounded-xl border ${corBg} bg-white/[0.02] text-center fade-in" style="animation-delay:${i * 0.03}s">
+          <div class="flex items-center justify-center gap-1 mb-2">
+            <div class="w-4 h-4 rounded border border-white/10" style="background:${item.ref.hex}"></div>
+            <span class="text-[10px] text-muted">→</span>
+            <div class="w-4 h-4 rounded border border-white/10" style="background:${item.pin.hex}"></div>
+          </div>
+          <p class="text-xs font-mono text-fg">${item.ref.valor}→${item.pin.valor}</p>
+          <p class="text-[10px] text-muted mt-0.5">Δ${item.diff.toFixed(1)}</p>
+        </div>`;
+    }).join('');
+  }
+
+  // ── Controls ────────────────────────────────────────────────────────────
+  function cpSetMetodo(m) {
+    comparadorState.metodo = m;
+    document.getElementById('cp-btn-luminancia').className = `px-4 py-2.5 min-h-[44px] rounded-lg text-xs border ${m === 'luminancia' ? 'border-accent text-accent' : 'border-white/10 text-muted'} transition-all`;
+    document.getElementById('cp-btn-media').className = `px-4 py-2.5 min-h-[44px] rounded-lg text-xs border ${m === 'media' ? 'border-accent text-accent' : 'border-white/10 text-muted'} transition-all`;
+
+    // Re-process both images with new method
+    if (comparadorState.refImageData) cpReprocessGray('ref');
+    if (comparadorState.pinImageData) cpReprocessGray('pin');
+
+    // Re-pick if points were selected
+    if (comparadorState.pontoRef) {
+      const g = comparadorState.refGray[comparadorState.pontoRef.y * comparadorState.refW + comparadorState.pontoRef.x];
+      comparadorState.pontoRef.gray = g;
+      comparadorState.pontoRef.valor = Math.min(10, Math.max(0, Math.round((1 - g / 255) * 10)));
+    }
+    if (comparadorState.pontoPin) {
+      const g = comparadorState.pinGray[comparadorState.pontoPin.y * comparadorState.pinW + comparadorState.pontoPin.x];
+      comparadorState.pontoPin.gray = g;
+      comparadorState.pontoPin.valor = Math.min(10, Math.max(0, Math.round((1 - g / 255) * 10)));
+    }
+    if (comparadorState.pontoRef && comparadorState.pontoPin) cpMostrarComparacao();
+  }
+
+  function cpReprocessGray(target) {
+    const state = comparadorState;
+    const imgData = target === 'ref' ? state.refImageData : state.pinImageData;
+    const w = target === 'ref' ? state.refW : state.pinW;
+    const h = target === 'ref' ? state.refH : state.pinH;
+    const src = imgData.data;
+    const grayArr = new Float32Array(w * h);
+    for (let i = 0; i < src.length; i += 4) {
+      grayArr[i / 4] = state.metodo === 'luminancia'
+        ? 0.299 * src[i] + 0.587 * src[i + 1] + 0.114 * src[i + 2]
+        : (src[i] + src[i + 1] + src[i + 2]) / 3;
+    }
+    if (target === 'ref') state.refGray = grayArr;
+    else state.pinGray = grayArr;
+  }
+
+  // ── Hint ────────────────────────────────────────────────────────────────
+  function cpShowHint(text) {
+    const el = document.getElementById('cp-hint');
+    const txt = document.getElementById('cp-hint-text');
+    if (!text) { el.classList.add('hidden'); return; }
+    el.classList.remove('hidden');
+    txt.textContent = text;
+  }
+
+  // ── Reset ───────────────────────────────────────────────────────────────
+  function cpLimparPontos() {
+    comparadorState.pontoRef = null;
+    comparadorState.pontoPin = null;
+    comparadorState.fase = 'ready';
+
+    // Redraw canvases without markers
+    if (comparadorState.refImageData) {
+      const c = document.getElementById('cp-canvas-ref');
+      c.getContext('2d').putImageData(comparadorState.refImageData, 0, 0);
+    }
+    if (comparadorState.pinImageData) {
+      const c = document.getElementById('cp-canvas-pin');
+      c.getContext('2d').putImageData(comparadorState.pinImageData, 0, 0);
+    }
+
+    // Reset comparison display
+    document.getElementById('cp-ref-valor').textContent = '—';
+    document.getElementById('cp-ref-nome').textContent = '';
+    document.getElementById('cp-ref-swatch').style.backgroundColor = '';
+    document.getElementById('cp-pin-valor').textContent = '—';
+    document.getElementById('cp-pin-nome').textContent = '';
+    document.getElementById('cp-pin-swatch').style.backgroundColor = '';
+    document.getElementById('cp-diff-valor').textContent = '—';
+    document.getElementById('cp-diff-valor').className = 'font-display text-2xl text-fg';
+    document.getElementById('cp-diff-msg').textContent = '';
+    document.getElementById('cp-diff-symbol').textContent = '→';
+    document.getElementById('cp-diff-bar-wrap').classList.add('hidden');
+    document.getElementById('cp-comparison-section').classList.add('hidden');
+
+    cpShowHint('Clique em um ponto na referência para começar');
+  }
+
+  function cpRedefinir() {
+    if (comparadorState.abortRef) comparadorState.abortRef.abort();
+    if (comparadorState.abortPin) comparadorState.abortPin.abort();
+
+    comparadorState.refImageData = null;
+    comparadorState.refGray = null;
+    comparadorState.refW = 0;
+    comparadorState.refH = 0;
+    comparadorState.pinImageData = null;
+    comparadorState.pinGray = null;
+    comparadorState.pinW = 0;
+    comparadorState.pinH = 0;
+    comparadorState.pontoRef = null;
+    comparadorState.pontoPin = null;
+    comparadorState.historico = [];
+    comparadorState.fase = 'upload-ref';
+    comparadorState.abortRef = null;
+    comparadorState.abortPin = null;
+
+    // Re-render the whole page
+    renderComparador();
+  }
+
+  function cpLimparHistorico() {
+    comparadorState.historico = [];
+    document.getElementById('cp-history-section').classList.add('hidden');
+    document.getElementById('cp-history-grid').innerHTML = '';
+  }
+
+
+  // ── Ilusão de Óptica do Valor ───────────────────────────────────────────
+  let ilusaoState = { valor: 5, revealed: false };
+
+  function renderIlusao() {
+    const app = document.getElementById('app');
+    const v = ilusaoState.valor;
+    const esc = escalaCinza[v];
+
+    // Fundos para demo principal
+    const fundos = [
+      { bg: 0, label: 'Fundo Branco', sub: 'Parece mais escuro' },
+      { bg: v, label: 'Fundo Neutro', sub: 'Valor real' },
+      { bg: 10, label: 'Fundo Preto', sub: 'Parece mais claro' },
+    ];
+
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-6xl mx-auto">
+
+          <!-- Header -->
+          <div class="fade-in mb-10">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Ilusão de Óptica do Valor</h1>
+            <p class="text-muted max-w-2xl font-light">O maior inimigo do hiper-realismo não é a falta de coordenação — é o próprio <span class="text-fg font-medium">cérebro</span>, que tenta "corrigir" o que vemos. Três passos para treinar o olho.</p>
+          </div>
+
+          <!-- ═══ PASSO 1: Teoria — Ilusão de Adelson ═══ -->
+          <div class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+              <span class="w-8 h-8 rounded-full bg-accent/10 text-accent flex items-center justify-center text-sm font-bold">1</span>
+              <h2 class="font-display text-2xl">A Teoria: O cérebro mente para si</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 items-start">
+              <div>
+                <div class="relative rounded-2xl overflow-hidden border border-white/10 bg-white" style="padding:0">
+                  <canvas id="io-canvas-adelson" width="480" height="480" class="w-full cursor-pointer" style="display:block"></canvas>
+                </div>
+                <div id="io-adelson-info" class="mt-4 p-4 rounded-xl border border-white/10 bg-white/[0.02] hidden">
+                  <p class="text-sm text-muted"></p>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <p class="text-sm text-muted leading-relaxed">
+                  Este é o <span class="text-fg font-medium">Tabuleiro de Adelson</span> — a ilusão óptica mais famosa da ciência da percepção. Os quadrados <span class="text-accent font-medium">A</span> e <span class="text-blue-400 font-medium">B</span> são <span class="text-fg font-medium">exactamente o mesmo cinza</span>.
+                </p>
+                <p class="text-sm text-muted leading-relaxed">
+                  O cérebro detecta a sombra projectada pelo cilindro e <span class="text-fg font-medium">compensa automaticamente</span>, "acreditando" que B é mais claro do que é na realidade.
+                </p>
+                <p class="text-sm text-muted leading-relaxed">
+                  Clique nos quadrados A ou B para ver os valores reais de RGB. Depois clique <span class="text-accent font-medium">"Revelar"</span> para ver a prova.
+                </p>
+                <button onclick="ioRevealConnection()" class="px-6 py-3 min-h-[44px] rounded-xl text-sm font-medium border border-accent/40 text-accent hover:bg-accent/10 active:scale-95 transition-all">
+                  Revelar que são iguais
+                </button>
+                <div class="p-4 rounded-xl border border-accent/20 bg-accent/[0.03]">
+                  <p class="text-xs text-accent font-medium mb-1">Na pintura</p>
+                  <p class="text-sm text-muted leading-relaxed">Quando pintar uma dobra de pele ou um metal cromado, o cérebro vai tentar "corrigir" os cinzas. Confie no valor que medir, não no que vir.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ═══ PASSO 2: Prática — Simulador ═══ -->
+          <div class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+              <span class="w-8 h-8 rounded-full bg-accent/10 text-accent flex items-center justify-center text-sm font-bold">2</span>
+              <h2 class="font-display text-2xl">A Prática: Veja com os seus olhos</h2>
+            </div>
+
+            <!-- Slider -->
+            <div class="mb-8 p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+              <div class="flex justify-between items-center mb-4">
+                <p class="text-sm font-medium">Escolha um valor</p>
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg border border-white/10" style="background:${esc.hex}"></div>
+                  <div>
+                    <span class="font-display text-xl text-accent">${v}</span>
+                    <span class="text-sm text-muted ml-2">${esc.nome}</span>
+                  </div>
+                </div>
+              </div>
+              <input type="range" id="io-slider" min="0" max="10" value="${v}"
+                class="w-full h-2 rounded-full appearance-none cursor-pointer"
+                style="background:linear-gradient(to right,#fff,#888,#000)"
+                oninput="ioSetValor(+this.value)" />
+              <div class="flex justify-between text-[10px] text-muted mt-1">
+                <span>0 (Branco)</span><span>5 (Médio)</span><span>10 (Preto)</span>
+              </div>
+            </div>
+
+            <!-- Demo principal: 3 fundos -->
+            <div class="mb-8">
+              <h3 class="font-display text-xl mb-3">Mesmo valor, fundos diferentes</h3>
+              <div class="grid grid-cols-3 gap-4">
+                ${fundos.map(f => {
+                  const bg = escalaCinza[f.bg].hex;
+                  const txtC = v > f.bg ? '#fff' : v < f.bg ? '#000' : '#555';
+                  return `
+                  <div class="rounded-2xl border border-white/10 overflow-hidden fade-in">
+                    <div class="p-6 md:p-8 flex items-center justify-center" style="background:${bg};min-height:160px">
+                      <div class="w-20 h-20 md:w-28 md:h-28 rounded-xl border border-white/10 flex items-center justify-center" style="background:${esc.hex}">
+                        <span class="font-display text-2xl md:text-3xl" style="color:${txtC}">${v}</span>
+                      </div>
+                    </div>
+                    <div class="p-3 bg-bg/80 text-center">
+                      <p class="text-xs font-medium">${f.label}</p>
+                      <p class="text-[10px] text-muted">${f.sub}</p>
+                    </div>
+                  </div>`;
+                }).join('')}
+              </div>
+            </div>
+
+            <!-- Demo estendida: 11 fundos -->
+            <div>
+              <h3 class="font-display text-xl mb-2">Todos os fundos — mesmo valor no centro</h3>
+              <p class="text-sm text-muted mb-4">Todos os quadrados centrais são <span class="text-fg font-medium">exactamente</span> o cinza ${v}.</p>
+              <div class="overflow-x-auto pb-2 -mx-2 px-2">
+                <div class="flex gap-2" style="min-width:max-content">
+                  ${escalaCinza.map((f, i) => `
+                    <div class="flex flex-col items-center gap-2 fade-in" style="animation-delay:${i * 0.03}s">
+                      <div class="w-14 h-14 md:w-18 md:h-18 rounded-xl flex items-center justify-center border border-white/10" style="background:${f.hex};width:4.5rem;height:4.5rem">
+                        <div class="w-7 h-7 md:w-9 md:h-9 rounded-lg border border-white/10" style="background:${esc.hex}"></div>
+                      </div>
+                      <span class="text-[10px] font-mono ${i === v ? 'text-accent font-bold' : 'text-muted'}">${i}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ═══ PASSO 3: Solução — Máscara + Isolador ═══ -->
+          <div class="mb-8">
+            <div class="flex items-center gap-3 mb-6">
+              <span class="w-8 h-8 rounded-full bg-accent/10 text-accent flex items-center justify-center text-sm font-bold">3</span>
+              <h2 class="font-display text-2xl">A Solução: Como vencer o cérebro</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6">
+              <!-- Máscara de valor -->
+              <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+                <div class="w-full h-32 rounded-xl border border-white/10 bg-white flex items-center justify-center mb-4 relative overflow-hidden">
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-28 h-20 rounded-lg" style="background:#808080"></div>
+                  </div>
+                  <div class="absolute w-10 h-10 rounded-full border-2 border-dashed border-accent" style="background:#333"></div>
+                </div>
+                <h3 class="font-display text-lg mb-2">Máscara de Valor</h3>
+                <p class="text-sm text-muted leading-relaxed mb-3">Corte um rectângulo de papel <span class="text-fg font-medium">cinza neutro</span> (valor 5). Faça um furo de 2cm no centro.</p>
+                <p class="text-sm text-muted leading-relaxed">Segure sobre a referência e sobre a tela para ver o valor puro, sem interferência do cérebro.</p>
+              </div>
+
+              <!-- Squint -->
+              <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+                <div class="w-full h-32 rounded-xl border border-white/10 bg-white/[0.04] flex items-center justify-center mb-4">
+                  <svg width="80" height="40" viewBox="0 0 80 40" fill="none">
+                    <path d="M5 20 Q20 8 40 8 Q60 8 75 20 Q60 32 40 32 Q20 32 5 20Z" stroke="#d88800" stroke-width="2" fill="none"/>
+                    <line x1="10" y1="19" x2="70" y2="19" stroke="#d88800" stroke-width="2"/>
+                  </svg>
+                </div>
+                <h3 class="font-display text-lg mb-2">Squint</h3>
+                <p class="text-sm text-muted leading-relaxed mb-3"><span class="text-fg font-medium">Aperte levemente os olhos</span> ao avaliar valores na referência.</p>
+                <p class="text-sm text-muted leading-relaxed">Isto reduz o contraste abrupto e permite ver os valores reais, sem o cérebro "corrigir".</p>
+              </div>
+
+              <!-- Isolador -->
+              <div class="p-6 rounded-2xl border border-accent/20 bg-accent/[0.03]">
+                <div class="w-full h-32 rounded-xl border border-accent/20 bg-accent/[0.05] flex items-center justify-center mb-4">
+                  <div class="w-20 h-16 rounded-lg border-2 border-dashed border-accent/40 flex items-center justify-center">
+                    <span class="text-accent text-xs font-medium text-center leading-tight px-1">Isolar<br/>valor</span>
+                  </div>
+                </div>
+                <h3 class="font-display text-lg mb-2">Isolador Digital</h3>
+                <p class="text-sm text-muted leading-relaxed mb-3">O <span class="text-accent font-medium">Isolador Tonal</span> faz exactamente a mesma coisa que a máscara — mas digitalmente.</p>
+                <button onclick="navigate('isolador')" class="w-full px-4 py-3 min-h-[44px] rounded-xl text-sm font-medium bg-accent text-bg hover:brightness-110 active:scale-95 transition-all">
+                  Experimentar o Isolador →
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>`;
+
+    // Desenhar Adelson depois do DOM estar pronto
+    setTimeout(ioDrawAdelson, 0);
+  }
+
+  // ── Adelson canvas ──────────────────────────────────────────────────────
+  function ioDrawAdelson() {
+    const c = document.getElementById('io-canvas-adelson');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 480, H = 480;
+    const cell = W / 8;
+
+    // Cores base do tabuleiro
+    const lightBase = 186, darkBase = 102;
+
+    // Desenhar tabuleiro 8x8
+    for (let r = 0; r < 8; r++) {
+      for (let col = 0; col < 8; col++) {
+        const isLight = (r + col) % 2 === 0;
+        const base = isLight ? lightBase : darkBase;
+        ctx.fillStyle = `rgb(${base},${base},${base})`;
+        ctx.fillRect(col * cell, r * cell, cell, cell);
+      }
+    }
+
+    // Sombra projectada (gradiente diagonal da esquerda)
+    ctx.save();
+    const shadowGrad = ctx.createLinearGradient(0, 0, W * 0.7, H * 0.6);
+    shadowGrad.addColorStop(0, 'rgba(0,0,0,0)');
+    shadowGrad.addColorStop(0.3, 'rgba(0,0,0,0)');
+    shadowGrad.addColorStop(0.5, 'rgba(0,0,0,0.35)');
+    shadowGrad.addColorStop(0.7, 'rgba(0,0,0,0.45)');
+    shadowGrad.addColorStop(1, 'rgba(0,0,0,0.45)');
+    ctx.fillStyle = shadowGrad;
+    ctx.fillRect(0, 0, W, H);
+    ctx.restore();
+
+    // Cilindro verde
+    const cylX = W * 0.68, cylY = H * 0.15, cylW = W * 0.22, cylH = H * 0.32;
+    // Sombra do cilindro
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(cylX + cylW / 2, cylY + cylH + 8, cylW / 2 + 10, 12, 0, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.fill();
+    ctx.restore();
+    // Corpo
+    const cylGrad = ctx.createLinearGradient(cylX, 0, cylX + cylW, 0);
+    cylGrad.addColorStop(0, '#2d7a3a');
+    cylGrad.addColorStop(0.5, '#4aad58');
+    cylGrad.addColorStop(1, '#2d7a3a');
+    ctx.fillStyle = cylGrad;
+    ctx.beginPath();
+    ctx.ellipse(cylX + cylW / 2, cylY + 12, cylW / 2, 14, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillRect(cylX, cylY + 12, cylW, cylH - 12);
+    ctx.fillStyle = cylGrad;
+    ctx.beginPath();
+    ctx.ellipse(cylX + cylW / 2, cylY + 12, cylW / 2, 14, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Quadrados A e B — MESMO valor exacto
+    // Pintamos por cima da sombra para garantir que os dois são identicos
+    const sqA = { col: 1, row: 3, label: 'A', cor: '#d88800' };
+    const sqB = { col: 5, row: 5, label: 'B', cor: '#60a5fa' };
+    const ADelsonV = 120; // cinza exacto — ambos recebem este valor
+
+    // Pintar A (dark square em luz) — parecerá mais escuro por contraste com vizinhos claros
+    ctx.fillStyle = `rgb(${ADelsonV},${ADelsonV},${ADelsonV})`;
+    ctx.fillRect(sqA.col * cell, sqA.row * cell, cell, cell);
+
+    // Pintar B (light square na sombra) — parecerá mais claro por contraste com vizinhos escuros
+    ctx.fillStyle = `rgb(${ADelsonV},${ADelsonV},${ADelsonV})`;
+    ctx.fillRect(sqB.col * cell, sqB.row * cell, cell, cell);
+
+    // Guardar posições para click detection
+    ioAdelsonState = {
+      sqA: { x: sqA.col * cell, y: sqA.row * cell, w: cell, h: cell },
+      sqB: { x: sqB.col * cell, y: sqB.row * cell, w: cell, h: cell },
+      revealed: false,
+      adelsonV: ADelsonV,
+    };
+
+    // Labels A e B
+    [sqA, sqB].forEach(sq => {
+      const cx = sq.col * cell + cell / 2;
+      const cy = sq.row * cell + cell / 2;
+      // Fundo da label
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, 16, 0, Math.PI * 2);
+      ctx.fillStyle = sq.cor;
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // Texto
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 16px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(sq.label, cx, cy);
+      ctx.restore();
+    });
+
+    // Click handler
+    c.onclick = ioClickAdelson;
+  }
+
+  let ioAdelsonState = { sqA: null, sqB: null, revealed: false };
+
+  function ioClickAdelson(e) {
+    const c = document.getElementById('io-canvas-adelson');
+    if (!c || !ioAdelsonState.sqA) return;
+    const rect = c.getBoundingClientRect();
+    const scaleX = c.width / rect.width;
+    const scaleY = c.height / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+
+    const info = document.getElementById('io-adelson-info');
+    const { sqA, sqB } = ioAdelsonState;
+
+    // Verificar se clicou em A ou B
+    const hitA = x >= sqA.x && x <= sqA.x + sqA.w && y >= sqA.y && y <= sqA.y + sqA.h;
+    const hitB = x >= sqB.x && x <= sqB.x + sqB.w && y >= sqB.y && y <= sqB.y + sqB.h;
+
+    if (hitA || hitB) {
+      const target = hitA ? sqA : sqB;
+      const ctx = c.getContext('2d');
+      const pixel = ctx.getImageData(Math.floor(target.x + target.w / 2), Math.floor(target.y + target.h / 2), 1, 1).data;
+      const r = pixel[0], g = pixel[1], b = pixel[2];
+      const hex = '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+      const nome = hitA ? 'A (luz directa)' : 'B (na sombra)';
+
+      info.classList.remove('hidden');
+      info.innerHTML = `
+        <p class="text-sm text-muted">
+          Quadrado <span class="font-bold" style="color:${hitA ? '#d88800' : '#60a5fa'}">${nome}</span>:
+          <span class="font-mono text-fg">${hex}</span>
+          → rgb(${r}, ${g}, ${b})
+          ${hitA && ioAdelsonState.revealed ? '<span class="text-accent font-medium ml-2">= Quadrado B!</span>' : ''}
+          ${hitB && ioAdelsonState.revealed ? '<span class="text-accent font-medium ml-2">= Quadrado A!</span>' : ''}
+        </p>`;
+    }
+  }
+
+  function ioRevealConnection() {
+    const c = document.getElementById('io-canvas-adelson');
+    if (!c || !ioAdelsonState.sqA) return;
+    const ctx = c.getContext('2d');
+    const { sqA, sqB } = ioAdelsonState;
+
+    if (ioAdelsonState.revealed) {
+      // Limpar revelação — re-desenhar
+      ioDrawAdelson();
+      ioAdelsonState.revealed = false;
+      document.getElementById('io-adelson-info').classList.add('hidden');
+      return;
+    }
+
+    const ax = sqA.x + sqA.w / 2, ay = sqA.y + sqA.h / 2;
+    const bx = sqB.x + sqB.w / 2, by = sqB.y + sqB.h / 2;
+
+    // Barra de conexão
+    ctx.save();
+    ctx.strokeStyle = '#d88800';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([8, 4]);
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(bx, by);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Label "MESMO CINZA"
+    const mx = (ax + bx) / 2, my = (ay + by) / 2;
+    ctx.fillStyle = '#d88800';
+    ctx.beginPath();
+    ctx.roundRect(mx - 60, my - 14, 120, 28, 8);
+    ctx.fill();
+    ctx.fillStyle = '#000';
+    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('MESMO CINZA', mx, my);
+    ctx.restore();
+
+    ioAdelsonState.revealed = true;
+
+    // Mostrar info
+    const info = document.getElementById('io-adelson-info');
+    const pixelA = ctx.getImageData(Math.floor(ax), Math.floor(ay), 1, 1).data;
+    info.classList.remove('hidden');
+    info.innerHTML = `
+      <p class="text-sm text-muted">
+        Quadrados A e B: <span class="font-mono text-accent font-medium">rgb(${pixelA[0]}, ${pixelA[1]}, ${pixelA[2]})</span>
+        — <span class="text-fg font-medium">exactamente iguais</span>. O cérebro compensa a sombra e mente.
+      </p>`;
+  }
+
+  // ── Simulador handlers ──────────────────────────────────────────────────
+  function ioSetValor(v) {
+    ilusaoState.valor = v;
+    renderIlusao();
   }
 
 
