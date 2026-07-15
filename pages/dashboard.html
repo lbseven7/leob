@@ -3386,12 +3386,15 @@
             </div>
             <div class="grid md:grid-cols-2 gap-8 items-start">
               <div>
-                <div class="relative rounded-2xl overflow-hidden border border-white/10 bg-white" style="padding:0">
-                  <canvas id="io-canvas-adelson" width="480" height="480" class="w-full cursor-pointer" style="display:block"></canvas>
+                <div class="relative rounded-2xl overflow-hidden border border-white/10 bg-white" id="io-adelson-wrap">
+                  <img id="io-adelson-img" src="../images/adelson_checkershadow.svg" alt="Ilusão do Tabuleiro de Adelson — quadrados A e B são o mesmo cinza"
+                    class="w-full cursor-pointer" style="display:block" onclick="ioRevealConnection()" />
+                  <!-- Overlay de prova: barras de conexão -->
+                  <div id="io-adelson-proof" class="absolute inset-0 pointer-events-none hidden"
+                    style="background:linear-gradient(180deg, transparent 28%, rgba(216,136,0,0.85) 30%, rgba(216,136,0,0.85) 34%, transparent 36%, transparent 52%, rgba(216,136,0,0.85) 54%, rgba(216,136,0,0.85) 58%, transparent 60%)">
+                  </div>
                 </div>
-                <div id="io-adelson-info" class="mt-4 p-4 rounded-xl border border-white/10 bg-white/[0.02] hidden">
-                  <p class="text-sm text-muted"></p>
-                </div>
+                <p class="mt-3 text-xs text-muted text-center">Clique na imagem para revelar a prova</p>
               </div>
               <div class="space-y-4">
                 <p class="text-sm text-muted leading-relaxed">
@@ -3536,258 +3539,21 @@
         </div>
       </div>`;
 
-    // Desenhar Adelson depois do DOM estar pronto
-    setTimeout(ioDrawAdelson, 0);
+    // Sem canvas — imagem SVG directa, sem setup necessário
   }
 
-  // ── Adelson canvas ──────────────────────────────────────────────────────
-  function ioDrawAdelson() {
-    const c = document.getElementById('io-canvas-adelson');
-    if (!c) return;
-    const ctx = c.getContext('2d');
-    const W = 480, H = 480;
-    const cell = W / 8;
-    const pad = 4;
-
-    const lightBase = 190, darkBase = 110;
-
-    // Tabuleiro 8x8 com bordas leves
-    for (let r = 0; r < 8; r++) {
-      for (let col = 0; col < 8; col++) {
-        const isLight = (r + col) % 2 === 0;
-        const base = isLight ? lightBase : darkBase;
-        ctx.fillStyle = `rgb(${base},${base},${base})`;
-        ctx.fillRect(col * cell + pad, r * cell + pad, cell - pad * 2, cell - pad * 2);
-        // Borda sutil entre casas
-        ctx.strokeStyle = `rgba(0,0,0,0.06)`;
-        ctx.lineWidth = 0.5;
-        ctx.strokeRect(col * cell + pad, r * cell + pad, cell - pad * 2, cell - pad * 2);
-      }
-    }
-
-    // Sombra do cilindro —椭圆ide suave projectada para baixo-esquerda
-    ctx.save();
-    const shdCX = W * 0.72, shdCY = H * 0.58;
-    const shdRX = W * 0.30, shdRY = H * 0.14;
-    const shdGrad = ctx.createRadialGradient(shdCX, shdCY, 0, shdCX, shdCY, shdRX);
-    shdGrad.addColorStop(0, 'rgba(0,0,0,0.38)');
-    shdGrad.addColorStop(0.55, 'rgba(0,0,0,0.28)');
-    shdGrad.addColorStop(0.85, 'rgba(0,0,0,0.10)');
-    shdGrad.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = shdGrad;
-    ctx.beginPath();
-    ctx.ellipse(shdCX, shdCY, shdRX, shdRY, -0.15, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-
-    // Bordas do tabuleiro (moldura)
-    ctx.save();
-    ctx.strokeStyle = 'rgba(80,80,80,0.35)';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(2, 2, W - 4, H - 4);
-    ctx.restore();
-
-    // ─── Cilindro 3D ───
-    const cylCX = W * 0.72, cylTop = H * 0.10;
-    const cylW = W * 0.18, cylH = H * 0.36;
-    const cylBot = cylTop + cylH;
-
-    // Corpo do cilindro
-    ctx.save();
-    const bodyL = cylCX - cylW / 2, bodyR = cylCX + cylW / 2;
-    const bodyGrad = ctx.createLinearGradient(bodyL, 0, bodyR, 0);
-    bodyGrad.addColorStop(0.00, '#1e5a2a');
-    bodyGrad.addColorStop(0.15, '#2a7a3a');
-    bodyGrad.addColorStop(0.45, '#5cc06a');
-    bodyGrad.addColorStop(0.55, '#6cd07a');
-    bodyGrad.addColorStop(0.80, '#3a8a4a');
-    bodyGrad.addColorStop(1.00, '#1e5a2a');
-    ctx.fillStyle = bodyGrad;
-    ctx.beginPath();
-    ctx.moveTo(bodyL, cylBot);
-    ctx.lineTo(bodyL, cylTop + 16);
-    ctx.ellipse(cylCX, cylTop + 16, cylW / 2, 16, 0, Math.PI, 0);
-    ctx.lineTo(bodyR, cylBot);
-    ctx.ellipse(cylCX, cylBot, cylW / 2, 10, 0, 0, Math.PI);
-    ctx.closePath();
-    ctx.fill();
-
-    // Topo do cilindro (elipse brilhante)
-    const topGrad = ctx.createRadialGradient(cylCX - 4, cylTop + 14, 0, cylCX, cylTop + 16, cylW / 2);
-    topGrad.addColorStop(0, '#a0e8aa');
-    topGrad.addColorStop(0.4, '#6cd07a');
-    topGrad.addColorStop(1, '#3a8a4a');
-    ctx.fillStyle = topGrad;
-    ctx.beginPath();
-    ctx.ellipse(cylCX, cylTop + 16, cylW / 2, 16, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Borda topo
-    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.ellipse(cylCX, cylTop + 16, cylW / 2, 16, 0, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // Highlight especular no corpo
-    const specGrad = ctx.createLinearGradient(cylCX - cylW * 0.08, 0, cylCX + cylW * 0.08, 0);
-    specGrad.addColorStop(0, 'rgba(255,255,255,0)');
-    specGrad.addColorStop(0.5, 'rgba(255,255,255,0.18)');
-    specGrad.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.fillStyle = specGrad;
-    ctx.fillRect(cylCX - cylW * 0.08, cylTop + 20, cylW * 0.16, cylH - 14);
-    ctx.restore();
-
-    // ─── Quadrados A e B — MESMO valor exacto ───
-    const sqA = { col: 2, row: 2, label: 'A', cor: '#d88800' };
-    const sqB = { col: 5, row: 4, label: 'B', cor: '#60a5fa' };
-    const ADelsonV = 120;
-
-    // Pintar A
-    ctx.fillStyle = `rgb(${ADelsonV},${ADelsonV},${ADelsonV})`;
-    ctx.fillRect(sqA.col * cell + pad, sqA.row * cell + pad, cell - pad * 2, cell - pad * 2);
-
-    // Pintar B
-    ctx.fillStyle = `rgb(${ADelsonV},${ADelsonV},${ADelsonV})`;
-    ctx.fillRect(sqB.col * cell + pad, sqB.row * cell + pad, cell - pad * 2, cell - pad * 2);
-
-    // Guardar posições para click
-    ioAdelsonState = {
-      sqA: { x: sqA.col * cell + pad, y: sqA.row * cell + pad, w: cell - pad * 2, h: cell - pad * 2 },
-      sqB: { x: sqB.col * cell + pad, y: sqB.row * cell + pad, w: cell - pad * 2, h: cell - pad * 2 },
-      revealed: false,
-      adelsonV: ADelsonV,
-    };
-
-    // Labels A e B com seta
-    [{ s: sqA, dx: -0.15, dy: -0.20 }, { s: sqB, dx: 0.15, dy: 0.20 }].forEach(({ s, dx, dy }) => {
-      const cx = s.col * cell + cell / 2;
-      const cy = s.row * cell + cell / 2;
-      const lx = cx + cell * dx;
-      const ly = cy + cell * dy;
-
-      ctx.save();
-      // Linha de ligação
-      ctx.strokeStyle = s.cor;
-      ctx.lineWidth = 2;
-      ctx.setLineDash([4, 3]);
-      ctx.beginPath();
-      ctx.moveTo(lx, ly);
-      ctx.lineTo(cx, cy);
-      ctx.stroke();
-      ctx.setLineDash([]);
-
-      // Bolha da label
-      ctx.beginPath();
-      ctx.arc(lx, ly, 14, 0, Math.PI * 2);
-      ctx.fillStyle = s.cor;
-      ctx.fill();
-      ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 14px Inter, system-ui, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(s.label, lx, ly);
-      ctx.restore();
-    });
-
-    // Click handler
-    c.onclick = ioClickAdelson;
-  }
-
-  let ioAdelsonState = { sqA: null, sqB: null, revealed: false };
-
-  function ioClickAdelson(e) {
-    const c = document.getElementById('io-canvas-adelson');
-    if (!c || !ioAdelsonState.sqA) return;
-    const rect = c.getBoundingClientRect();
-    const scaleX = c.width / rect.width;
-    const scaleY = c.height / rect.height;
-    const x = (e.clientX - rect.left) * scaleX;
-    const y = (e.clientY - rect.top) * scaleY;
-
-    const info = document.getElementById('io-adelson-info');
-    const { sqA, sqB } = ioAdelsonState;
-
-    // Verificar se clicou em A ou B
-    const hitA = x >= sqA.x && x <= sqA.x + sqA.w && y >= sqA.y && y <= sqA.y + sqA.h;
-    const hitB = x >= sqB.x && x <= sqB.x + sqB.w && y >= sqB.y && y <= sqB.y + sqB.h;
-
-    if (hitA || hitB) {
-      const target = hitA ? sqA : sqB;
-      const ctx = c.getContext('2d');
-      const pixel = ctx.getImageData(Math.floor(target.x + target.w / 2), Math.floor(target.y + target.h / 2), 1, 1).data;
-      const r = pixel[0], g = pixel[1], b = pixel[2];
-      const hex = '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
-      const nome = hitA ? 'A (luz directa)' : 'B (na sombra)';
-
-      info.classList.remove('hidden');
-      info.innerHTML = `
-        <p class="text-sm text-muted">
-          Quadrado <span class="font-bold" style="color:${hitA ? '#d88800' : '#60a5fa'}">${nome}</span>:
-          <span class="font-mono text-fg">${hex}</span>
-          → rgb(${r}, ${g}, ${b})
-          ${hitA && ioAdelsonState.revealed ? '<span class="text-accent font-medium ml-2">= Quadrado B!</span>' : ''}
-          ${hitB && ioAdelsonState.revealed ? '<span class="text-accent font-medium ml-2">= Quadrado A!</span>' : ''}
-        </p>`;
-    }
-  }
+  // ── Adelson — toggle prova ────────────────────────────────────────────
+  let ioAdelsonRevealed = false;
 
   function ioRevealConnection() {
-    const c = document.getElementById('io-canvas-adelson');
-    if (!c || !ioAdelsonState.sqA) return;
-    const ctx = c.getContext('2d');
-    const { sqA, sqB } = ioAdelsonState;
-
-    if (ioAdelsonState.revealed) {
-      // Limpar revelação — re-desenhar
-      ioDrawAdelson();
-      ioAdelsonState.revealed = false;
-      document.getElementById('io-adelson-info').classList.add('hidden');
-      return;
+    const proof = document.getElementById('io-adelson-proof');
+    if (!proof) return;
+    ioAdelsonRevealed = !ioAdelsonRevealed;
+    if (ioAdelsonRevealed) {
+      proof.classList.remove('hidden');
+    } else {
+      proof.classList.add('hidden');
     }
-
-    const ax = sqA.x + sqA.w / 2, ay = sqA.y + sqA.h / 2;
-    const bx = sqB.x + sqB.w / 2, by = sqB.y + sqB.h / 2;
-
-    // Barra de conexão
-    ctx.save();
-    ctx.strokeStyle = '#d88800';
-    ctx.lineWidth = 3;
-    ctx.setLineDash([8, 4]);
-    ctx.beginPath();
-    ctx.moveTo(ax, ay);
-    ctx.lineTo(bx, by);
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    // Label "MESMO CINZA"
-    const mx = (ax + bx) / 2, my = (ay + by) / 2;
-    ctx.fillStyle = '#d88800';
-    ctx.beginPath();
-    ctx.roundRect(mx - 60, my - 14, 120, 28, 8);
-    ctx.fill();
-    ctx.fillStyle = '#000';
-    ctx.font = 'bold 11px Inter, system-ui, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('MESMO CINZA', mx, my);
-    ctx.restore();
-
-    ioAdelsonState.revealed = true;
-
-    // Mostrar info
-    const info = document.getElementById('io-adelson-info');
-    const pixelA = ctx.getImageData(Math.floor(ax), Math.floor(ay), 1, 1).data;
-    info.classList.remove('hidden');
-    info.innerHTML = `
-      <p class="text-sm text-muted">
-        Quadrados A e B: <span class="font-mono text-accent font-medium">rgb(${pixelA[0]}, ${pixelA[1]}, ${pixelA[2]})</span>
-        — <span class="text-fg font-medium">exactamente iguais</span>. O cérebro compensa a sombra e mente.
-      </p>`;
   }
 
   // ── Simulador handlers ──────────────────────────────────────────────────
