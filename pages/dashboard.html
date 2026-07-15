@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta content="width=device content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MÉTODO LEOB • Dashboard de Análise Realista</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -93,22 +93,37 @@
 
   <!-- ── Mobile bottom nav ── -->
   <div class="md:hidden fixed bottom-0 w-full z-50 backdrop-blur-xl bg-bg/90 border-t border-white/5">
-    <div class="flex overflow-x-auto no-scrollbar py-2 px-2 gap-1">
-      <button onclick="navigate('home')"      class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-accent flex-shrink-0"><span>●</span><span>Início</span></button>
-      <button onclick="navigate('escala')"    class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>▮</span><span>Escala</span></button>
-      <button onclick="navigate('treino')"    class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>▤</span><span>Treino</span></button>
-      <button onclick="navigate('misturas')"  class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>◇</span><span>Misturas</span></button>
-      <button onclick="navigate('converter')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>⊑</span><span>Converter</span></button>
-      <button onclick="navigate('posterizar')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>◧</span><span>Posterizar</span></button>
-      <button onclick="navigate('zonas')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>▦</span><span>Zonas</span></button>
-      <button onclick="navigate('riscoLinear')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>◐</span><span>Risco</span></button>
-      <button onclick="navigate('isolador')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>◉</span><span>Isolador</span></button>
-      <button onclick="navigate('janela')" class="mob-nav flex flex-col items-center gap-1 px-3 py-1 text-[10px] text-muted flex-shrink-0"><span>⊞</span><span>Janela</span></button>
+    <div class="flex py-1.5 px-1 gap-0.5">
+      <button onclick="navigate('home')"      data-mob-nav="home" class="mob-nav flex-1 flex flex-col items-center gap-0.5 py-1 text-[10px] text-accent rounded-lg"><span class="text-base leading-none">●</span><span>Início</span></button>
+      <button onclick="navigate('escala')"    data-mob-nav="escala" class="mob-nav flex-1 flex flex-col items-center gap-0.5 py-1 text-[10px] text-muted rounded-lg"><span class="text-base leading-none">▮</span><span>Escala</span></button>
+      <button onclick="navigate('treino')"    data-mob-nav="treino" class="mob-nav flex-1 flex flex-col items-center gap-0.5 py-1 text-[10px] text-muted rounded-lg"><span class="text-base leading-none">▤</span><span>Treino</span></button>
+      <button onclick="navigate('misturas')"  data-mob-nav="misturas" class="mob-nav flex-1 flex flex-col items-center gap-0.5 py-1 text-[10px] text-muted rounded-lg"><span class="text-base leading-none">◇</span><span>Misturas</span></button>
+      <button onclick="navigate('converter')" data-mob-nav="converter" class="mob-nav flex-1 flex flex-col items-center gap-0.5 py-1 text-[10px] text-muted rounded-lg"><span class="text-base leading-none">⊑</span><span>Converter</span></button>
+      <button onclick="toggleMais()" data-mob-nav="mais" id="btn-mais" class="mob-nav flex-1 flex flex-col items-center gap-0.5 py-1 text-[10px] text-muted rounded-lg"><span class="text-base leading-none">✚</span><span>Mais</span></button>
+    </div>
+  </div>
 
+  <!-- ── Mobile "Mais" drawer ── -->
+  <div id="mob-mais-drawer" class="md:hidden fixed bottom-16 left-0 w-full z-50 hidden">
+    <div class="mx-2 mb-2 p-3 rounded-2xl border border-white/10 bg-bg/95 backdrop-blur-xl shadow-2xl">
+      <p class="text-[10px] uppercase tracking-[0.2em] text-muted mb-2 px-1">Mais ferramentas</p>
+      <div class="grid grid-cols-3 gap-2">
+        <button onclick="navigate('posterizar');toggleMais()" class="mob-mais-item flex flex-col items-center gap-1.5 p-3 rounded-xl border border-white/10 bg-white/[0.03] text-[11px] text-muted"><span class="text-lg leading-none">◧</span><span>Posterizar</span></button>
+        <button onclick="navigate('zonas');toggleMais()"       class="mob-mais-item flex flex-col items-center gap-1.5 p-3 rounded-xl border border-white/10 bg-white/[0.03] text-[11px] text-muted"><span class="text-lg leading-none">▦</span><span>Zonas</span></button>
+        <button onclick="navigate('riscoLinear');toggleMais()" class="mob-mais-item flex flex-col items-center gap-1.5 p-3 rounded-xl border border-white/10 bg-white/[0.03] text-[11px] text-muted"><span class="text-lg leading-none">◐</span><span>Risco</span></button>
+        <button onclick="navigate('isolador');toggleMais()"    class="mob-mais-item flex flex-col items-center gap-1.5 p-3 rounded-xl border border-white/10 bg-white/[0.03] text-[11px] text-muted"><span class="text-lg leading-none">◉</span><span>Isolador</span></button>
+        <button onclick="navigate('janela');toggleMais()"      class="mob-mais-item flex flex-col items-center gap-1.5 p-3 rounded-xl border border-white/10 bg-white/[0.03] text-[11px] text-muted"><span class="text-lg leading-none">⊞</span><span>Janela</span></button>
+      </div>
     </div>
   </div>
 
   <main id="app" class="pt-16 pb-20 md:pb-0"></main>
+
+  <!-- ── Mobile back button ── -->
+  <button id="mob-back" onclick="navigate('home')" class="md:hidden fixed top-20 left-4 z-40 hidden items-center gap-1.5 px-3 py-2 rounded-full bg-bg/80 backdrop-blur-xl border border-white/10 text-muted text-sm transition-colors hover:text-fg hover:border-accent/40">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 12L6 8l4-4"/></svg>
+    Voltar
+  </button>
 
   <script>
   // ── Data ──────────────────────────────────────────────────────────────
@@ -145,6 +160,21 @@
   ];
 
   // ── Router ────────────────────────────────────────────────────────────
+  const maisPages = ['posterizar','zonas','riscoLinear','isolador','janela'];
+
+  function toggleMais() {
+    const drawer = document.getElementById('mob-mais-drawer');
+    drawer.classList.toggle('hidden');
+  }
+
+  document.addEventListener('click', e => {
+    const drawer = document.getElementById('mob-mais-drawer');
+    const btn = document.getElementById('btn-mais');
+    if (drawer && !drawer.classList.contains('hidden') && !drawer.contains(e.target) && !btn.contains(e.target)) {
+      drawer.classList.add('hidden');
+    }
+  });
+
   function navigate(page) {
     const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, isolador: renderIsolador, janela: renderJanela };
     document.getElementById('app').innerHTML = '';
@@ -153,6 +183,16 @@
       el.classList.toggle('text-accent', el.dataset.nav === page);
       el.classList.toggle('text-muted',  el.dataset.nav !== page);
     });
+    document.querySelectorAll('.mob-nav').forEach(el => {
+      const navPage = el.dataset.mobNav;
+      const isActive = navPage === page || (navPage === 'mais' && maisPages.includes(page));
+      el.classList.toggle('text-accent', isActive);
+      el.classList.toggle('text-muted', !isActive);
+    });
+    const drawer = document.getElementById('mob-mais-drawer');
+    if (drawer && !drawer.classList.contains('hidden')) drawer.classList.add('hidden');
+    const backBtn = document.getElementById('mob-back');
+    if (backBtn) backBtn.classList.toggle('hidden', page === 'home');
     window.scrollTo(0, 0);
   }
 
@@ -360,12 +400,12 @@
       <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16 fade-in">
         <div class="max-w-6xl mx-auto">
           <!-- Header -->
-          <div class="flex items-start justify-between mb-8">
+          <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-0 mb-8">
             <div>
               <h1 class="font-display text-4xl md:text-5xl mb-1">Treino de Valores</h1>
               <p class="text-sm font-light text-muted">Identifique o valor tonal correto da amostra</p>
             </div>
-            <div class="text-right flex-shrink-0 ml-8">
+            <div class="text-right sm:ml-8">
               <p class="text-sm text-muted">Rodada ${rodada}/${TOTAL_RODADAS}</p>
               <p class="text-sm font-medium text-accent">Acertos: ${acertos}</p>
             </div>
@@ -376,8 +416,8 @@
           </div>
           <!-- Swatch largo -->
           <div class="w-full rounded-2xl mb-10 fade-in" style="background-color:${alvo.hex};height:220px;border:1px solid hsl(0 0% 14%)"></div>
-          <!-- Botções de resposta (11 em uma linha) -->
-          <div class="grid mb-8" style="grid-template-columns:repeat(11,1fr);gap:0.5rem">
+          <!-- Botções de resposta -->
+          <div class="grid grid-cols-6 md:grid-cols-11 mb-8" style="gap:0.5rem">
             ${botoesHtml}
           </div>
           <!-- Feedback -->
@@ -405,23 +445,21 @@
   function renderMisturas() {
     const app = document.getElementById('app');
     const rows = escalaCinza.map((v,i) => `
-      <div class="grid items-center p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors fade-in" style="grid-template-columns:auto auto 1fr 1fr auto;gap:1rem;animation-delay:${i*0.04}s">
+      <div class="grid items-center p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors fade-in" style="grid-template-columns:auto auto 1fr;gap:0.75rem 1rem;animation-delay:${i*0.04}s">
         <div><p class="font-display text-3xl">${v.valor}</p></div>
         <div class="rounded-lg border border-white/10" style="width:3.5rem;height:3rem;background-color:${v.hex}"></div>
         <div>
           <p class="text-sm font-medium">${v.nome}</p>
           <p class="text-xs text-muted font-mono">${v.hex}</p>
         </div>
-        <div class="flex items-center gap-2 text-xs">
+        <div class="col-span-3 flex items-center gap-2 text-xs mt-2">
           <span class="text-right w-8 text-muted" title="${pigmentos.branco.nome}">${v.branco}B</span>
           <div class="flex-1 h-6 rounded overflow-hidden flex" style="box-shadow:0 0 0 1px hsl(0 0% 14%)">
             ${v.branco > 0 ? `<div class="bg-white" style="width:${v.branco*10}%"></div>` : ''}
             ${v.preto  > 0 ? `<div class="bg-black" style="width:${v.preto*10}%"></div>`  : ''}
           </div>
           <span class="w-8 text-muted" title="${pigmentos.preto.nome}">${v.preto}P</span>
-        </div>
-        <div class="text-right">
-          <p class="text-xs text-muted">${v.branco===0?'100% preto':v.preto===0?'100% branco':`${v.branco}:${v.preto}`}</p>
+          <span class="text-muted ml-1">${v.branco===0?'100% preto':v.preto===0?'100% branco':`${v.branco}:${v.preto}`}</span>
         </div>
       </div>`).join('');
     const tips = dicas.map(d => `<li>— ${d}</li>`).join('');
@@ -2214,7 +2252,7 @@
           <div id="jn-result-section" class="hidden">
 
             <!-- Controles -->
-            <div class="flex items-center gap-6 p-5 rounded-2xl border border-white/10 bg-white/[0.02] mb-6">
+            <div class="flex items-center gap-4 md:gap-6 p-4 md:p-5 rounded-2xl border border-white/10 bg-white/[0.02] mb-6">
               <div class="flex-1">
                 <div class="flex justify-between text-sm mb-2">
                   <span>Tamanho da Abertura</span>
