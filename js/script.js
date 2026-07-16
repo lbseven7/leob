@@ -279,10 +279,12 @@ function changeLanguage(lang) {
 
         const navCatalogo = document.getElementById('nav-catalogo');
         const navEventos = document.getElementById('nav-eventos');
+        const navBlog = document.getElementById('nav-blog');
         const navSobre = document.getElementById('nav-sobre');
 
         if (navCatalogo) navCatalogo.innerText = "Catalogue";
         if (navEventos) navEventos.innerText = "Events";
+        if (navBlog) navBlog.innerText = "Blog";
         if (navSobre) navSobre.innerText = "About";
 
         const catalogHeading = document.getElementById('catalog-heading');
@@ -319,10 +321,12 @@ function changeLanguage(lang) {
 
         const navCatalogo = document.getElementById('nav-catalogo');
         const navEventos = document.getElementById('nav-eventos');
+        const navBlog = document.getElementById('nav-blog');
         const navSobre = document.getElementById('nav-sobre');
 
         if (navCatalogo) navCatalogo.innerText = "Catálogo";
         if (navEventos) navEventos.innerText = "Eventos";
+        if (navBlog) navBlog.innerText = "Blog";
         if (navSobre) navSobre.innerText = "Sobre";
 
         const catalogHeading = document.getElementById('catalog-heading');

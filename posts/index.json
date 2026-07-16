@@ -1,9 +1,18 @@
 [
     {
+        "title": "5 Dicas Para Começar Na Pintura a Óleo",
+        "description": "Um guia prático para artistas que querem iniciar na pintura a óleo com confiança e technique.",
+        "category": "dicas",
+        "date": "16 Jul 2026",
+        "image": "",
+        "tempoLeitura": "7",
+        "href": "posts/5-dicas-pintura-oleo.html"
+    },
+    {
         "title": "O Processo Criativo",
-        "description": "Uma visão geral de como faço minhas obras ao vivo",
-        "category": "Monocromático",
-        "date": "2026-06-07",
+        "description": "Uma visão geral de como faço minhas obras ao vivo, desde a escolha do tema até o toque final.",
+        "category": "bastidores",
+        "date": "07 Jun 2026",
         "image": "casa-do-vaqueiro.webp",
         "tempoLeitura": "6",
         "href": "posts/inspiração.html"
