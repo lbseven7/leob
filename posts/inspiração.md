@@ -1,8 +1,7 @@
 ---
 title: "O Processo Criativo"
-description: "Uma visão geral de como faço minhas obras ao vivo, desde a escolha do tema até o toque final."
+description: "Uma visão geral de como faço minhas obras ao vivo"
 category: "bastidores"
-date: "07 Jun 2026"
 image: "casa-do-vaqueiro.webp"
 tempoLeitura: "6"
 href: "posts/inspiração.html"

@@ -1,7 +1,17 @@
 import os
 import json
 import markdown
+from datetime import date
 from urllib.parse import quote
+
+MONTHS_PT = {
+    1: "Jan", 2: "Fev", 3: "Mar", 4: "Abr", 5: "Mai", 6: "Jun",
+    7: "Jul", 8: "Ago", 9: "Set", 10: "Out", 11: "Nov", 12: "Dez"
+}
+
+def data_hoje():
+    d = date.today()
+    return f"{d.day} {MONTHS_PT[d.month]} {d.year}"
 
 posts_dir = "posts"
 index_file = os.path.join(posts_dir, "index.json")
@@ -321,7 +331,7 @@ for post in posts_md:
         meta["title"],
         conteudo_convertido_html,
         meta.get("category", ""),
-        meta.get("date", ""),
+        meta.get("date", data_hoje()),
         meta.get("tempoLeitura", ""),
         meta.get("image", ""),
         meta.get("href", ""),

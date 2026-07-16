@@ -2,7 +2,6 @@
 title: "5 Dicas Para Começar Na Pintura a Óleo"
 description: "Um guia prático para artistas que querem iniciar na pintura a óleo com confiança e technique."
 category: "dicas"
-date: "16 Jul 2026"
 image: ""
 tempoLeitura: "7"
 href: "posts/5-dicas-pintura-oleo.html"
