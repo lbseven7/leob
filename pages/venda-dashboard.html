@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de Análise Realista | Leo Barbosa</title>
+<!--
+  ======================================================================
+  PONTOS PARA VOCÊ EDITAR ANTES DE PUBLICAR:
+  1. {{LINK_HOTMART_DASHBOARD}}  -> troque TODOS pelo link de checkout da Hotmart
+  2. {{LINK_VIDEO_DASHBOARD}}    -> troque pelo link do seu vídeo de vendas (embed)
+  3. R$ 97,00 e R$ 197,00       -> ajuste os valores reais
+  4. Seção "Depoimentos"         -> troque pelos depoimentos reais de alunos
+  ======================================================================
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0a0a;
+    --ink-2:#171410;
+    --canvas:#f6f2eb;
+    --canvas-2:#ece7db;
+    --graphite:#171717;
+    --steel-100:#e4e4e2;
+    --steel-600:#6b6b6e;
+    --ember:#d88800;
+    --ember-dark:#b06e00;
+    --chrome-a:#fdfdfc;
+    --chrome-b:#2a2a2c;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Comfortaa', cursive;
+    background:var(--canvas);
+    color:var(--graphite);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  h1,h2,h3{
+    font-family:'Playfair Display', serif;
+    font-weight:600;
+    letter-spacing:0.5px;
+    line-height:1.05;
+    text-transform:uppercase;
+    color:var(--ink);
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--ember);
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px;}
+  .section{padding:88px 0;}
+  .section-tight{padding:56px 0;}
+  a{color:inherit;text-decoration:none;}
+
+  /* ---------- Botão ---------- */
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    font-family:'Comfortaa', cursive;
+    font-weight:700;
+    font-size:17px;
+    padding:18px 34px;
+    border-radius:6px;
+    border:none;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary{
+    background:linear-gradient(180deg, #e8c96a 0%, var(--ember) 55%, var(--ember-dark) 100%);
+    color:#1c1200;
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(212,175,55,0.35);}
+  .btn-sub{
+    display:block;
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--steel-600);
+    margin-top:12px;
+    letter-spacing:0.5px;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:
+      radial-gradient(ellipse at 50% -10%, rgba(212,175,55,0.15), transparent 60%),
+      var(--ink);
+    color:var(--canvas);
+    padding:72px 0 96px;
+    border-bottom:6px solid var(--ember);
+  }
+  .hero .wrap{text-align:center;}
+  .hero .eyebrow{color:var(--ember);}
+  .hero h1{
+    font-size:clamp(34px, 6vw, 62px);
+    margin:18px auto 20px;
+    max-width:820px;
+    color:#fdfdfc;
+  }
+  .hero h1 span{color:var(--ember);}
+  .hero .sub{
+    font-size:18px;
+    color:#cfcdc6;
+    max-width:620px;
+    margin:0 auto 40px;
+  }
+
+  /* Vídeo */
+  .easel{max-width:640px;margin:0 auto 32px;position:relative;}
+  .canvas-frame{
+    background:#0a0a0b;border:10px solid #232326;border-radius:4px;
+    aspect-ratio:16/9;position:relative;overflow:hidden;
+    box-shadow:0 30px 60px rgba(0,0,0,0.5);
+  }
+  .canvas-frame iframe{width:100%;height:100%;border:0;display:block;}
+  .video-placeholder{
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;
+    background:
+      radial-gradient(circle at 50% 40%, rgba(255,255,255,0.06), transparent 60%),
+      linear-gradient(135deg, #1a1a1c, #0a0a0b);
+  }
+  .play-btn{
+    width:76px;height:76px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #e9d187, var(--ember) 55%, var(--ember-dark));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 24px rgba(212,175,55,0.4);
+  }
+  .play-btn:after{
+    content:"";border-style:solid;border-width:12px 0 12px 20px;
+    border-color:transparent transparent transparent #1c1200;margin-left:4px;
+  }
+  .video-placeholder p{
+    font-family:'JetBrains Mono', monospace;font-size:12px;color:#8a8a8e;letter-spacing:1px;
+  }
+  .easel-leg{width:2px;height:34px;background:#232326;margin:0 auto;}
+
+  /* ---------- Escala visual (elemento decorativo) ---------- */
+  .scale-strip{
+    max-width:960px;margin:0 auto 40px;
+    display:flex;border-radius:8px;overflow:hidden;height:48px;
+  }
+  .scale-strip div{flex:1;}
+
+  /* ---------- História ---------- */
+  .story{background:var(--canvas);}
+  .story .wrap{max-width:740px;}
+  .story p{font-size:18px;margin-bottom:20px;color:#171717;}
+  .story p.lead{
+    text-transform:none;font-size:26px;line-height:1.3;
+    color:var(--ink);margin-bottom:28px;
+  }
+  .signature{
+    font-family:'JetBrains Mono', monospace;color:var(--steel-600);
+    font-size:14px;margin-top:32px;
+  }
+
+  /* ---------- Divider ---------- */
+  .divider{
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--steel-600), transparent);
+    max-width:960px;margin:0 auto;
+  }
+
+  /* ---------- Dashboard / ferramentas ---------- */
+  .dashboard{background:var(--ink);color:var(--canvas);}
+  .dashboard h2{color:#fdfdfc;font-size:clamp(28px,4vw,40px);max-width:700px;}
+  .dashboard .eyebrow{color:var(--ember);}
+  .dashboard .intro{max-width:640px;color:#cfcdc6;margin:18px 0 48px;font-size:17px;}
+
+  .tool-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:14px;text-align:left;
+  }
+  .tool-card{
+    background:var(--ink-2);border:1px solid #2c2c30;
+    border-radius:var(--radius);padding:20px 18px;
+    transition:border-color .2s ease;
+  }
+  .tool-card:hover{border-color:rgba(216,136,0,0.35);}
+  .tool-card .tool-icon{
+    font-size:20px;color:var(--ember);margin-bottom:10px;display:block;
+  }
+  .tool-card .tool-name{
+    font-weight:600;font-size:14.5px;color:#fdfdfc;margin-bottom:6px;
+  }
+  .tool-card p{font-size:13px;color:#adaba5;line-height:1.5;}
+
+  /* ---------- O que você treina ---------- */
+  .learn{background:var(--canvas-2);color:var(--graphite);}
+  .learn h2{font-size:clamp(26px,4vw,36px);max-width:600px;margin-bottom:36px;}
+  .learn .eyebrow{color:var(--ember);}
+  .learn-list{list-style:none;display:grid;gap:16px;}
+  .learn-list li{
+    display:flex;gap:14px;align-items:flex-start;
+    background:#fff;border:1px solid #ddd8ca;
+    border-radius:var(--radius);padding:18px 20px;
+    font-size:15.5px;color:#171717;
+  }
+  .learn-list li b{color:var(--ink);font-weight:600;}
+  .check{
+    flex:none;width:22px;height:22px;border-radius:50%;
+    background:var(--ember);color:#1c1200;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+
+  /* ---------- Autor ---------- */
+  .author{background:var(--canvas);}
+  .author-grid{
+    display:grid;grid-template-columns:220px 1fr;gap:44px;align-items:start;
+  }
+  .author-photo{
+    width:220px;height:220px;border-radius:50%;overflow:hidden;
+    border:4px solid var(--ember);background:var(--steel-100);
+  }
+  .author-photo img{
+    width:100%;height:100%;object-fit:cover;object-position:50% 30%;
+  }
+  .author h2{font-size:clamp(26px,4vw,34px);margin-bottom:16px;}
+  .author p{font-size:16.5px;margin-bottom:16px;color:#171717;}
+
+  /* ---------- Bônus: PDF ---------- */
+  .bonus-section{background:var(--ink);color:var(--canvas);}
+  .bonus-section .wrap{text-align:center;}
+  .bonus-tag{
+    display:inline-block;font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;letter-spacing:1px;color:#1c1200;
+    background:var(--ember);padding:5px 14px;border-radius:4px;margin-bottom:16px;
+  }
+  .bonus-section h2{color:#fdfdfc;font-size:clamp(26px,4vw,36px);max-width:700px;margin:0 auto 12px;}
+  .bonus-section .intro{max-width:580px;margin:0 auto 40px;color:#cfcdc6;font-size:16px;}
+
+  .phase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .phase-card{
+    background:var(--ink-2);border:1px solid #2c2c30;
+    border-radius:var(--radius);padding:26px 22px;text-align:left;
+  }
+  .phase-num{
+    font-family:'JetBrains Mono', monospace;color:var(--ember);
+    font-size:13px;letter-spacing:1px;margin-bottom:10px;display:block;
+  }
+  .phase-card h3{font-size:20px;color:#fdfdfc;margin-bottom:10px;}
+  .phase-card p{font-size:14.5px;color:#adaba5;}
+
+  /* ---------- Oferta ---------- */
+  .offer{
+    background:var(--canvas);position:relative;overflow:hidden;
+    border-top:6px solid var(--ember);
+  }
+  .offer .wrap{text-align:center;max-width:640px;}
+  .offer .eyebrow{color:var(--ember);}
+  .offer h2{font-size:clamp(28px,4.5vw,42px);margin:16px 0 20px;}
+  .offer p.desc{color:#3a3a3a;font-size:16.5px;margin-bottom:36px;}
+
+  .price-card{
+    background:#fff;border:1px solid #ddd8ca;
+    border-radius:14px;padding:40px 32px;margin-bottom:28px;
+  }
+  .price-old{
+    font-family:'JetBrains Mono', monospace;color:var(--steel-600);
+    text-decoration:line-through;font-size:15px;
+  }
+  .price-new{
+    font-size:52px;color:var(--ink);margin:6px 0 4px;
+  }
+  .price-new span{font-size:24px;color:var(--ember);}
+  .price-note{font-size:13px;color:var(--steel-600);margin-bottom:28px;}
+
+  .bonus-list{
+    text-align:left;list-style:none;display:grid;gap:10px;margin-bottom:28px;
+  }
+  .bonus-list li{display:flex;gap:10px;font-size:14.5px;color:#171717;}
+
+  .guarantee{
+    display:flex;align-items:center;gap:14px;justify-content:center;
+    margin-top:28px;color:var(--steel-600);font-size:13.5px;
+  }
+  .guarantee .badge{
+    flex:none;width:44px;height:44px;border-radius:50%;
+    border:2px solid var(--ember);display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono', monospace;color:var(--ember);font-size:11px;font-weight:700;
+  }
+
+  /* ---------- FAQ ---------- */
+  .faq{background:var(--canvas);}
+  .faq h2{text-align:center;font-size:clamp(26px,4vw,34px);margin-bottom:36px;}
+  .faq-item{border-bottom:1px solid #ddd8ca;padding:18px 0;}
+  .faq-item summary{
+    cursor:pointer;font-weight:600;font-size:16px;color:var(--ink);
+    list-style:none;display:flex;justify-content:space-between;align-items:center;
+  }
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item summary:after{
+    content:"+";font-family:'JetBrains Mono', monospace;font-size:20px;color:var(--ember);
+  }
+  .faq-item[open] summary:after{content:"–";}
+  .faq-item p{margin-top:12px;font-size:14.5px;color:#171717;}
+
+  /* ---------- Footer ---------- */
+  footer{
+    background:var(--ink);color:#8a8a8e;padding:40px 0;
+    font-size:12.5px;text-align:center;
+  }
+  footer a{color:var(--ember);}
+
+  /* ---------- Responsivo ---------- */
+  @media (max-width:720px){
+    .section{padding:56px 0;}
+    .tool-grid,.phase-grid{grid-template-columns:1fr;}
+    .author-grid{grid-template-columns:1fr;text-align:center;}
+    .author-photo{margin:0 auto;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">leob. apresenta</p>
+    <h1>Seu olho não erra — <span>falta um treino de valores tonais</span> que ninguém te ensinou.</h1>
+    <p class="sub">12 ferramentas interativas para treinar percepção de luz, sombra e contraste — a base de qualquer pintura hiper-realista que funciona.</p>
+
+    <div class="scale-strip">
+      <div style="background:#ffffff"></div><div style="background:#e6e6e6"></div>
+      <div style="background:#cccccc"></div><div style="background:#b3b3b3"></div>
+      <div style="background:#999999"></div><div style="background:#808080"></div>
+      <div style="background:#666666"></div><div style="background:#4d4d4d"></div>
+      <div style="background:#333333"></div><div style="background:#191919"></div>
+      <div style="background:#000000"></div>
+    </div>
+
+    <div class="easel">
+      <div class="canvas-frame">
+        <div class="video-placeholder" id="videoPlaceholder" onclick="loadVideo()">
+          <div class="play-btn"></div>
+          <p>ASSISTA: COMO FUNCIONA O DASHBOARD</p>
+        </div>
+      </div>
+      <div class="easel-leg"></div>
+    </div>
+
+    <a class="btn btn-primary" href="{{LINK_HOTMART_DASHBOARD}}" target="_blank" rel="noopener">Quero acesso ao Dashboard</a>
+    <span class="btn-sub">Acesso imediato · Garantia incondicional</span>
+  </div>
+</header>
+
+<!-- ================= HISTÓRIA / DOR ================= -->
+<section class="story section">
+  <div class="wrap">
+    <p class="lead">A maioria dos artistas pinta de olho fechado — não por falta de talento, mas porque ninguém treinou o olho deles para enxergar valores.</p>
+    <p>Você já fez uma mistura na paleta que parecia perfeita — e ao levar para a tela, ficou errada? Isso não é problema de mão. É problema de percepção.</p>
+    <p>O olho humano se adapta rápido demais. Quando você olha para uma referência por tempo demais, o cérebro "normaliza" os contrastes e você começa a enxergar o que espera ver — não o que realmente está lá.</p>
+    <p>O Dashboard de Análise Realista foi criado para resolver exatamente isso: <b>afiar o olho para valores tonais</b>, de forma sistemática, com ferramentas que revelam o que o olho nu esconde.</p>
+    <p class="signature">— Leo Barbosa (leob.)</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ================= DASHBOARD: 12 FERRAMENTAS ================= -->
+<section class="dashboard section">
+  <div class="wrap">
+    <p class="eyebrow">as 12 ferramentas</p>
+    <h2>Cada ferramenta resolve um problema específico da sua percepção visual</h2>
+    <p class="intro">Não é um app genérico de edição. Cada módulo foi pensado para treinar uma habilidade concreta do artista — da escala de cinzas ao comparador de amostras.</p>
+
+    <div class="tool-grid">
+      <div class="tool-card">
+        <span class="tool-icon">▮</span>
+        <div class="tool-name">Escala de Cinzas</div>
+        <p>Estude a escala completa de 11 valores, do branco puro ao preto absoluto — a espinha dorsal de toda pintura realista.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">▤</span>
+        <div class="tool-name">Treino de Valores</div>
+        <p>Exercícios interativos para testar e afiar sua capacidade de identificar valores tonais com precisão.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">◇</span>
+        <div class="tool-name">Guia de Misturas</div>
+        <p>Proporções exatas de branco e preto para obter cada tom de cinza — sem improviso na paleta.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">⊑</span>
+        <div class="tool-name">Converter para Cinzas</div>
+        <p>Transforme qualquer imagem de referência em escala de cinza para estudar apenas os valores.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">◧</span>
+        <div class="tool-name">Posterizar</div>
+        <p>Reduza a imagem a poucos tons para enxergar as regiões de valor como blocos distintos — como você vai pintar.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">▦</span>
+        <div class="tool-name">Mapear Zonas</div>
+        <p>Divida a imagem em zonas e identifique o valor dominante de cada região — como um mapa tonal.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">◐</span>
+        <div class="tool-name">Risco Linear</div>
+        <p>Extraia o contorno da imagem como um desenho de linha — ideal para estudar formas e preparar a tela.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">◉</span>
+        <div class="tool-name">Isolador Tonal</div>
+        <p>Clique em qualquer ponto da imagem e descubra seu valor tonal exato. Isole faixas de valores para estudar.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">⊞</span>
+        <div class="tool-name">Janela Física</div>
+        <p>Isole uma área da imagem com uma máscara — como um cartão vazado. Arraste e redimensione para estudar detalhes.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">#</span>
+        <div class="tool-name">Quadricular</div>
+        <p>Sobreponha uma grade na imagem para copiar quadrado por quadrado — técnica clássica para desenhar com precisão.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">⊕</span>
+        <div class="tool-name">Comparar Amostras</div>
+        <p>Clique em um ponto da referência e no mesmo ponto da sua pintura para comparar valores tonais com precisão.</p>
+      </div>
+      <div class="tool-card">
+        <span class="tool-icon">◐</span>
+        <div class="tool-name">Ilusão de Óptica</div>
+        <p>Veja como o cérebro engana — o mesmo cinza parece diferente conforme o fundo. Contraste simultâneo na prática.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= O QUE VOCÊ VAI TREINAR ================= -->
+<section class="learn section">
+  <div class="wrap">
+    <p class="eyebrow">o que você vai desenvolver</p>
+    <h2>Habilidades que nenhum tutorial de YouTube ensina</h2>
+    <ul class="learn-list">
+      <li><span class="check">✓</span><span><b>Percepção de valores:</b> identificar o tom exato de qualquer superfície — no quadro, na paleta ou na referência.</span></li>
+      <li><span class="check">✓</span><span><b>Controle de mistura:</b> acertar a proporção de branco e preto antes de levar o pincel à tela.</span></li>
+      <li><span class="check">✓</span><span><b>Leitura de referência:</b> decompor uma imagem em blocos de valor, do jeito que o cérebro precisa processar para pintar.</span></li>
+      <li><span class="check">✓</span><span><b>Comparação objetiva:</b> checar se sua pintura está no mesmo valor que a referência — sem depender de "achismo".</span></li>
+      <li><span class="check">✓</span><span><b>Desenho com grade:</b> transferir formas com precisão usando a técnica do quadriculado, clássica e infalível.</span></li>
+      <li><span class="check">✓</span><span><b>Consciência do contraste simultâneo:</b> entender por que o mesmo cinza parece diferente conforme o fundo ao redor.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= AUTOR ================= -->
+<section class="author section">
+  <div class="wrap author-grid">
+    <div class="author-photo"><img src="../images/foto-perfil.jpg" alt="Leo Barbosa"></div>
+    <div>
+      <p class="eyebrow">quem criou o dashboard</p>
+      <h2>Leo Barbosa</h2>
+      <p>Nascido em Jequié (Bahia) e criado em São Paulo, começou nas ruas — soltando pipa, pichando muro e passando por oficinas de pintura em projetos sociais. Foi ali, seguindo com os olhos a linha de uma pipa contra o céu, que aprendeu a enxergar contraste antes mesmo de pegar num pincel de verdade.</p>
+      <p>Hoje, depois de mais de vinte anos como pintor hiper-realista, palestrante e educador em artes visuais, criou o Dashboard de Análise Realista para transformar o que aprendeu na prática em ferramentas acessíveis — que qualquer artista pode usar no navegador, sem instalação.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BÔNUS: PDF EFEITO METÁLICO ================= -->
+<section class="bonus-section section">
+  <div class="wrap">
+    <span class="bonus-tag">BÔNUS INCLUSO</span>
+    <h2>Guia completo: Domine o Efeito Metálico</h2>
+    <p class="intro">Junto do acesso ao Dashboard, você recebe o guia em PDF com o método completo de pintura hiper-realista para efeito metálico — o mesmo que Leo usa nos seus quadros.</p>
+
+    <div class="phase-grid">
+      <div class="phase-card">
+        <span class="phase-num">FASE 01</span>
+        <h3>Desenho e base acrílica</h3>
+        <p>Captura das formas principais com um risco livre, tom médio e a primeira blocagem de sombras — a fundação de toda a peça.</p>
+      </div>
+      <div class="phase-card">
+        <span class="phase-num">FASE 02</span>
+        <h3>Camada com tinta a óleo</h3>
+        <p>Reforço de sombras, meios-tons e luzes — sem pensar em detalhe ainda. É aqui que o metal começa a ganhar volume.</p>
+      </div>
+      <div class="phase-card">
+        <span class="phase-num">FASE 03</span>
+        <h3>Acabamento e polimento</h3>
+        <p>A fase em que a mágica acontece: reforço de valores, unificação dos tons e o detalhamento que faz a peça parecer polida de verdade.</p>
+      </div>
+    </div>
+
+    <p style="margin-top:36px;font-size:15px;color:#cfcdc6;">O PDF inclui receitas exatas de médium, lista de materiais e o passo a passo completo — para aplicar junto com as ferramentas do Dashboard.</p>
+  </div>
+</section>
+
+<!-- ================= DEPOIMENTOS ================= -->
+<!-- <section class="section" style="background:var(--canvas-2);">
+  <div class="wrap" style="text-align:center;">
+    <h2 style="font-size:clamp(26px,4vw,36px);margin-bottom:12px;">Quem já usa o Dashboard</h2>
+    <p style="max-width:520px;margin:0 auto 44px;color:#171717;">Substitua os cards abaixo pelos depoimentos reais dos seus alunos.</p>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;text-align:left;">
+      <div style="background:#fff;border:1px solid #e2ddcf;border-radius:10px;padding:24px;">
+        <p style="font-size:14.5px;color:#171717;margin-bottom:16px;">"O Treino de Valores mudou como eu enxergo minhas referências. Em uma semana já notei diferença na hora de misturar."</p>
+        <div style="font-weight:600;font-size:14px;color:var(--ink);">[Nome do aluno]</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--steel-600);">[Cidade / especialidade]</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2ddcf;border-radius:10px;padding:24px;">
+        <p style="font-size:14.5px;color:#171717;margin-bottom:16px;">"O Comparador de Amostras é genial. Descobri que minhas sombras estavam sempre um tom mais clara do que deveriam."</p>
+        <div style="font-weight:600;font-size:14px;color:var(--ink);">[Nome do aluno]</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--steel-600);">[Cidade / especialidade]</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2ddcf;border-radius:10px;padding:24px;">
+        <p style="font-size:14.5px;color:#171717;margin-bottom:16px;">"Uso o Posterizar antes de cada pintura. É como ter um mapa tonal da referência — simplifica tudo."</p>
+        <div style="font-weight:600;font-size:14px;color:var(--ink);">[Nome do aluno]</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--steel-600);">[Cidade / especialidade]</div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<!-- ================= OFERTA ================= -->
+<section class="offer section" id="oferta">
+  <div class="wrap">
+    <p class="eyebrow">acesso completo</p>
+    <h2>Dashboard de Análise Realista</h2>
+    <p class="desc">12 ferramentas interativas + guia PDF "Domine o Efeito Metálico" — tudo que você precisa para treinar o olhar e pintar com precisão.</p>
+
+    <div class="price-card">
+      <div class="price-old">De R$ 197,00</div>
+      <div class="price-new">R$ 97,00<span> à vista</span></div>
+      <div class="price-note">ou em até 12x no cartão · acesso imediato após a confirmação</div>
+
+      <ul class="bonus-list">
+        <li><span class="check">✓</span> Dashboard de Análise Realista — 12 ferramentas interativas</li>
+        <li><span class="check">✓</span> Acesso direto pelo navegador, sem instalação</li>
+        <li><span class="check">✓</span> Treino de valores com feedback em tempo real</li>
+        <li><span class="check">✓</span> Conversor, posterizador, isolador, comparador e mais</li>
+        <li><span class="check">✓</span> <b>Bônus:</b> Guia PDF "Domine o Efeito Metálico" — método em 3 fases</li>
+        <li><span class="check">✓</span> Acesso à lista de espera dos próximos guias</li>
+      </ul>
+
+      <a class="btn btn-primary" style="width:100%;" href="{{LINK_HOTMART_DASHBOARD}}" target="_blank" rel="noopener">Quero acesso ao Dashboard</a>
+      <span class="btn-sub">Pagamento processado com segurança pela Hotmart</span>
+    </div>
+
+    <div class="guarantee">
+      <div class="badge">7<br>DIAS</div>
+      <p style="text-align:left;max-width:380px;">Garantia incondicional. Se em 7 dias você sentir que o Dashboard não é pra você, devolvemos 100% do valor — sem perguntas.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="faq section">
+  <div class="wrap">
+    <h2>Perguntas frequentes</h2>
+
+    <details class="faq-item">
+      <summary>O que é exatamente o Dashboard?</summary>
+      <p>É um painel online com 12 ferramentas interativas para treinar percepção de valores tonais. Tudo roda no navegador — sem baixar nada, sem instalar.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Preciso ter experiência em pintura para usar?</summary>
+      <p>Não. O Dashboard foi pensado tanto para artistas iniciantes quanto para quem já pinta há anos e quer afiar a percepção visual.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Funciona no celular?</summary>
+      <p>Sim. O Dashboard é responsivo e funciona em qualquer dispositivo com navegador — computador, tablet ou celular.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Como recebo o acesso ao PDF bônus?</summary>
+      <p>O guia "Domine o Efeito Metálico" é enviado junto com o acesso ao Dashboard, direto no seu e-mail após a confirmação do pagamento.</p>
+    </details>
+    <details class="faq-item">
+      <summary>E se eu não gostar do conteúdo?</summary>
+      <p>Você tem 7 dias de garantia incondicional. Basta solicitar o reembolso dentro desse prazo.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <p>© Leo Barbosa (leob.) — Todos os direitos reservados.</p>
+    <p style="margin-top:8px;">Este produto não garante resultados financeiros ou artísticos específicos. Os resultados dependem da dedicação de cada aluno.</p>
+    <p style="margin-top:8px;"><a href="https://www.leob.com.br" target="_blank" rel="noopener">www.leob.com.br</a></p>
+  </div>
+</footer>
+
+<script>
+  function loadVideo(){
+    var box = document.getElementById('videoPlaceholder');
+    box.outerHTML = '<iframe src="{{LINK_VIDEO_DASHBOARD}}" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+  }
+</script>
+
+</body>
+</html>
