@@ -925,16 +925,7 @@
             <p class="text-xs text-muted">${branco}B : ${preto}P</p>
         </div>
       </div>`;
-
-    // Event delegation para grade rápida (funciona em mobile)
-    setTimeout(() => {
-      const quick = document.getElementById('qd-quick');
-      if (quick) quick.addEventListener('click', e => {
-        const btn = e.target.closest('button[data-c]');
-        if (btn) qdSetGrid(+btn.dataset.c, +btn.dataset.r);
-      });
-    }, 0);
-  }
+    }
     legenda.innerHTML = html;
   }
 
@@ -2417,14 +2408,6 @@
                     <span class="text-accent font-medium">Proporção:</span> Se a referência tem 20cm de largura e a grade tem 5 colunas, cada célula tem 4cm. Mantenha a mesma proporção no papel.
                   </p>
                 </div>
-                <div class="p-5 rounded-xl border border-accent/20 bg-accent/[0.03]">
-                  <p class="text-xs text-accent font-medium mb-2">Grade rápida</p>
-                  <div class="flex flex-wrap gap-2" id="qd-quick">
-                    ${[{c:3,r:3},{c:4,r:4},{c:5,r:5},{c:6,r:6},{c:8,r:8},{c:10,r:10}].map(g =>
-                      `<button data-c="${g.c}" data-r="${g.r}" class="px-4 py-2.5 sm:py-1.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent active:border-accent active:text-accent active:scale-95 transition-all">${g.c}×${g.r}</button>`
-                    ).join('')}
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -2448,18 +2431,6 @@
 
         </div>
       </div>`;
-  }
-
-  function qdSetGrid(c, r) {
-    quadricularState.cols = c;
-    quadricularState.rows = r;
-    const slCols = document.getElementById('qd-sl-cols');
-    const slRows = document.getElementById('qd-sl-rows');
-    if (slCols) slCols.value = c;
-    if (slRows) slRows.value = r;
-    document.getElementById('qd-val-cols').textContent = c;
-    document.getElementById('qd-val-rows').textContent = r;
-    qdAplicarGrade();
   }
 
   function qdOnCols(v) {
@@ -3055,7 +3026,6 @@
 
     // Diff
     const diff = Math.abs(ref.valor - pin.valor);
-    const diffPct = Math.abs(ref.gray - pin.gray) / 255 * 100;
     const direcao = ref.valor > pin.valor ? 'mais' : 'menos';
     const corClasse = diff <= 1 ? 'text-green-400' : diff <= 3 ? 'text-yellow-400' : diff <= 5 ? 'text-orange-400' : 'text-red-400';
 
@@ -3224,7 +3194,7 @@
 
 
   // ── Ilusão de Óptica do Valor ───────────────────────────────────────────
-  let ilusaoState = { valor: 5, revealed: false };
+  let ilusaoState = { valor: 5 };
 
   function renderIlusao() {
     const app = document.getElementById('app');
@@ -3410,8 +3380,6 @@
 
         </div>
       </div>`;
-
-    // Imagem directa — sem canvas
   }
 
   // ── Simulador handlers ──────────────────────────────────────────────────
