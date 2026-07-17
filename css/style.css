@@ -1,18 +1,20 @@
         /* IMPORTAÇÃO DA FONTE AVALLON */
         @font-face {
             font-family: 'Avallon';
-            src: url('fonts/avallon.woff2') format('woff2'),
-                url('fonts/avallon.woff') format('woff'),
-                url('fonts/avallon.ttf') format('truetype');
+            src: url('../fonts/Avallon.woff2') format('woff2');
             font-weight: normal;
             font-style: normal;
         }
 
         body {
             font-family: 'Comfortaa', cursive;
-            cursor: none;
             background: #f6f2eb;
             color: #171717;
+        }
+
+        .dark body {
+            background: #000;
+            color: #fff;
         }
 
         .serif {
@@ -73,10 +75,6 @@
         }
 
         @media (max-width: 767px) {
-            body {
-                cursor: auto;
-            }
-
             .hero-height {
                 height: 56vh;
                 min-height: 360px;

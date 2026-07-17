@@ -286,7 +286,7 @@
 <body>
 
     <div class="controles">
-        <a href="index.html">← Voltar Galeria</a>
+        <a href="../index.html">← Voltar Galeria</a>
         <button class="btn-pdf" onclick="gerarPDF()">⬇ Baixar Certificado (PDF)</button>
         <button class="btn-pdf" onclick="gerarPNG()" style="background:#1a1a1a;">⬇ Exportar PNG (p/
             Verificação)</button>
@@ -362,7 +362,7 @@
             suporte: "IMPRESSÃO EM PAPEL SMOOTH ULTRA",
             tecnica: "TINTA PIGMENTADA",
 
-            imagemObra: "../images/ela-e-seu-cavalo.jpeg",
+            imagemObra: "../images/ela-e-seu-cavalo.jpg",
             qrcodeImg: "../qrcode/ELA-SEU-CAVALO/ESC_lb-2026-001.png"
         };
         // ====== NÃO PRECISA EDITAR DAQUI PRA BAIXO ======
@@ -375,9 +375,6 @@
         function preencherCertificado(cfg) {
             const codigo = gerarCodigoSerie(cfg);
 
-            document.getElementById('d-titulo').textContent = cfg.titulo;
-            document.getElementById('d-ano').textContent = cfg.ano;
-            document.getElementById('d-serie').textContent = codigo;
             document.getElementById('d-dimensoes').textContent = cfg.dimensoes;
             document.getElementById('d-suporte').textContent = cfg.suporte;
             document.getElementById('d-tecnica').textContent = cfg.tecnica;
@@ -435,44 +432,6 @@
         });
     </script>
 
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const tokenBruto = params.get('token');
-        const imgElement = document.getElementById('certificado-imagem');
-
-        function mostrarErro(mensagem) {
-            document.body.innerHTML = `
-            <h1 style="color:#c0392b; font-family:Montserrat,sans-serif; text-align:center; padding:40px 20px;">
-                ⚠ Erro: Certificado não encontrado.
-                <br>
-                <span style="font-size:16px; font-weight:normal; color:#555;">
-                    ${mensagem}<br>Por favor, tente escanear o QR Code novamente ou
-                    entre em contato com o artista.
-                </span>
-            </h1>`;
-        }
-
-        // valida formato esperado, ex: CV_lb-2026-001
-        const formatoValido = /^[A-Za-z]{2,6}_[a-z]{2,4}-\d{4}-\d{3}$/;
-
-        if (!tokenBruto) {
-            mostrarErro("Nenhum código de certificado foi informado na URL.");
-        } else if (!formatoValido.test(tokenBruto)) {
-            mostrarErro("O código informado está em um formato inválido.");
-        } else {
-            // sanitiza: só permite letras, números, hífen e underscore
-            const token = tokenBruto.replace(/[^A-Za-z0-9_-]/g, '');
-
-            imgElement.src = `../images/certificados/${token}.png`;
-            imgElement.alt = `Certificado Autêntico - Obra ${token}`;
-            document.title = `Certificado - Obra ${token} | Léo Barbosa`;
-
-            // se a imagem não existir no servidor, cai aqui
-            imgElement.onerror = function () {
-                mostrarErro("Não localizamos esse certificado em nossa base.");
-            };
-        }
-    </script>
 </body>
 
 </html>

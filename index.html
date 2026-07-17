@@ -91,11 +91,11 @@
                 </div>
                 <div id="catalog-filters"
                     class="w-full grid grid-cols-3 gap-2 sm:w-auto sm:flex sm:gap-2 pb-1 text-[10px] sm:text-xs font-bold uppercase tracking-wide sm:tracking-widest">
-                    <button onclick="filterGallery('todos')" id="filter-all"
+                    <button onclick="filterGallery('todos', event)" id="filter-all"
                         class="filter-btn active w-full border border-zinc-200 dark:border-zinc-800 px-3 sm:px-6 py-2 transition-all hover:border-brand-orange">Todos</button>
-                    <button onclick="filterGallery('disponível')" id="filter-available"
+                    <button onclick="filterGallery('disponível', event)" id="filter-available"
                         class="filter-btn w-full border border-zinc-200 dark:border-zinc-800 px-3 sm:px-6 py-2 transition-all hover:border-brand-orange">Disponíveis</button>
-                    <button onclick="filterGallery('urgente')" id="filter-urgent"
+                    <button onclick="filterGallery('urgente', event)" id="filter-urgent"
                         class="filter-btn w-full border border-zinc-200 dark:border-zinc-800 px-3 sm:px-6 py-2 transition-all hover:border-brand-orange">Últimas
                         Unidades</button>
                 </div>
