@@ -2286,6 +2286,10 @@
     corGrid: '#ffffff',
     espessura: 1,
     labels: true,
+    refW: 8,
+    refH: 12,
+    telaW: 50,
+    telaH: 70,
   };
 
   function renderQuadricular() {
@@ -2389,6 +2393,86 @@
             </div>
           </div>
 
+          <!-- Painel de Cálculo de Proporção -->
+          <div id="qd-calc-section" class="hidden p-4 md:p-8 rounded-2xl border border-white/10 bg-white/[0.02] mb-6">
+            <h3 class="font-display text-xl mb-6">Cálculo de Proporção</h3>
+            <div class="grid md:grid-cols-3 gap-6">
+              <!-- Referência -->
+              <div class="space-y-4">
+                <p class="text-xs uppercase tracking-[0.2em] text-accent mb-2">Referência (foto)</p>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="text-xs text-muted block mb-1">Largura (cm)</label>
+                    <input type="number" id="qd-ref-w" value="8" min="1" step="0.5" class="w-full p-2.5 rounded-lg bg-white/5 border border-white/10 text-fg text-sm focus:border-accent outline-none" oninput="qdCalcUpdate()" />
+                  </div>
+                  <div>
+                    <label class="text-xs text-muted block mb-1">Altura (cm)</label>
+                    <input type="number" id="qd-ref-h" value="12" min="1" step="0.5" class="w-full p-2.5 rounded-lg bg-white/5 border border-white/10 text-fg text-sm focus:border-accent outline-none" oninput="qdCalcUpdate()" />
+                  </div>
+                </div>
+                <p class="text-xs text-muted">Proporção: <span id="qd-calc-ref-ratio" class="text-fg font-mono">2:3</span></p>
+              </div>
+
+              <!-- Tela/Papel -->
+              <div class="space-y-4">
+                <p class="text-xs uppercase tracking-[0.2em] text-accent mb-2">Tela / Papel</p>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="text-xs text-muted block mb-1">Largura (cm)</label>
+                    <input type="number" id="qd-tela-w" value="50" min="1" step="1" class="w-full p-2.5 rounded-lg bg-white/5 border border-white/10 text-fg text-sm focus:border-accent outline-none" oninput="qdCalcUpdate()" />
+                  </div>
+                  <div>
+                    <label class="text-xs text-muted block mb-1">Altura (cm)</label>
+                    <input type="number" id="qd-tela-h" value="70" min="1" step="1" class="w-full p-2.5 rounded-lg bg-white/5 border border-white/10 text-fg text-sm focus:border-accent outline-none" oninput="qdCalcUpdate()" />
+                  </div>
+                </div>
+                <p class="text-xs text-muted">Proporção: <span id="qd-calc-tela-ratio" class="text-fg font-mono">5:7</span></p>
+              </div>
+
+              <!-- Resultado -->
+              <div class="space-y-3">
+                <p class="text-xs uppercase tracking-[0.2em] text-accent mb-2">Resultado</p>
+                <div class="p-4 rounded-xl border border-white/10 bg-white/[0.03] space-y-3">
+                  <div class="flex justify-between text-sm">
+                    <span class="text-muted">Fator de escala</span>
+                    <span id="qd-calc-escala" class="text-accent font-mono font-medium">×4.17</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-muted">Área na tela</span>
+                    <span id="qd-calc-area" class="text-fg font-mono">33.3 × 50 cm</span>
+                  </div>
+                  <div class="border-t border-white/10 pt-3 mt-3">
+                    <p class="text-xs text-muted mb-2">Tamanho de cada célula</p>
+                    <div class="flex justify-between text-sm">
+                      <span class="text-muted">Na referência</span>
+                      <span id="qd-calc-cell-ref" class="text-fg font-mono">1.6 × 2.4 cm</span>
+                    </div>
+                    <div class="flex justify-between text-sm mt-1">
+                      <span class="text-muted">Na tela</span>
+                      <span id="qd-calc-cell-tela" class="text-accent font-mono font-medium">6.67 × 10 cm</span>
+                    </div>
+                  </div>
+                  <div class="border-t border-white/10 pt-3 mt-3">
+                    <p class="text-xs text-muted mb-2">Grade automática</p>
+                    <div class="flex justify-between text-sm">
+                      <span class="text-muted">Quad. na ref.</span>
+                      <span id="qd-calc-quad-ref" class="text-fg font-mono">2 × 2 cm</span>
+                    </div>
+                    <div class="flex justify-between text-sm mt-1">
+                      <span class="text-muted">Quad. na tela</span>
+                      <span id="qd-calc-quad-tela" class="text-accent font-mono font-medium">8.33 × 8.33 cm</span>
+                    </div>
+                    <div class="flex justify-between text-sm mt-1">
+                      <span class="text-muted">Total</span>
+                      <span id="qd-calc-qtd" class="text-fg font-mono">6 × 6 (36 total)</span>
+                    </div>
+                  </div>
+                </div>
+                <p id="qd-calc-alert" class="hidden text-xs text-yellow-500/90 mt-2 leading-relaxed"></p>
+              </div>
+            </div>
+          </div>
+
           <!-- Botões -->
           <div id="qd-actions" class="hidden flex flex-col sm:flex-row gap-4">
             <button onclick="qdResetar()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
@@ -2413,11 +2497,13 @@
   function qdOnCols(v) {
     quadricularState.cols = Number(v);
     document.getElementById('qd-val-cols').textContent = v;
+    qdCalcUpdate();
     qdAplicarGrade();
   }
   function qdOnRows(v) {
     quadricularState.rows = Number(v);
     document.getElementById('qd-val-rows').textContent = v;
+    qdCalcUpdate();
     qdAplicarGrade();
   }
   function qdSetCor(c) {
@@ -2438,12 +2524,82 @@
     qdAplicarGrade();
   }
 
+  function qdCalcUpdate() {
+    const refW = parseFloat(document.getElementById('qd-ref-w').value) || 8;
+    const refH = parseFloat(document.getElementById('qd-ref-h').value) || 12;
+    const telaW = parseFloat(document.getElementById('qd-tela-w').value) || 50;
+    const telaH = parseFloat(document.getElementById('qd-tela-h').value) || 70;
+    const { cols, rows } = quadricularState;
+
+    quadricularState.refW = refW;
+    quadricularState.refH = refH;
+    quadricularState.telaW = telaW;
+    quadricularState.telaH = telaH;
+
+    const refRatio = refW / refH;
+    const telaRatio = telaW / telaH;
+
+    let escala, areaW, areaH, ladoLimitante;
+    if (refRatio > telaRatio) {
+      escala = telaW / refW;
+      ladoLimitante = 'largura';
+      areaW = telaW;
+      areaH = refH * escala;
+    } else {
+      escala = telaH / refH;
+      ladoLimitante = 'altura';
+      areaW = refW * escala;
+      areaH = telaH;
+    }
+
+    const cellRefW = refW / cols;
+    const cellRefH = refH / rows;
+    const cellTelaW = areaW / cols;
+    const cellTelaH = areaH / rows;
+
+    const fmt = v => v % 1 === 0 ? v.toString() : v.toFixed(1);
+    const fmt2 = v => v < 1 ? v.toFixed(2) : v.toFixed(1);
+
+    document.getElementById('qd-calc-ref-ratio').textContent = simplifyRatio(refW, refH);
+    document.getElementById('qd-calc-tela-ratio').textContent = simplifyRatio(telaW, telaH);
+    document.getElementById('qd-calc-escala').textContent = '×' + fmt2(escala);
+    document.getElementById('qd-calc-area').textContent = fmt(areaW) + ' × ' + fmt(areaH) + ' cm';
+    document.getElementById('qd-calc-cell-ref').textContent = fmt2(cellRefW) + ' × ' + fmt2(cellRefH) + ' cm';
+    document.getElementById('qd-calc-cell-tela').textContent = fmt2(cellTelaW) + ' × ' + fmt2(cellTelaH) + ' cm';
+
+    const tamanhoQuadRef = Math.max(refW, refH) > 30 ? 5 : 2;
+    const tamanhoQuadTela = tamanhoQuadRef * escala;
+    const qtdQuadrados = Math.ceil(Math.max(refW, refH) / tamanhoQuadRef);
+
+    document.getElementById('qd-calc-quad-ref').textContent = tamanhoQuadRef + ' × ' + tamanhoQuadRef + ' cm';
+    document.getElementById('qd-calc-quad-tela').textContent = fmt2(tamanhoQuadTela) + ' × ' + fmt2(tamanhoQuadTela) + ' cm';
+    document.getElementById('qd-calc-qtd').textContent = qtdQuadrados + ' × ' + qtdQuadrados + ' (' + (qtdQuadrados * qtdQuadrados) + ' total)';
+
+    const alertEl = document.getElementById('qd-calc-alert');
+    alertEl.classList.remove('hidden');
+    if (ladoLimitante === 'largura') {
+      alertEl.innerHTML = '⚡ Largura limitante. Desenho ocupa ' + fmt(areaH) + 'cm da altura da tela (' + fmt(telaH) + 'cm). Sobram ' + fmt(telaH - areaH) + 'cm na vertical.';
+    } else {
+      alertEl.innerHTML = '⚡ Altura limitante. Desenho ocupa ' + fmt(areaW) + 'cm da largura da tela (' + fmt(telaW) + 'cm). Sobram ' + fmt(telaW - areaW) + 'cm na horizontal.';
+    }
+  }
+
+  function simplifyRatio(a, b) {
+    const gcd = (x, y) => y === 0 ? x : gcd(y, x % y);
+    const d = gcd(Math.round(a * 10), Math.round(b * 10));
+    return (Math.round(a * 10) / d) + ':' + (Math.round(b * 10) / d);
+  }
+
   function qdResetar() {
     quadricularState.cols = 5;
     quadricularState.rows = 5;
     quadricularState.corGrid = '#ffffff';
     quadricularState.espessura = 1;
     quadricularState.labels = true;
+    quadricularState.refW = 8;
+    quadricularState.refH = 12;
+    quadricularState.telaW = 50;
+    quadricularState.telaH = 70;
     const slC = document.getElementById('qd-sl-cols');
     const slR = document.getElementById('qd-sl-rows');
     const slE = document.getElementById('qd-sl-esp');
@@ -2454,7 +2610,16 @@
     document.getElementById('qd-val-rows').textContent = '5';
     document.getElementById('qd-val-esp').textContent = '1px';
     document.getElementById('qd-labels-toggle').checked = true;
+    const refWEl = document.getElementById('qd-ref-w');
+    const refHEl = document.getElementById('qd-ref-h');
+    const telaWEl = document.getElementById('qd-tela-w');
+    const telaHEl = document.getElementById('qd-tela-h');
+    if (refWEl) refWEl.value = 8;
+    if (refHEl) refHEl.value = 12;
+    if (telaWEl) telaWEl.value = 50;
+    if (telaHEl) telaHEl.value = 70;
     qdSetCor('#ffffff');
+    qdCalcUpdate();
     qdAplicarGrade();
   }
 
@@ -2487,11 +2652,13 @@
 
         document.getElementById('qd-canvas-section').classList.remove('hidden');
         document.getElementById('qd-controls-section').classList.remove('hidden');
+        document.getElementById('qd-calc-section').classList.remove('hidden');
         document.getElementById('qd-actions').classList.remove('hidden');
         document.getElementById('qd-upload-placeholder').innerHTML =
           `<p class="text-muted text-sm">Imagem carregada: <span class="text-fg">${file.name}</span></p>`;
 
         qdAplicarGrade();
+        qdCalcUpdate();
       };
       img.src = e.target.result;
     };
