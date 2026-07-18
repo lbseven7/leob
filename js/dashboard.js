@@ -32,37 +32,14 @@
   ];
 
   // ── Router ────────────────────────────────────────────────────────────
-  const maisPages = ['posterizar','zonas','riscoLinear','isolador','janela','quadricular','comparador','ilusao'];
-
-  function toggleMais() {
-    const drawer = document.getElementById('mob-mais-drawer');
-    drawer.classList.toggle('hidden');
-  }
-
-  document.addEventListener('click', e => {
-    const drawer = document.getElementById('mob-mais-drawer');
-    const btn = document.getElementById('btn-mais');
-    if (drawer && !drawer.classList.contains('hidden') && !drawer.contains(e.target) && !btn.contains(e.target)) {
-      drawer.classList.add('hidden');
-    }
-  });
-
   function navigate(page) {
     const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, isolador: renderIsolador, janela: renderJanela, quadricular: renderQuadricular, comparador: renderComparador, ilusao: renderIlusao };
     document.getElementById('app').innerHTML = '';
     (map[page] || renderHome)();
-    document.querySelectorAll('.nav-link').forEach(el => {
-      el.classList.toggle('text-accent', el.dataset.nav === page);
-      el.classList.toggle('text-muted',  el.dataset.nav !== page);
+    document.querySelectorAll('.sidebar-link').forEach(el => {
+      el.classList.toggle('text-accent', el.dataset.sidebar === page);
+      el.classList.toggle('text-muted',  el.dataset.sidebar !== page);
     });
-    document.querySelectorAll('.mob-nav').forEach(el => {
-      const navPage = el.dataset.mobNav;
-      const isActive = navPage === page || (navPage === 'mais' && maisPages.includes(page));
-      el.classList.toggle('text-accent', isActive);
-      el.classList.toggle('text-muted', !isActive);
-    });
-    const drawer = document.getElementById('mob-mais-drawer');
-    if (drawer && !drawer.classList.contains('hidden')) drawer.classList.add('hidden');
     window.scrollTo(0, 0);
   }
 
