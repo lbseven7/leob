@@ -1,0 +1,52 @@
+[
+  {
+    "tipo": "voz",
+    "texto": "Uma grande trajetória começa muitas vezes no silêncio de um cenário improvável. Para Léo Barbosa, esse início deu-se longe de sua terra natal, a Bahia. Nascido em Jequié, seus pais mudaram-se para a zona sul de São Paulo, quando o menino tinha apenas 5 anos.",
+    "arquivo": "01-intro.wav"
+  },
+  {
+    "tipo": "voz",
+    "texto": "Um menino corre descalço pelas ruas do Grajaú, bairro periférico da zona sul de São Paulo. Ele está com os olhos fixos no seu alvo. No céu azul, um pipa mandado vem caindo lentamente ao sabor do vento matinal. Um monte de moleques correndo com varas nas mãos, com rélo, pedra amarrada com linha, para tentar pegar. Seu coração está disparado e a adrenalina nas alturas. Ele sabe que precisa calcular com exatidão o local da queda daquele pipa e deve prestar atenção aos detalhes para ser bem-sucedido na empreitada. Sua tática era silenciosa e precisa: ele não olhava para a pipa, mas seguia a linha até a ponta para agarrar sua conquista. Sem saber, naquele exercício de pura atenção ao detalhe, o menino estava educando sua visão para decifrar tons, luzes e formas.",
+    "arquivo": "03-grajau.wav"
+  },
+  {
+    "tipo": "voz",
+    "texto": "No início da sua adolescência viveu uma outra paixão que era a pichação urbana nas ruas de São Paulo. Nesse tempo ainda não sabia desenhar, mas persistiu: usava as pequenas e coloridas figurinhas de balas da Freegells para copiar e treinar o desenho de observação. Era a sua primeira batalha silenciosa para dominar o traço.",
+    "arquivo": "05-adolescencia.wav"
+  },
+  {
+    "tipo": "voz",
+    "texto": "Sua história em São Paulo é interrompida no ano de 1997, quando sua família retorna à Bahia. Mesmo assim, tentou continuar com sua rotina e paixões pelo desenho e pichações, mas a cultura na Bahia era muito diferente de São Paulo. Não havia pichações, nem grafites e poucas pipas nos ares. Mesmo assim, soltou pipa, jogou bola na quadra e fez algumas pichações e graffiti. Mas nos anos 2000, uma nova mudança na vida do adolescente, que tinha nessa altura cerca de 17 anos: seus pais se separaram e ele mudou-se com a mãe para a cidade vizinha chamada Jaguaquara.",
+    "arquivo": "07-bahia.wav"
+  },
+  {
+    "tipo": "voz",
+    "texto": "Um encontro, uma inspiração que fortaleceu a trajetória artística de Léo Barbosa foi o encontro com o artista Luciano Barreto. Artista profissional baiano que residia em Jaguaquara naquele período.",
+    "arquivo": "09-luciano.wav"
+  },
+  {
+    "tipo": "voz",
+    "texto": "Em uma carta de reconhecimento de trajetória artística, disse Luciano Barreto sobre o novo artista: leitura de trecho da carta.",
+    "arquivo": "11-carta.wav"
+  },
+  {
+    "tipo": "voz",
+    "texto": "Léo tornou-se um estudioso e aplicado em obter conhecimentos no ramo da pintura. Sempre que podia, pesquisava sobre os movimentos artísticos, principalmente sobre o barroco, realismo, impressionismo e hiperrealismo, movimentos que o influenciaram.",
+    "arquivo": "13-estudioso.wav"
+  },
+  {
+    "tipo": "voz",
+    "texto": "A dedicação de Léo começou a chamar a atenção, e o pintor profissional Sandro Artes o convidou para trabalhar na ornamentação do São João de Jaguaquara. Posteriormente, o artista assumiu a liderança da equipe de ornamentação junina e natalina ao lado de Albert de Sousa Silva e de seu irmão Jhony até 2014. Paralelamente, o artista fazia encomendas e exposições de seu trabalho pela cidade, pela região, em outros estados e fora do país.",
+    "arquivo": "15-sandro.wav"
+  },
+  {
+    "tipo": "voz",
+    "texto": "A paixão pelo realismo e o hiperrealismo consolidou a identidade artística de Léo Barbosa. Sentia-se atraído pelas cenas em locais abertos, representando cenas comuns do dia a dia. Gosta da atmosfera representada em pinturas realistas, nas quais, segundo ele, dá até pra sentir o ar. Há uma harmonia natural, não forçada, simplesmente singela. Mas foi no hiperrealismo que o artista encontrou o seu lugar.",
+    "arquivo": "17-realismo.wav"
+  },
+  {
+    "tipo": "voz",
+    "texto": "O artista é homenageado frequentemente pelas escolas da cidade de Jaguaquara, como o Colégio Batista Taylor Egídio que dedicou um semestre estudando a vida e obras de Léo Barbosa, encerrando com um musical em 2019. Ainda neste ano foi homenageado pelo então Colégio Pio XII, onde iniciou sua trajetória em Jaguaquara. Em 2025 foi homenageado pela Escola Stela Dubois durante o aniversário da cidade. Em 2026, no aniversário da cidade, a Creche Tereza Muniz também o homenageou como personalidade da cidade. Mas, e atualmente, o que faz o artista?",
+    "arquivo": "19-homenagens.wav"
+  }
+]
