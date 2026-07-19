@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tono — Análise Realista em Escala de Cinzas</title>
+  <meta name="description" content="Plataforma de análise realista em escala de cinzas. Ferramentas interativas para treinar percepção de valor tonal na pintura.">
+  <meta property="og:title" content="Tono — Análise Realista em Escala de Cinzas">
+  <meta property="og:description" content="Plataforma de análise realista em escala de cinzas. Ferramentas interativas para treinar percepção de valor tonal na pintura.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tono.art.br/pages/dashboard.html">
+  <meta property="og:image" content="https://tono.art.br/images/hero-site.jpg">
+  <meta property="og:site_name" content="Tono">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Tono — Análise Realista em Escala de Cinzas">
+  <meta name="twitter:description" content="Plataforma de análise realista em escala de cinzas. Ferramentas interativas para treinar percepção de valor tonal na pintura.">
+  <meta name="twitter:image" content="https://tono.art.br/images/hero-site.jpg">
+  <link rel="icon" href="../images/logo-black3-sbg.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            bg:     'rgb(var(--bg) / <alpha-value>)',
+            fg:     'rgb(var(--fg) / <alpha-value>)',
+            card:   'rgb(var(--card) / <alpha-value>)',
+            muted:  'rgb(var(--muted) / <alpha-value>)',
+            accent: '#d88800',
+            border: 'rgb(var(--border) / <alpha-value>)',
+            brand:  { orange: '#d88800' },
+          },
+          fontFamily: {
+            display: ['Cormorant Garamond', 'Georgia', 'serif'],
+            body:    ['Inter', 'system-ui', 'sans-serif'],
+            logo:    ['Lovelo Line', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    @font-face { font-family: 'Lovelo Line'; src: url('../fonts/lovelo/Lovelo Line Light.otf') format('opentype'); font-weight: 300; font-style: normal; font-display: swap; }
+    @font-face { font-family: 'Lovelo Line'; src: url('../fonts/lovelo/Lovelo Line Bold.otf') format('opentype'); font-weight: 700; font-style: normal; font-display: swap; }
+    :root {
+      --bg: 10 10 10;
+      --fg: 240 237 232;
+      --card: 15 15 15;
+      --muted: 140 140 140;
+      --border: 36 36 36;
+      --sidebar-bg: 10 10 10;
+    }
+    html.light {
+      --bg: 250 248 245;
+      --fg: 28 26 24;
+      --card: 255 255 255;
+      --muted: 120 110 100;
+      --border: 220 215 205;
+      --sidebar-bg: 245 242 237;
+    }
+    body { -webkit-font-smoothing: antialiased; }
+    ::selection { background: #d888004d; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: rgb(var(--bg)); }
+    ::-webkit-scrollbar-thumb { background: rgb(var(--border)); border-radius: 4px; }
+
+    .fade-in  { animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn  { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .swatch-grow { animation: growUp 0.4s ease-out; transform-origin: bottom; }
+    @keyframes growUp  { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+    /* Slider custom styling */
+    input[type=range] { -webkit-appearance: none; appearance: none; height: 4px; border-radius: 2px; background: hsl(0 0% 14%); outline: none; cursor: pointer; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #d88800; cursor: pointer; border: 2px solid hsl(0 0% 4%); }
+    input[type=range]::-moz-range-thumb    { width: 16px; height: 16px; border-radius: 50%; background: #d88800; cursor: pointer; border: 2px solid hsl(0 0% 4%); }
+
+    /* Upload zone drag-over */
+    .drag-over { border-color: #d88800 !important; background: #d8880010 !important; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Impressão */
+    @media print {
+      body * { visibility: hidden; }
+      #print-target, #print-target * {
+        visibility: visible;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
+      #print-target { position: absolute; top: 0; left: 0; width: 100%; }
+      nav, .no-print, #imp-preview-wrap { border: none !important; background: none !important; padding: 0 !important; }
+      @page { margin: 12mm; }
+    }
+  </style>
+</head>
+<body class="bg-bg text-fg font-body min-h-screen overflow-x-hidden">
+
+  <!-- Header (mobile) -->
+  <header class="md:hidden fixed top-0 w-full z-50 backdrop-blur-xl bg-bg/80 border-b border-fg/5">
+    <div class="px-4 h-14 flex items-center justify-between">
+      <button onclick="navigate('home')" class="flex items-center gap-2.5">
+        <span class="font-logo font-bold text-2xl text-fg">TONO</span>
+      </button>
+      <div class="flex items-center gap-1">
+        <button onclick="toggleTheme()" class="text-fg text-xl p-2" title="Alternar tema">
+          <svg id="icon-moon-m" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 9.5A6.5 6.5 0 0 1 6.5 1a7 7 0 1 0 8.5 8.5z"/></svg>
+          <svg id="icon-sun-m" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="hidden"><circle cx="9" cy="9" r="3.5"/><path d="M9 1v1M9 16v1M1 9h1M16 9h1M3.05 3.05l.7.7M14.25 14.25l.7.7M3.05 14.95l.7-.7M14.25 3.75l.7-.7"/></svg>
+        </button>
+        <button onclick="toggleSidebar()" class="text-fg text-xl p-2"><i class="fa-solid fa-bars"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sidebar overlay (mobile) -->
+  <div id="sidebar-overlay" class="md:hidden fixed inset-0 bg-black/60 z-50 hidden" onclick="toggleSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed top-0 left-0 h-full w-60 bg-bg border-r border-fg/5 z-50 flex flex-col transition-transform duration-300 -translate-x-full md:translate-x-0">
+    <div class="h-16 hidden md:flex items-center justify-between px-5 border-b border-fg/5">
+      <button onclick="navigate('home')" class="flex items-center gap-2.5">
+        <span class="font-logo font-bold text-2xl text-fg">TONO</span>
+      </button>
+      <button onclick="toggleTheme()" id="theme-toggle" class="text-muted hover:text-fg transition-colors p-1.5 rounded-lg hover:bg-fg/5" title="Alternar tema">
+        <svg id="icon-moon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 9.5A6.5 6.5 0 0 1 6.5 1a7 7 0 1 0 8.5 8.5z"/></svg>
+        <svg id="icon-sun" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="hidden"><circle cx="9" cy="9" r="3.5"/><path d="M9 1v1M9 16v1M1 9h1M16 9h1M3.05 3.05l.7.7M14.25 14.25l.7.7M3.05 14.95l.7-.7M14.25 3.75l.7-.7"/></svg>
+      </button>
+    </div>
+    <nav class="flex-1 py-3 overflow-y-auto no-scrollbar">
+      <button onclick="navigate('home'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="home"><span class="w-5 text-center text-accent">&#x25CF;</span> Inicio</button>
+      <button onclick="navigate('ensino'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="ensino"><span class="w-5 text-center text-accent">&#x266B;</span> Ensino</button>
+      <button onclick="navigate('escala'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="escala"><span class="w-5 text-center text-accent">&#x25AE;</span> Escala</button>
+      <button onclick="navigate('treino'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="treino"><span class="w-5 text-center text-accent">&#x25A4;</span> Treino</button>
+      <button onclick="navigate('converter'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="converter"><span class="w-5 text-center text-accent">&#x2291;</span> Converter</button>
+      <button onclick="navigate('posterizar'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="posterizar"><span class="w-5 text-center text-accent">&#x25E7;</span> Posterizar</button>
+      <button onclick="navigate('zonas'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="zonas"><span class="w-5 text-center text-accent">&#x25A6;</span> Mapear</button>
+      <button onclick="navigate('riscoLinear'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="riscoLinear"><span class="w-5 text-center text-accent">&#x25D0;</span> Risco</button>
+      <button onclick="navigate('janela'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="janela"><span class="w-5 text-center text-accent">&#x229E;</span> Janela</button>
+      <button onclick="navigate('quadricular'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="quadricular"><span class="w-5 text-center text-accent">#</span> Quadricular</button>
+      <button onclick="navigate('comparador'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="comparador"><span class="w-5 text-center text-accent">&#x2295;</span> Comparador</button>
+      <button onclick="navigate('ilusao'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="ilusao"><span class="w-5 text-center text-accent">&#x25D0;</span> Ilusao</button>
+      <div class="mx-5 my-2 border-t border-fg/5"></div>
+      <p class="px-5 py-1 text-[11px] uppercase tracking-[0.2em] text-muted/50">Hiperrealismo</p>
+      <button onclick="navigate('localizador'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="localizador"><span class="w-5 text-center text-accent">&#x25C9;</span> Localizar Valor</button>
+      <button onclick="navigate('paleta'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="paleta"><span class="w-5 text-center text-accent">&#x25A3;</span> Extrair Paleta</button>
+      <button onclick="navigate('camadas'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="camadas"><span class="w-5 text-center text-accent">&#x25A7;</span> Camadas</button>
+      <button onclick="navigate('exercicios'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="exercicios"><span class="w-5 text-center text-accent">&#x25B7;</span> Exercicios</button>
+      <button onclick="navigate('luz'); toggleSidebar()" class="sidebar-link w-full flex items-center gap-3 px-5 py-2.5 text-[15px] text-muted hover:text-fg hover:bg-fg/5 transition-colors rounded-lg mx-1" data-sidebar="luz"><span class="w-5 text-center text-accent">&#x2600;</span> Analise de Luz</button>
+    </nav>
+  </aside>
+
+  <main id="app" class="pt-14 md:pt-16 md:ml-60"></main>
+
+  <script>
+    // Ativar pro automaticamente para versão demo
+    localStorage.setItem('tono_pro', 'true');
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      sidebar.classList.toggle('-translate-x-full');
+      overlay.classList.toggle('hidden');
+    }
+
+    function toggleTheme() {
+      const isLight = document.documentElement.classList.toggle('light');
+      localStorage.setItem('tono_theme', isLight ? 'light' : 'dark');
+      updateIcons();
+    }
+
+    function updateIcons() {
+      const isLight = document.documentElement.classList.contains('light');
+      document.querySelectorAll('#icon-moon, #icon-moon-m').forEach(el => el.classList.toggle('hidden', isLight));
+      document.querySelectorAll('#icon-sun, #icon-sun-m').forEach(el => el.classList.toggle('hidden', !isLight));
+    }
+
+    // Init theme
+    const saved = localStorage.getItem('tono_theme');
+    if (saved === 'light' || (!saved && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+      document.documentElement.classList.add('light');
+    }
+    updateIcons();
+  </script>
+  <script src="../js/dashboard.js"></script>
+</body>
+</html>

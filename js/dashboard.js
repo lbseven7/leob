@@ -64,7 +64,7 @@
 
   document.addEventListener('click', e => {
     const btn = e.target.closest('[data-premium]');
-    if (btn) { e.stopPropagation(); mostrarModalPremium(); }
+    if (btn && !isPro) { e.stopPropagation(); mostrarModalPremium(); }
   });
 
   function navigate(page) {
@@ -84,15 +84,15 @@
     const app = document.getElementById('app');
     const strip = escalaCinza.map(v => `<div class="flex-1 swatch-grow" style="background-color:${v.hex};animation-delay:${0.05*v.valor}s"></div>`).join('');
     const modulos = [
-      { id:'escala',   icon:'▮', title:'Escala de Cinzas',    desc:'Estude a escala completa de 11 valores, do branco puro ao preto absoluto. Guia de misturas incluído.' },
-      { id:'treino',   icon:'▤', title:'Treino de Valores',   desc:'Pratique identificar valores tonais e avalie sua precisão visual.' },
-      { id:'converter',icon:'⊑', title:'Converter para Cinzas', desc:'Transforme qualquer imagem de referência em escala de cinzas para estudar valores tonais.' },
-      { id:'posterizar',icon:'◧', title:'Posterizar',           desc:'Reduza a imagem a poucos tons para enxergar as regiões de valor como blocos distintos.' },
-      { id:'zonas',     icon:'▦', title:'Mapear Zonas',          desc:'Divida a imagem em zonas e identifique o valor dominante de cada regiãão — como um mapa tonal.' },
-      { id:'riscoLinear',icon:'◐', title:'Risco Linear',          desc:'Extraia o contorno da imagem como um desenho de linha — ideal para estudar formas e preparar a tela.' },
-      { id:'janela',    icon:'⊞', title:'Janela Física',        desc:'Isole uma írea da imagem com uma míscara — como um cartãão vazado. Arraste e redimensione para estudar detalhes.' },
+      { id:'escala',   icon:'▮', title:'Escala de Cinzas',    desc:'Estude a escala completa de 11 valores em cinza, do branco puro ao preto absoluto. Guia de misturas incluído.' },
+      { id:'treino',   icon:'▤', title:'Treino de Valores',   desc:'Pratique identificar valores na escala de cinzas e avalie sua precisão visual.' },
+      { id:'converter',icon:'⊑', title:'Converter para Cinzas', desc:'Transforme qualquer imagem em escala de cinzas para estudar a estrutura tonal.' },
+      { id:'posterizar',icon:'◧', title:'Posterizar',           desc:'Reduza a imagem a poucos tons de cinza para enxergar as regiões de valor como blocos.' },
+      { id:'zonas',     icon:'▦', title:'Mapear Zonas',          desc:'Divida a imagem em zonas de cinza e identifique o valor dominante de cada região — como um mapa tonal.' },
+      { id:'riscoLinear',icon:'◐', title:'Risco Linear',          desc:'Extraia o contorno da imagem como linha — ideal para estudar formas e preparar a tela.' },
+      { id:'janela',    icon:'⊞', title:'Janela Física',        desc:'Isole uma área da imagem com uma máscara — como um cartão vazado. Arraste para estudar detalhes.' },
       { id:'quadricular',icon:'#', title:'Quadricular Imagem',   desc:'Sobreponha uma grade na imagem para copiar quadrado por quadrado — técnica clássica para desenhar com precisão.' },
-      { id:'comparador',icon:'⊕', title:'Comparar Amostras',   desc:'Clique em um ponto da referência e no mesmo ponto da sua pintura para comparar valores tonais com precisão.' },
+      { id:'comparador',icon:'⊕', title:'Comparar Amostras',   desc:'Clique no mesmo ponto na referência e na sua pintura para comparar valores tonais com precisão.' },
       { id:'ilusao',    icon:'◐', title:'Ilusão de Óptica',    desc:'Veja como o cérebro engana — o mesmo cinza parece diferente conforme o fundo. Contraste simultâneo na prática.' },
     ].map(m => `
       <button onclick="navigate('${m.id}')" class="group text-left block h-full p-8 rounded-2xl border border-white/10 hover:border-accent/40 bg-white/[0.02] hover:bg-white/[0.04] transition-all">
@@ -110,7 +110,7 @@
             <p class="text-accent text-xs md:text-sm tracking-[0.3em] uppercase mb-6">Tono</p>
             <h1 class="font-display text-4xl md:text-7xl leading-[1.05] mb-8">Tono —<br>Análise Realista</h1>
             <p class="text-muted text-lg md:text-xl leading-relaxed mb-12 max-w-2xl mx-auto font-light">
-              Aprenda a enxergar, classificar e misturar cada nuance de cinza. A base de toda pintura hiper realista começa no domínio dos valores.
+              Domine a escala de cinzas. Aprenda a enxergar, classificar e misturar cada valor tonal — do branco ao preto. Toda pintura realista começa aqui.
             </p>
             <div class="w-full max-w-2xl mx-auto">
               <div class="relative rounded-2xl overflow-hidden border border-white/10" style="padding-top:56.25%">
@@ -635,7 +635,7 @@
           <!-- Header -->
           <div class="fade-in mb-10">
             <h1 class="font-display text-4xl md:text-5xl mb-4">Converter para Cinzas</h1>
-            <p class="text-muted max-w-2xl font-light">Fa├ºa o upload de uma foto de referência e converta-a para escala de cinzas para estudar valores tonais. Ajuste brilho e contraste para focar nos valores que importam.</p>
+            <p class="text-muted max-w-2xl font-light">Faça o upload de uma foto e converta-a para escala de cinzas. Ajuste brilho e contraste para isolar os valores que importam.</p>
           </div>
 
           <!-- Upload zone -->
@@ -1179,7 +1179,7 @@
           <!-- Header -->
           <div class="fade-in mb-10">
             <h1 class="font-display text-4xl md:text-5xl mb-4">Mapear Zonas</h1>
-            <p class="text-muted max-w-2xl font-light">Divida a imagem em uma grade e descubra o valor tonal dominante de cada zona. É o mapa que vocã monta antes de colocar tinta na tela.</p>
+            <p class="text-muted max-w-2xl font-light">Divida a imagem em uma grade e descubra o valor dominante de cada zona na escala de cinza — é o mapa tonal que você monta antes de pintar.</p>
           </div>
 
           <!-- Upload zone -->
@@ -1846,7 +1846,7 @@
           <!-- Header -->
           <div class="fade-in mb-10">
             <h1 class="font-display text-4xl md:text-5xl mb-4">Isolador Tonal Dinâmico</h1>
-            <p class="text-muted max-w-2xl font-light">Passe o mouse ou arraste o dedo sobre a imagem para isolar o valor tonal exato de qualquer ponto — destrua as ilusções de ótica.</p>
+            <p class="text-muted max-w-2xl font-light">Passe o mouse ou arraste o dedo sobre a imagem para isolar o valor tonal exato de qualquer ponto — sem ilusões de ótica.</p>
           </div>
 
           <!-- Upload zone -->
@@ -4118,22 +4118,33 @@
     loupe.style.top = (e.clientY - 64) + 'px';
 
     const zoom = 8, size = 16;
+    const outSize = size * zoom;
+    let sx0 = px - Math.floor(size / 2), sy0 = py - Math.floor(size / 2);
+    sx0 = Math.max(0, Math.min(sx0, c.width - size));
+    sy0 = Math.max(0, Math.min(sy0, c.height - size));
+
     const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = size; tempCanvas.height = size;
+    tempCanvas.width = outSize; tempCanvas.height = outSize;
     const tCtx = tempCanvas.getContext('2d');
     tCtx.imageSmoothingEnabled = false;
-    tCtx.drawImage(c, px - size/2, py - size/2, size, size, 0, 0, size * zoom, size * zoom);
+    tCtx.drawImage(c, sx0, sy0, size, size, 0, 0, outSize, outSize);
 
     const grid = tempCanvas.getContext('2d');
     grid.strokeStyle = 'rgba(255,255,255,0.15)';
     grid.lineWidth = 1;
     for (let i = 0; i <= size; i++) {
-      grid.beginPath(); grid.moveTo(i*zoom, 0); grid.lineTo(i*zoom, size*zoom); grid.stroke();
-      grid.beginPath(); grid.moveTo(0, i*zoom); grid.lineTo(size*zoom, i*zoom); grid.stroke();
+      grid.beginPath(); grid.moveTo(i*zoom, 0); grid.lineTo(i*zoom, outSize); grid.stroke();
+      grid.beginPath(); grid.moveTo(0, i*zoom); grid.lineTo(outSize, i*zoom); grid.stroke();
     }
 
+    const cx = (px - sx0) * zoom + zoom / 2;
+    const cy = (py - sy0) * zoom + zoom / 2;
+    grid.strokeStyle = '#d88800';
+    grid.lineWidth = 2;
+    grid.strokeRect(cx - zoom / 2, cy - zoom / 2, zoom, zoom);
+
     loupe.style.backgroundImage = `url(${tempCanvas.toDataURL()})`;
-    loupe.style.backgroundSize = 'cover';
+    loupe.style.backgroundSize = '100% 100%';
   }
 
   // ── Localizador: isolamento tonal ──────────────────────────────────
