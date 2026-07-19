@@ -71,8 +71,8 @@
         <section class="relative flex flex-col items-center justify-center px-6 py-24 md:py-40 text-center overflow-hidden">
           <div class="absolute top-0 left-0 right-0 flex" style="height:6px">${strip}</div>
           <div class="fade-in relative z-10 max-w-3xl">
-            <p class="text-accent text-xs md:text-sm tracking-[0.3em] uppercase mb-6">Método LEOB</p>
-            <h1 class="font-display text-4xl md:text-7xl leading-[1.05] mb-8">Dashboard de<br>Análise Realista</h1>
+            <p class="text-accent text-xs md:text-sm tracking-[0.3em] uppercase mb-6">Tono</p>
+            <h1 class="font-display text-4xl md:text-7xl leading-[1.05] mb-8">Tono —<br>Análise Realista</h1>
             <p class="text-muted text-lg md:text-xl leading-relaxed mb-12 max-w-2xl mx-auto font-light">
               Aprenda a enxergar, classificar e misturar cada nuance de cinza. A base de toda pintura hiper realista começa no domínio dos valores.
             </p>
@@ -85,7 +85,7 @@
               </div>
               <div class="flex items-center justify-center gap-2 mt-4">
                 <span class="px-3 py-1 rounded-full bg-accent/10 text-accent text-[10px] uppercase tracking-[0.15em] font-medium">▶ Vídeo Tutorial</span>
-                <p class="text-xs text-muted">Veja como usar o Dashboard passo a passo</p>
+                <p class="text-xs text-muted">Veja como usar o Tono passo a passo</p>
               </div>
             </div>
           </div>
