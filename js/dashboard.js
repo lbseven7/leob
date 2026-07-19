@@ -2285,11 +2285,11 @@
     rows: 5,
     corGrid: '#ffffff',
     espessura: 1,
-    labels: true,
     refW: 8,
     refH: 12,
     telaW: 50,
     telaH: 70,
+    grayscale: false,
   };
 
   function renderQuadricular() {
@@ -2374,8 +2374,8 @@
                   <input type="range" id="qd-sl-esp" min="1" max="5" value="1" class="w-full" oninput="qdOnEsp(this.value)" />
                 </div>
                 <label class="flex items-center gap-3 cursor-pointer">
-                  <input type="checkbox" id="qd-labels-toggle" checked onchange="qdOnLabels()" class="accent-[#d88800] w-4 h-4" />
-                  <span class="text-sm">Mostrar números nas células (A1, B2...)</span>
+                  <input type="checkbox" id="qd-grayscale-toggle" onchange="qdOnGrayscale()" class="accent-[#d88800] w-4 h-4" />
+                  <span class="text-sm">Escala de cinzas (P&B)</span>
                 </label>
               </div>
 
@@ -2427,6 +2427,14 @@
                   </div>
                 </div>
                 <p class="text-xs text-muted">Proporção: <span id="qd-calc-tela-ratio" class="text-fg font-mono">5:7</span></p>
+                <div class="flex flex-wrap gap-1.5 mt-2">
+                  <button onclick="qdSetPreset(30,40)" class="px-2 py-1 text-[10px] rounded-md border border-white/10 text-muted hover:border-accent/40 hover:text-fg transition-colors">30×40</button>
+                  <button onclick="qdSetPreset(40,50)" class="px-2 py-1 text-[10px] rounded-md border border-white/10 text-muted hover:border-accent/40 hover:text-fg transition-colors">40×50</button>
+                  <button onclick="qdSetPreset(50,70)" class="px-2 py-1 text-[10px] rounded-md border border-white/10 text-muted hover:border-accent/40 hover:text-fg transition-colors">50×70</button>
+                  <button onclick="qdSetPreset(60,80)" class="px-2 py-1 text-[10px] rounded-md border border-white/10 text-muted hover:border-accent/40 hover:text-fg transition-colors">60×80</button>
+                  <button onclick="qdSetPreset(80,100)" class="px-2 py-1 text-[10px] rounded-md border border-white/10 text-muted hover:border-accent/40 hover:text-fg transition-colors">80×100</button>
+                  <button onclick="qdSetPreset(100,120)" class="px-2 py-1 text-[10px] rounded-md border border-white/10 text-muted hover:border-accent/40 hover:text-fg transition-colors">100×120</button>
+                </div>
               </div>
 
               <!-- Resultado -->
@@ -2474,7 +2482,7 @@
           </div>
 
           <!-- Botões -->
-          <div id="qd-actions" class="hidden flex flex-col sm:flex-row gap-4">
+          <div id="qd-actions" class="hidden flex flex-col sm:flex-row gap-4 flex-wrap">
             <button onclick="qdResetar()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
               Redefinir Grade
             </button>
@@ -2484,6 +2492,12 @@
               onmouseenter="this.style.background='#c07800'"
               onmouseleave="this.style.background='#d88800'">
               Baixar Quadriculada (PNG)
+            </button>
+            <button onclick="qdGerarReferenciaAmpliada()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
+              <i class="fa-solid fa-print mr-2"></i>Referência Ampliada
+            </button>
+            <button onclick="qdGerarGradeBranca()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
+              <i class="fa-solid fa-table mr-2"></i>Grade em Branco
             </button>
             <button onclick="document.getElementById('qd-file-input').click()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
               Trocar Imagem
@@ -2519,9 +2533,16 @@
     document.getElementById('qd-val-esp').textContent = v + 'px';
     qdAplicarGrade();
   }
-  function qdOnLabels() {
-    quadricularState.labels = document.getElementById('qd-labels-toggle').checked;
+  function qdOnGrayscale() {
+    quadricularState.grayscale = document.getElementById('qd-grayscale-toggle').checked;
     qdAplicarGrade();
+  }
+  function qdSetPreset(w, h) {
+    quadricularState.telaW = w;
+    quadricularState.telaH = h;
+    document.getElementById('qd-tela-w').value = w;
+    document.getElementById('qd-tela-h').value = h;
+    qdCalcUpdate();
   }
 
   function qdCalcUpdate() {
@@ -2595,11 +2616,11 @@
     quadricularState.rows = 5;
     quadricularState.corGrid = '#ffffff';
     quadricularState.espessura = 1;
-    quadricularState.labels = true;
     quadricularState.refW = 8;
     quadricularState.refH = 12;
     quadricularState.telaW = 50;
     quadricularState.telaH = 70;
+    quadricularState.grayscale = false;
     const slC = document.getElementById('qd-sl-cols');
     const slR = document.getElementById('qd-sl-rows');
     const slE = document.getElementById('qd-sl-esp');
@@ -2609,7 +2630,7 @@
     document.getElementById('qd-val-cols').textContent = '5';
     document.getElementById('qd-val-rows').textContent = '5';
     document.getElementById('qd-val-esp').textContent = '1px';
-    document.getElementById('qd-labels-toggle').checked = true;
+    document.getElementById('qd-grayscale-toggle').checked = false;
     const refWEl = document.getElementById('qd-ref-w');
     const refHEl = document.getElementById('qd-ref-h');
     const telaWEl = document.getElementById('qd-tela-w');
@@ -2667,12 +2688,23 @@
 
   function qdAplicarGrade() {
     if (!quadricularState.originalImageData) return;
-    const { originalImageData, cols, rows, corGrid, espessura, labels } = quadricularState;
+    const { originalImageData, cols, rows, corGrid, espessura, grayscale } = quadricularState;
     const W = originalImageData.width, H = originalImageData.height;
     const cRes = document.getElementById('qd-canvas-resultado');
     cRes.width = W; cRes.height = H;
     const ctx = cRes.getContext('2d');
-    ctx.putImageData(originalImageData, 0, 0);
+
+    const imgData = new ImageData(new Uint8ClampedArray(originalImageData.data), W, H);
+
+    if (grayscale) {
+      const d = imgData.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const luma = Math.round(0.299 * d[i] + 0.587 * d[i+1] + 0.114 * d[i+2]);
+        d[i] = d[i+1] = d[i+2] = luma;
+      }
+    }
+
+    ctx.putImageData(imgData, 0, 0);
 
     const cellW = W / cols, cellH = H / rows;
 
@@ -2692,31 +2724,6 @@
       ctx.lineTo(W, Math.round(r * cellH) + 0.5);
       ctx.stroke();
     }
-
-    // Labels (A1, B2...)
-    if (labels) {
-      const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-      const fontSize = Math.max(10, Math.min(cellW, cellH) * 0.18);
-      ctx.font = `600 ${fontSize}px Inter, system-ui, sans-serif`;
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'top';
-
-      // Cor do texto: preto na imagem, com fundo semi-transparente
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const label = letras[c] + (r + 1);
-          const x = c * cellW + 3;
-          const y = r * cellH + 2;
-          // Fundo semi-transparente
-          const bgAlpha = corGrid === '#000000' ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)';
-          ctx.fillStyle = bgAlpha;
-          ctx.fillRect(x - 1, y - 1, fontSize * label.length * 0.65 + 4, fontSize + 4);
-          // Texto
-          ctx.fillStyle = corGrid === '#000000' ? '#ffffff' : '#000000';
-          ctx.fillText(label, x, y);
-        }
-      }
-    }
   }
 
   function qdBaixarImagem() {
@@ -2726,6 +2733,121 @@
       const url = URL.createObjectURL(blob);
       const a   = document.createElement('a');
       a.href = url; a.download = 'imagem-quadriculada.png';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
+
+  function qdGerarReferenciaAmpliada() {
+    if (!quadricularState.originalImageData) return;
+    const { originalImageData, cols, rows, corGrid, espessura } = quadricularState;
+    const W = originalImageData.width, H = originalImageData.height;
+
+    const scale = 3;
+    const outW = W * scale, outH = H * scale;
+    const c = document.createElement('canvas');
+    c.width = outW; c.height = outH;
+    const ctx = c.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(document.getElementById('qd-canvas-resultado'), 0, 0, outW, outH);
+
+    const cellW = outW / cols, cellH = outH / rows;
+    const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const fontSize = Math.max(14, Math.min(cellW, cellH) * 0.12);
+    ctx.font = `700 ${fontSize}px Inter, system-ui, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    for (let r = 0; r < rows; r++) {
+      for (let c2 = 0; c2 < cols; c2++) {
+        const label = letras[c2] + (r + 1);
+        const cx = (c2 + 0.5) * cellW;
+        const cy = (r + 0.5) * cellH;
+        const bgAlpha = corGrid === '#000000' ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.7)';
+        const textCol = corGrid === '#000000' ? '#ffffff' : '#000000';
+        const padX = fontSize * label.length * 0.35 + 6;
+        const padY = fontSize * 0.6 + 4;
+        ctx.fillStyle = bgAlpha;
+        ctx.beginPath();
+        ctx.roundRect(cx - padX, cy - padY, padX * 2, padY * 2, 4);
+        ctx.fill();
+        ctx.fillStyle = textCol;
+        ctx.fillText(label, cx, cy);
+      }
+    }
+
+    c.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'referencia-ampliada.png';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
+  }
+
+  function qdGerarGradeBranca() {
+    const { telaW, telaH, refW, refH, cols, rows, corGrid, espessura } = quadricularState;
+
+    const refRatio = refW / refH;
+    const telaRatio = telaW / telaH;
+    let areaW, areaH;
+    if (refRatio > telaRatio) {
+      areaW = telaW;
+      areaH = refH * (telaW / refW);
+    } else {
+      areaW = refW * (telaH / refH);
+      areaH = telaH;
+    }
+
+    const pxPerCm = 10;
+    const canvasW = Math.round(areaW * pxPerCm);
+    const canvasH = Math.round(areaH * pxPerCm);
+
+    const c = document.createElement('canvas');
+    c.width = canvasW; c.height = canvasH;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvasW, canvasH);
+
+    const cellW = canvasW / cols, cellH = canvasH / rows;
+
+    const lineColor = corGrid === '#ffffff' ? '#cccccc' : corGrid;
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = Math.max(1, espessura);
+
+    for (let col = 0; col <= cols; col++) {
+      ctx.beginPath();
+      ctx.moveTo(Math.round(col * cellW) + 0.5, 0);
+      ctx.lineTo(Math.round(col * cellW) + 0.5, canvasH);
+      ctx.stroke();
+    }
+    for (let row = 0; row <= rows; row++) {
+      ctx.beginPath();
+      ctx.moveTo(0, Math.round(row * cellH) + 0.5);
+      ctx.lineTo(canvasW, Math.round(row * cellH) + 0.5);
+      ctx.stroke();
+    }
+
+    const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const fontSize = Math.max(10, Math.min(cellW, cellH) * 0.15);
+    ctx.font = `600 ${fontSize}px Inter, system-ui, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = lineColor;
+
+    for (let r = 0; r < rows; r++) {
+      for (let col = 0; col < cols; col++) {
+        const label = letras[col] + (r + 1);
+        ctx.fillText(label, (col + 0.5) * cellW, (r + 0.5) * cellH);
+      }
+    }
+
+    c.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'grade-branca-' + telaW + 'x' + telaH + '.png';
       document.body.appendChild(a); a.click();
       document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
