@@ -33,7 +33,7 @@
 
   // ── Router ────────────────────────────────────────────────────────────
   function navigate(page) {
-    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderEscala, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, isolador: renderLocalizador, janela: renderJanela, quadricular: renderQuadricular, comparador: renderComparador, ilusao: renderIlusao, localizador: renderLocalizador, paleta: renderPaleta, camadas: renderCamadas, exercicios: renderExercicios, luz: renderLuz };
+    const map = { home: renderHome, ensino: renderEnsino, escala: renderEscala, treino: renderTreino, misturas: renderEscala, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, isolador: renderLocalizador, janela: renderJanela, quadricular: renderQuadricular, comparador: renderComparador, ilusao: renderIlusao, localizador: renderLocalizador, paleta: renderPaleta, camadas: renderCamadas, exercicios: renderExercicios, luz: renderLuz };
     document.getElementById('app').innerHTML = '';
     (map[page] || renderHome)();
     document.querySelectorAll('.sidebar-link').forEach(el => {
@@ -96,6 +96,154 @@
         <section class="px-6 pb-24">
           <div class="max-w-6xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-5 fade-in">${modulos}</div>
         </section>
+      </div>`;
+  }
+
+  // ── Ensino (Podcast) ───────────────────────────────────────────────
+  const episodios = [
+    {
+      id: 1,
+      titulo: 'O que é Hiperrealismo?',
+      duracao: '12 min',
+      descricao: 'Conceito, história e diferença entre realismo e hiperrealismo. Por que o hiperrealismo vai além da simples reprodução fotográfica.',
+      ferramentas: [],
+      arquivo: 'audio/episodio-01.mp3',
+    },
+    {
+      id: 2,
+      titulo: 'Domine os Valores',
+      duracao: '15 min',
+      descricao: 'Por que valores são a base de toda pintura realista. Como treinar sua percepção para enxergar valores onde outros veem apenas cores.',
+      ferramentas: ['escala', 'treino', 'localizador'],
+      arquivo: 'audio/episodio-02.mp3',
+    },
+    {
+      id: 3,
+      titulo: 'Luz e Sombra',
+      duracao: '14 min',
+      descricao: 'Como a luz cria forma, profundidade e volume. Tipos de luz, sombras projetadas e como analisar a direção da luz em uma referência.',
+      ferramentas: ['luz', 'localizador'],
+      arquivo: 'audio/episodio-03.mp3',
+    },
+    {
+      id: 4,
+      titulo: 'Misturas e Paleta',
+      duracao: '13 min',
+      descricao: 'Técnicas de mistura para obter tons precisos. Como escolher e limitar sua paleta para manter harmonia na pintura.',
+      ferramentas: ['escala', 'paleta'],
+      arquivo: 'audio/episodio-04.mp3',
+    },
+    {
+      id: 5,
+      titulo: 'Transferência e Grade',
+      duracao: '11 min',
+      descricao: 'Métodos para transferir sua referência para a tela com precisão. O poder da técnica de quadriculação.',
+      ferramentas: ['quadricular', 'riscoLinear'],
+      arquivo: 'audio/episodio-05.mp3',
+    },
+    {
+      id: 6,
+      titulo: 'O Processo Completo',
+      duracao: '18 min',
+      descricao: 'Passo a passo completo de uma pintura hiperrealista: da preparação da tela ao acabamento final.',
+      ferramentas: ['camadas', 'comparador', 'janela'],
+      arquivo: 'audio/episodio-06.mp3',
+    },
+  ];
+
+  let ensinoState = { episodioAtual: null, tocando: false };
+
+  function renderEnsino() {
+    const app = document.getElementById('app');
+    const listaHtml = episodios.map(ep => `
+      <button onclick="renderEpisodio(${ep.id})" class="w-full text-left p-5 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-accent/30 transition-all fade-in">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-7 h-7 rounded-full bg-accent/10 text-accent flex items-center justify-center text-xs font-mono font-bold">${ep.id}</span>
+              <h3 class="font-display text-lg">${ep.titulo}</h3>
+            </div>
+            <p class="text-sm text-muted leading-relaxed mb-3">${ep.descricao}</p>
+            <div class="flex items-center gap-3 text-xs text-muted">
+              <span>&#x25B6; ${ep.duracao}</span>
+              ${ep.ferramentas.length ? `<span class="text-accent/60">+ ${ep.ferramentas.length} ferramenta${ep.ferramentas.length > 1 ? 's' : ''}</span>` : ''}
+            </div>
+          </div>
+          <span class="text-accent text-lg mt-2">&rsaquo;</span>
+        </div>
+      </button>`).join('');
+
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-3xl mx-auto">
+          <div class="fade-in mb-10">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Ensino</h1>
+            <p class="text-muted max-w-2xl font-light">Episódios em áudio sobre os fundamentos do hiperrealismo. Ouça enquanto prepara sua tela, mistura tintas ou simplesmente descansa.</p>
+          </div>
+          <div class="space-y-4">
+            ${listaHtml}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function renderEpisodio(id) {
+    const ep = episodios.find(e => e.id === id);
+    if (!ep) { renderEnsino(); return; }
+    ensinoState.episodioAtual = ep;
+
+    const ferramentasHtml = ep.ferramentas.length ? `
+      <div class="mt-8 p-6 rounded-xl border border-white/10 bg-white/[0.02]">
+        <p class="text-xs uppercase tracking-[0.2em] text-accent mb-4">Ferramentas Relacionadas</p>
+        <div class="flex flex-wrap gap-2">
+          ${ep.ferramentas.map(f => {
+            const nomes = { escala:'Escala de Cinzas', treino:'Treino de Valores', localizador:'Localizar Valor', luz:'Análise de Luz', paleta:'Extrair Paleta', quadricular:'Quadricular', riscoLinear:'Risco Linear', camadas:'Simulador de Camadas', comparador:'Comparar Amostras', janela:'Janela Física' };
+            return `<button onclick="navigate('${f}')" class="px-4 py-2 rounded-lg text-sm border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">${nomes[f] || f}</button>`;
+          }).join('')}
+        </div>
+      </div>` : '';
+
+    const idx = episodios.indexOf(ep);
+    const ant = idx > 0 ? episodios[idx - 1] : null;
+    const prox = idx < episodios.length - 1 ? episodios[idx + 1] : null;
+
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-3xl mx-auto">
+
+          <button onclick="renderEnsino()" class="flex items-center gap-2 text-sm text-muted hover:text-accent transition-colors mb-8">
+            <span>&lsaquo;</span> Voltar para Ensino
+          </button>
+
+          <div class="fade-in mb-8">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="w-10 h-10 rounded-full bg-accent/10 text-accent flex items-center justify-center text-sm font-mono font-bold">${ep.id}</span>
+              <div>
+                <p class="text-xs text-muted">Episódio ${ep.id} de ${episodios.length}</p>
+                <h1 class="font-display text-2xl md:text-3xl">${ep.titulo}</h1>
+              </div>
+            </div>
+            <p class="text-muted leading-relaxed">${ep.descricao}</p>
+          </div>
+
+          <!-- Player -->
+          <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02] mb-8">
+            <audio id="ensino-audio" class="w-full" controls preload="none">
+              <source src="${ep.arquivo}" type="audio/mpeg">
+              Seu navegador não suporta o elemento de áudio.
+            </audio>
+            <p class="text-xs text-muted mt-3 text-center">Duração: ${ep.duracao}</p>
+          </div>
+
+          ${ferramentasHtml}
+
+          <!-- Navegação -->
+          <div class="flex items-center justify-between mt-8 pt-6 border-t border-white/10">
+            ${ant ? `<button onclick="renderEpisodio(${ant.id})" class="flex items-center gap-2 text-sm text-muted hover:text-accent transition-colors"><span>&lsaquo;</span> ${ant.titulo}</button>` : '<span></span>'}
+            ${prox ? `<button onclick="renderEpisodio(${prox.id})" class="flex items-center gap-2 text-sm text-muted hover:text-accent transition-colors">${prox.titulo} <span>&rsaquo;</span></button>` : '<span></span>'}
+          </div>
+        </div>
       </div>`;
   }
 
