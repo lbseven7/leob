@@ -52,7 +52,7 @@
         </div>
         <h2 class="font-display text-2xl mb-2">Tono Premium</h2>
         <p class="text-muted text-sm leading-relaxed mb-6 max-w-xs mx-auto">Esta ferramenta é exclusiva do plano premium. Desbloqueie todas as ferramentas e domine a pintura hiperrealista.</p>
-        <a href="https://pay.hotmart.com/SEU_PRODUTO" target="_blank" class="inline-flex items-center gap-2 px-8 py-3 bg-accent text-bg rounded-full text-sm font-medium hover:brightness-110 active:scale-95 transition-all">
+        <a href="venda-dashboard.html" class="inline-flex items-center gap-2 px-8 py-3 bg-accent text-bg rounded-full text-sm font-medium hover:brightness-110 active:scale-95 transition-all">
           Desbloquear Acesso
         </a>
         <button onclick="this.closest('.premium-overlay').remove()" class="block mt-4 text-xs text-muted hover:text-fg transition-colors">
