@@ -181,8 +181,7 @@
   <main id="app" class="pt-14 md:pt-16 md:ml-60"></main>
 
   <script>
-    // Versão paga — pro só é ativado via ?pro=true (Hotmart redirect)
-    // Não limpar localStorage aqui para preservar status de compradores
+    localStorage.removeItem('tono_pro');
 
     function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
