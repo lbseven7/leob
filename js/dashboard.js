@@ -33,7 +33,7 @@
 
   // ── Router ────────────────────────────────────────────────────────────
   function navigate(page) {
-    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, isolador: renderIsolador, janela: renderJanela, quadricular: renderQuadricular, comparador: renderComparador, ilusao: renderIlusao, localizador: renderLocalizador, paleta: renderPaleta, camadas: renderCamadas, exercicios: renderExercicios, luz: renderLuz };
+    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderEscala, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, isolador: renderLocalizador, janela: renderJanela, quadricular: renderQuadricular, comparador: renderComparador, ilusao: renderIlusao, localizador: renderLocalizador, paleta: renderPaleta, camadas: renderCamadas, exercicios: renderExercicios, luz: renderLuz };
     document.getElementById('app').innerHTML = '';
     (map[page] || renderHome)();
     document.querySelectorAll('.sidebar-link').forEach(el => {
@@ -48,14 +48,12 @@
     const app = document.getElementById('app');
     const strip = escalaCinza.map(v => `<div class="flex-1 swatch-grow" style="background-color:${v.hex};animation-delay:${0.05*v.valor}s"></div>`).join('');
     const modulos = [
-      { id:'escala',   icon:'▮', title:'Escala de Cinzas',    desc:'Estude a escala completa de 11 valores, do branco puro ao preto absoluto.' },
+      { id:'escala',   icon:'▮', title:'Escala de Cinzas',    desc:'Estude a escala completa de 11 valores, do branco puro ao preto absoluto. Guia de misturas incluído.' },
       { id:'treino',   icon:'▤', title:'Treino de Valores',   desc:'Pratique identificar valores tonais e avalie sua precisão visual.' },
-      { id:'misturas', icon:'◇', title:'Guia de Misturas',    desc:'Proporções exatas de branco e preto para obter cada tom de cinza.' },
       { id:'converter',icon:'⊑', title:'Converter para Cinzas', desc:'Transforme qualquer imagem de referência em escala de cinzas para estudar valores tonais.' },
       { id:'posterizar',icon:'◧', title:'Posterizar',           desc:'Reduza a imagem a poucos tons para enxergar as regiões de valor como blocos distintos.' },
       { id:'zonas',     icon:'▦', title:'Mapear Zonas',          desc:'Divida a imagem em zonas e identifique o valor dominante de cada regiãão — como um mapa tonal.' },
       { id:'riscoLinear',icon:'◐', title:'Risco Linear',          desc:'Extraia o contorno da imagem como um desenho de linha — ideal para estudar formas e preparar a tela.' },
-      { id:'isolador',  icon:'◉', title:'Isolador Tonal',       desc:'Clique em qualquer ponto da imagem e descubra seu valor tonal exato. Isole uma faixa de valores para estudar.' },
       { id:'janela',    icon:'⊞', title:'Janela Física',        desc:'Isole uma írea da imagem com uma míscara — como um cartãão vazado. Arraste e redimensione para estudar detalhes.' },
       { id:'quadricular',icon:'#', title:'Quadricular Imagem',   desc:'Sobreponha uma grade na imagem para copiar quadrado por quadrado — técnica clássica para desenhar com precisão.' },
       { id:'comparador',icon:'⊕', title:'Comparar Amostras',   desc:'Clique em um ponto da referência e no mesmo ponto da sua pintura para comparar valores tonais com precisão.' },
@@ -97,6 +95,35 @@
 
   function renderEscala() {
     const app = document.getElementById('app');
+    const rows = escalaCinza.map((v,i) => `
+      <div class="grid items-center p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] transition-colors fade-in" style="grid-template-columns:auto auto 1fr;gap:0.75rem 1rem;animation-delay:${i*0.04}s">
+        <div><p class="font-display text-3xl">${v.valor}</p></div>
+        <div class="rounded-lg border border-white/10" style="width:3.5rem;height:3rem;background-color:${v.hex}"></div>
+        <div>
+          <p class="text-sm font-medium">${v.nome}</p>
+          <p class="text-xs text-muted font-mono">${v.hex}</p>
+        </div>
+        <div class="col-span-3 flex items-center gap-2 text-xs mt-2">
+          <span class="text-right w-8 text-muted" title="${pigmentos.branco.nome}">${v.branco}B</span>
+          <div class="flex-1 h-6 rounded overflow-hidden flex" style="box-shadow:0 0 0 1px hsl(0 0% 14%)">
+            ${v.branco > 0 ? `<div class="bg-white" style="width:${v.branco*10}%"></div>` : ''}
+            ${v.preto  > 0 ? `<div class="bg-black" style="width:${v.preto*10}%"></div>`  : ''}
+          </div>
+          <span class="w-8 text-muted" title="${pigmentos.preto.nome}">${v.preto}P</span>
+          <span class="text-muted ml-1">${v.branco===0?'100% preto':v.preto===0?'100% branco':`${v.branco}:${v.preto}`}</span>
+        </div>
+      </div>`).join('');
+    const tips = dicas.map(d => `<li>— ${d}</li>`).join('');
+    const alternativas = pigmentosAlternativos.map(p => `
+      <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02]">
+        <div class="flex items-center justify-between mb-1">
+          <p class="text-sm font-medium">${p.nome}</p>
+          <span class="text-xs font-mono text-muted">${p.codigo}</span>
+        </div>
+        <p class="text-xs text-accent mb-1">${p.papel}</p>
+        <p class="text-xs text-muted leading-relaxed">${p.desc}</p>
+      </div>`).join('');
+
     app.innerHTML = `
       <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
         <div class="max-w-6xl mx-auto">
@@ -107,6 +134,28 @@
           <div id="escala-preview" class="mb-8"></div>
           <div id="escala-strip"   class="mb-8"></div>
           <div id="escala-details"></div>
+
+          <div class="mt-16 p-8 rounded-2xl border border-white/10 bg-white/[0.02] fade-in">
+            <h3 class="font-display text-xl mb-1">Guia de Misturas</h3>
+            <p class="text-sm text-muted mb-5 font-light">Cada valor tonal é obtido misturando ${pigmentos.branco.nome} e ${pigmentos.preto.nome} em proporções precisas.</p>
+            <div class="space-y-3">${rows}</div>
+          </div>
+
+          <div class="mt-6 p-8 rounded-2xl border border-accent/20 bg-accent/[0.03] fade-in">
+            <div class="flex items-start gap-4">
+              <span class="text-accent flex-shrink-0 mt-1 text-2xl">◇</span>
+              <div>
+                <h3 class="font-display text-xl mb-4">Dicas de Mistura</h3>
+                <ul class="space-y-2 text-sm text-muted">${tips}</ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 p-8 rounded-2xl border border-white/10 bg-white/[0.02] fade-in">
+            <h3 class="font-display text-xl mb-1">Pigmentos Alternativos</h3>
+            <p class="text-sm text-muted mb-5 font-light">Caso não tenha os pigmentos de referência, estas são substituições comuns — o resultado tonal muda ligeiramente de temperatura.</p>
+            <div class="grid md:grid-cols-3 gap-4">${alternativas}</div>
+          </div>
         </div>
       </div>`;
     renderEscalaStrip();
@@ -3657,7 +3706,16 @@
   // ══════════════════════════════════════════════════════════════════════
   // ── 1. LOCALIZADOR DE VALOR ──────────────────────────────────────────
   // ══════════════════════════════════════════════════════════════════════
-  let localizadorState = { imageData: null };
+  let localizadorState = {
+    imageData: null,
+    originalImageData: null,
+    grayData: null,
+    picked: null,
+    modoIsolacao: false,
+    faixaMin: 0,
+    faixaMax: 10,
+    opacidadeFundo: 80,
+  };
 
   function renderLocalizador() {
     const app = document.getElementById('app');
@@ -3666,7 +3724,7 @@
         <div class="max-w-5xl mx-auto">
           <div class="fade-in mb-10">
             <h1 class="font-display text-4xl md:text-5xl mb-4">Localizar Valor</h1>
-            <p class="text-muted max-w-2xl font-light">Clique em qualquer ponto da imagem para descobrir o valor tonal exato (0–10) e os componentes RGB.</p>
+            <p class="text-muted max-w-2xl font-light">Clique em qualquer ponto da imagem para descobrir o valor tonal exato (0–10). Isole uma faixa de valores para estudar a distribuição tonal.</p>
           </div>
           <div id="lv-upload-zone" class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 mb-8 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]" style="min-height:200px" onclick="document.getElementById('lv-file-input').click()">
             <input type="file" id="lv-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="lvProcessFile(event)" />
@@ -3699,6 +3757,79 @@
                 </div>
               </div>
             </div>
+
+            <!-- Isolamento Tonal -->
+            <div class="p-4 md:p-8 rounded-2xl border border-white/10 bg-white/[0.02] mt-6">
+              <div class="grid md:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                  <h3 class="font-display text-xl mb-4">Isolar Faixa de Valores</h3>
+                  <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="lv-modo-toggle" onchange="lvOnModoIsolacao()" class="accent-[#d88800] w-4 h-4" />
+                    <span class="text-sm">Ativar isolamento tonal</span>
+                  </label>
+                  <p class="text-xs text-muted">Quando ativo, apenas os pixels dentro da faixa selecionada ficam visíveis — o resto fica dessaturado.</p>
+
+                  <div class="space-y-3">
+                    <div>
+                      <div class="flex justify-between text-sm mb-2">
+                        <span>Valor Mínimo (Claro)</span>
+                        <span id="lv-val-min" class="text-accent font-mono">0</span>
+                      </div>
+                      <input type="range" id="lv-sl-min" min="0" max="10" value="0" class="w-full" oninput="lvOnFaixa()" />
+                    </div>
+                    <div>
+                      <div class="flex justify-between text-sm mb-2">
+                        <span>Valor Máximo (Escuro)</span>
+                        <span id="lv-val-max" class="text-accent font-mono">10</span>
+                      </div>
+                      <input type="range" id="lv-sl-max" min="0" max="10" value="10" class="w-full" oninput="lvOnFaixa()" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <p class="text-xs text-muted mb-2">Atalhos rápidos:</p>
+                    <div class="flex flex-wrap gap-2">
+                      <button onclick="lvSetFaixa(0,3)" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">Claros (0–3)</button>
+                      <button onclick="lvSetFaixa(4,7)" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">Médios (4–7)</button>
+                      <button onclick="lvSetFaixa(8,10)" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">Escuros (8–10)</button>
+                      <button onclick="lvSetFaixa(0,10)" class="px-3 py-1.5 rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">Todos</button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-sm mb-2">
+                      <span>Opacidade do Fundo</span>
+                      <span id="lv-val-opacidade" class="text-accent font-mono">80%</span>
+                    </div>
+                    <input type="range" id="lv-sl-opacidade" min="0" max="100" value="80" class="w-full" oninput="lvOnOpacidade()" />
+                    <p class="text-xs text-muted mt-1">Quanto do fundo dessaturado permanece visível.</p>
+                  </div>
+                </div>
+
+                <div class="space-y-6">
+                  <h3 class="font-display text-xl mb-4">Distribuição de Valores</h3>
+                  <div id="lv-histograma" class="space-y-2"></div>
+                  <p class="text-xs text-muted">Quantos pixels da imagem pertencem a cada faixa tonal.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botões -->
+            <div class="flex flex-col sm:flex-row gap-4 mt-6">
+              <button onclick="lvLimparIsolamento()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
+                Limpar Isolamento
+              </button>
+              <button onclick="lvBaixarImagem()"
+                class="flex-1 px-8 py-4 rounded-full text-sm font-medium transition-colors"
+                style="background:#d88800;color:hsl(0 0% 4%)"
+                onmouseenter="this.style.background='#c07800'"
+                onmouseleave="this.style.background='#d88800'">
+                Baixar Resultado (PNG)
+              </button>
+              <button onclick="document.getElementById('lv-file-input').click()" class="px-6 py-3 rounded-full border border-white/10 text-sm hover:border-accent/40 transition-colors">
+                Trocar Imagem
+              </button>
+            </div>
           </div>
         </div>
       </div>`;
@@ -3719,7 +3850,18 @@
         c.width = w; c.height = h;
         const ctx = c.getContext('2d');
         ctx.drawImage(img, 0, 0, w, h);
-        localizadorState.imageData = ctx.getImageData(0, 0, w, h);
+        const imgData = ctx.getImageData(0, 0, w, h);
+        localizadorState.imageData = imgData;
+        localizadorState.originalImageData = imgData;
+
+        // Pre-calc grayscale
+        const gray = new Float32Array(w * h);
+        for (let i = 0; i < imgData.data.length; i += 4) {
+          gray[i / 4] = 0.299 * imgData.data[i] + 0.587 * imgData.data[i+1] + 0.114 * imgData.data[i+2];
+        }
+        localizadorState.grayData = gray;
+        localizadorState.picked = null;
+
         document.getElementById('lv-result').classList.remove('hidden');
         document.getElementById('lv-upload-zone').innerHTML = `
           <p class="text-muted text-sm">Imagem carregada</p>
@@ -3728,6 +3870,7 @@
         c.onclick = lvClick;
         c.onmousemove = lvMove;
         c.onmouseleave = () => document.getElementById('lv-loupe').classList.add('hidden');
+        lvRenderHistograma();
       };
       img.src = ev.target.result;
     };
@@ -3798,6 +3941,170 @@
 
     loupe.style.backgroundImage = `url(${tempCanvas.toDataURL()})`;
     loupe.style.backgroundSize = 'cover';
+  }
+
+  // ── Localizador: isolamento tonal ──────────────────────────────────
+  function lvOnFaixa() {
+    localizadorState.faixaMin = Number(document.getElementById('lv-sl-min').value);
+    localizadorState.faixaMax = Number(document.getElementById('lv-sl-max').value);
+    if (localizadorState.faixaMin > localizadorState.faixaMax) {
+      const tmp = localizadorState.faixaMin;
+      localizadorState.faixaMin = localizadorState.faixaMax;
+      localizadorState.faixaMax = tmp;
+    }
+    document.getElementById('lv-val-min').textContent = localizadorState.faixaMin;
+    document.getElementById('lv-val-max').textContent = localizadorState.faixaMax;
+    lvAplicarIsolamento();
+  }
+
+  function lvSetFaixa(min, max) {
+    localizadorState.faixaMin = min;
+    localizadorState.faixaMax = max;
+    document.getElementById('lv-sl-min').value = min;
+    document.getElementById('lv-sl-max').value = max;
+    document.getElementById('lv-val-min').textContent = min;
+    document.getElementById('lv-val-max').textContent = max;
+    lvAplicarIsolamento();
+  }
+
+  function lvOnModoIsolacao() {
+    localizadorState.modoIsolacao = document.getElementById('lv-modo-toggle').checked;
+    lvAplicarIsolamento();
+  }
+
+  function lvOnOpacidade() {
+    localizadorState.opacidadeFundo = Number(document.getElementById('lv-sl-opacidade').value);
+    document.getElementById('lv-val-opacidade').textContent = localizadorState.opacidadeFundo + '%';
+    lvAplicarIsolamento();
+  }
+
+  function lvGrayToValor(gray) {
+    return Math.min(10, Math.max(0, Math.round((1 - gray / 255) * 10)));
+  }
+
+  function lvAplicarIsolamento() {
+    if (!localizadorState.originalImageData || !localizadorState.modoIsolacao) {
+      lvRenderOriginal();
+      if (localizadorState.picked) lvClickAt(localizadorState.picked.cx, localizadorState.picked.cy);
+      return;
+    }
+    const c = document.getElementById('lv-canvas');
+    const ctx = c.getContext('2d');
+    const W = c.width, H = c.height;
+    const src = localizadorState.originalImageData.data;
+    const gray = localizadorState.grayData;
+    const out = ctx.createImageData(W, H);
+    const d = out.data;
+    const { faixaMin, faixaMax, opacidadeFundo } = localizadorState;
+    const bgOpacity = opacidadeFundo / 100;
+
+    for (let i = 0; i < gray.length; i++) {
+      const valor = lvGrayToValor(gray[i]);
+      const pi = i * 4;
+      if (valor >= faixaMin && valor <= faixaMax) {
+        d[pi] = src[pi]; d[pi+1] = src[pi+1]; d[pi+2] = src[pi+2]; d[pi+3] = 255;
+      } else {
+        const avg = Math.round(gray[i]);
+        d[pi] = Math.round(avg + (src[pi] - avg) * (1 - bgOpacity));
+        d[pi+1] = Math.round(avg + (src[pi+1] - avg) * (1 - bgOpacity));
+        d[pi+2] = Math.round(avg + (src[pi+2] - avg) * (1 - bgOpacity));
+        d[pi+3] = 255;
+      }
+    }
+    ctx.putImageData(out, 0, 0);
+  }
+
+  function lvRenderOriginal() {
+    const c = document.getElementById('lv-canvas');
+    const ctx = c.getContext('2d');
+    ctx.putImageData(localizadorState.originalImageData, 0, 0);
+  }
+
+  function lvLimparIsolamento() {
+    localizadorState.modoIsolacao = false;
+    localizadorState.faixaMin = 0;
+    localizadorState.faixaMax = 10;
+    const tog = document.getElementById('lv-modo-toggle');
+    const slMin = document.getElementById('lv-sl-min');
+    const slMax = document.getElementById('lv-sl-max');
+    const vlMin = document.getElementById('lv-val-min');
+    const vlMax = document.getElementById('lv-val-max');
+    if (tog) tog.checked = false;
+    if (slMin) slMin.value = 0;
+    if (slMax) slMax.value = 10;
+    if (vlMin) vlMin.textContent = '0';
+    if (vlMax) vlMax.textContent = '10';
+    lvRenderOriginal();
+    if (localizadorState.picked) lvClickAt(localizadorState.picked.cx, localizadorState.picked.cy);
+  }
+
+  function lvClickAt(cx, cy) {
+    const c = document.getElementById('lv-canvas');
+    const d = localizadorState.imageData.data;
+    const idx = (cy * c.width + cx) * 4;
+    const r = d[idx], g = d[idx+1], b = d[idx+2];
+    const luma = 0.299*r + 0.587*g + 0.114*b;
+    const valor = Math.round((1 - luma/255) * 10);
+    const hex = '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join('');
+
+    document.getElementById('lv-color-preview').style.background = `rgb(${r},${g},${b})`;
+    document.getElementById('lv-valor').textContent = valor;
+    document.getElementById('lv-r').textContent = r;
+    document.getElementById('lv-g').textContent = g;
+    document.getElementById('lv-b').textContent = b;
+    document.getElementById('lv-hex').textContent = hex;
+    document.getElementById('lv-bri').textContent = Math.round(luma/255*100) + '%';
+
+    const zonaBar = document.getElementById('lv-zona-bar');
+    zonaBar.innerHTML = '';
+    for (let i = 0; i <= 10; i++) {
+      const brightness = Math.round((1 - i/10) * 255);
+      const div = document.createElement('div');
+      div.className = 'flex-1 h-full transition-all ' + (i === valor ? 'ring-2 ring-accent ring-offset-1 ring-offset-bg rounded' : '');
+      div.style.background = `rgb(${brightness},${brightness},${brightness})`;
+      zonaBar.appendChild(div);
+    }
+    const nomes = ['Branco Puro','Cinza Muito Claro','Cinza Claro','Cinza Médio Claro','Cinza Médio','Cinza Médio Escuro','Cinza Escuro','Cinza Muito Escuro','Preto Claro','Preto','Preto Puro'];
+    document.getElementById('lv-zona-text').textContent = `Zona ${valor}: ${nomes[valor]}`;
+
+    localizadorState.picked = { cx, cy };
+  }
+
+  function lvRenderHistograma() {
+    const el = document.getElementById('lv-histograma');
+    if (!el || !localizadorState.grayData) return;
+    const gray = localizadorState.grayData;
+    const contagens = new Array(11).fill(0);
+    for (let i = 0; i < gray.length; i++) {
+      contagens[lvGrayToValor(gray[i])]++;
+    }
+    const maxC = Math.max(...contagens);
+    el.innerHTML = contagens.map((c, i) => {
+      const pct = maxC > 0 ? (c / maxC) * 100 : 0;
+      const pixels = (c / gray.length * 100).toFixed(1);
+      const br = Math.round((1 - i/10) * 255);
+      return `
+        <div class="flex items-center gap-3 text-xs">
+          <span class="w-6 text-right font-mono text-muted">${i}</span>
+          <div class="flex-1 h-4 rounded overflow-hidden bg-white/5">
+            <div class="h-full rounded transition-all" style="width:${pct}%;background:rgb(${br},${br},${br})"></div>
+          </div>
+          <span class="w-12 text-right font-mono text-muted">${pixels}%</span>
+        </div>`;
+    }).join('');
+  }
+
+  function lvBaixarImagem() {
+    const canvas = document.getElementById('lv-canvas');
+    if (!canvas) return;
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a   = document.createElement('a');
+      a.href = url; a.download = 'localizar-valor.png';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, 'image/png');
   }
 
   // ══════════════════════════════════════════════════════════════════════
