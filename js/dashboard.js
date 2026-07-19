@@ -76,10 +76,7 @@
             <p class="text-muted text-lg md:text-xl leading-relaxed mb-12 max-w-2xl mx-auto font-light">
               Aprenda a enxergar, classificar e misturar cada nuance de cinza. A base de toda pintura hiper realista começa no domínio dos valores.
             </p>
-            <button onclick="navigate('escala')" class="inline-flex items-center gap-2 px-8 py-4 bg-fg text-bg rounded-full text-sm tracking-wide hover:bg-accent transition-colors">
-              Quero Aprender Agora!
-            </button>
-            <div class="mt-14 w-full max-w-2xl mx-auto">
+            <div class="w-full max-w-2xl mx-auto">
               <div class="relative rounded-2xl overflow-hidden border border-white/10" style="padding-top:56.25%">
                 <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/SEU_VIDEO_ID" frameborder="0" allowfullscreen loading="lazy"></iframe>
               </div>
@@ -88,6 +85,9 @@
                 <p class="text-xs text-muted">Veja como usar o Tono passo a passo</p>
               </div>
             </div>
+            <button onclick="navigate('escala')" class="mt-10 inline-flex items-center gap-2 px-8 py-4 bg-fg text-bg rounded-full text-sm tracking-wide hover:bg-accent transition-colors">
+              Quero Aprender Agora!
+            </button>
           </div>
         </section>
         <section class="px-6 pb-16">
