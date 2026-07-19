@@ -39,7 +39,7 @@
   const isPro = localStorage.getItem('tono_pro') === 'true';
 
   // ── Router ────────────────────────────────────────────────────────────
-  const ferramentasGratis = ['home', 'escala', 'treino', 'posterizar'];
+  const ferramentasGratis = ['home', 'escala', 'treino', 'tutoriais'];
 
   function mostrarModalPremium() {
     if (document.querySelector('.premium-overlay')) return;
@@ -68,7 +68,7 @@
   });
 
   function navigate(page) {
-    const map = { home: renderHome, ensino: renderEnsino, escala: renderEscala, treino: renderTreino, misturas: renderEscala, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, isolador: renderLocalizador, janela: renderJanela, quadricular: renderQuadricular, comparador: renderComparador, ilusao: renderIlusao, localizador: renderLocalizador, paleta: renderPaleta, camadas: renderCamadas, exercicios: renderExercicios, luz: renderLuz };
+    const map = { home: renderHome, ensino: renderEnsino, escala: renderEscala, treino: renderTreino, misturas: renderEscala, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, isolador: renderLocalizador, janela: renderJanela,       quadricular: renderQuadricular, ilusao: renderIlusao,       localizador: renderLocalizador, paleta: renderPaleta, exercicios: renderExercicios, luz: renderLuz, tutoriais: renderTutoriais };
     if (!isPro && !ferramentasGratis.includes(page)) { mostrarModalPremium(); return; }
     document.getElementById('app').innerHTML = '';
     (map[page] || renderHome)();
@@ -92,7 +92,6 @@
       { id:'riscoLinear',icon:'◐', title:'Risco Linear',          desc:'Extraia o contorno da imagem como linha — ideal para estudar formas e preparar a tela.' },
       { id:'janela',    icon:'⊞', title:'Janela Física',        desc:'Isole uma área da imagem com uma máscara — como um cartão vazado. Arraste para estudar detalhes.' },
       { id:'quadricular',icon:'#', title:'Quadricular Imagem',   desc:'Sobreponha uma grade na imagem para copiar quadrado por quadrado — técnica clássica para desenhar com precisão.' },
-      { id:'comparador',icon:'⊕', title:'Comparar Amostras',   desc:'Clique no mesmo ponto na referência e na sua pintura para comparar valores tonais com precisão.' },
       { id:'ilusao',    icon:'◐', title:'Ilusão de Óptica',    desc:'Veja como o cérebro engana — o mesmo cinza parece diferente conforme o fundo. Contraste simultâneo na prática.' },
     ].map(m => `
       <button onclick="navigate('${m.id}')" class="group text-left block h-full p-8 rounded-2xl border border-white/10 hover:border-accent/40 bg-white/[0.02] hover:bg-white/[0.04] transition-all">
@@ -182,7 +181,7 @@
       titulo: 'O Processo Completo',
       duracao: '18 min',
       descricao: 'Passo a passo completo de uma pintura hiperrealista: da preparação da tela ao acabamento final.',
-      ferramentas: ['camadas', 'comparador', 'janela'],
+      ferramentas: ['janela'],
       arquivo: 'audio/episodio-06.mp3',
     },
   ];
@@ -233,7 +232,7 @@
         <p class="text-xs uppercase tracking-[0.2em] text-accent mb-4">Ferramentas Relacionadas</p>
         <div class="flex flex-wrap gap-2">
           ${ep.ferramentas.map(f => {
-            const nomes = { escala:'Escala de Cinzas', treino:'Treino de Valores', localizador:'Localizar Valor', luz:'Análise de Luz', paleta:'Extrair Paleta', quadricular:'Quadricular', riscoLinear:'Risco Linear', camadas:'Simulador de Camadas', comparador:'Comparar Amostras', janela:'Janela Física' };
+            const nomes = { escala:'Escala de Cinzas', treino:'Treino de Valores', localizador:'Localizar Valor', luz:'Análise de Luz', paleta:'Extrair Paleta', quadricular:'Quadricular', riscoLinear:'Risco Linear', janela:'Janela Física', tutoriais:'Tutoriais' };
             return `<button onclick="navigate('${f}')" class="px-4 py-2 rounded-lg text-sm border border-white/10 text-muted hover:border-accent/40 hover:text-accent transition-all">${nomes[f] || f}</button>`;
           }).join('')}
         </div>
@@ -3097,610 +3096,6 @@
   }
 
 
-  // ── Comparador de Amostras ──────────────────────────────────────────────
-  let comparadorState = {
-    refImageData: null,
-    refGray: null,
-    refW: 0, refH: 0,
-    pinImageData: null,
-    pinGray: null,
-    pinW: 0, pinH: 0,
-    pontoRef: null,
-    pontoPin: null,
-    metodo: 'luminancia',
-    historico: [],
-    fase: 'upload-ref',
-    abortRef: null,
-    abortPin: null,
-  };
-
-  function renderComparador() {
-    const app = document.getElementById('app');
-    app.innerHTML = `
-      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
-        <div class="max-w-6xl mx-auto">
-
-          <!-- Header -->
-          <div class="fade-in mb-10">
-            <h1 class="font-display text-4xl md:text-5xl mb-4">Comparar Amostras</h1>
-            <p class="text-muted max-w-2xl font-light">Faça upload da foto de referência e da sua pintura. Clique no mesmo ponto em cada imagem para descobrir a diferença exata entre os valores tonais.</p>
-          </div>
-
-          <!-- Upload zones -->
-          <div class="grid md:grid-cols-2 gap-6 mb-8">
-            <div>
-              <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Foto de Referência</p>
-              <div id="cp-upload-ref"
-                class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-3 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]"
-                style="min-height:180px"
-                onclick="document.getElementById('cp-file-ref').click()"
-                ondragover="cpHandleDragRefOver(event)"
-                ondragleave="cpHandleDragRefLeave(event)"
-                ondrop="cpHandleDropRef(event)">
-                <input type="file" id="cp-file-ref" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="cpHandleFileRef(event)" />
-                <div id="cp-upload-ref-placeholder" class="flex flex-col items-center gap-2 text-center p-6">
-                  <div class="w-12 h-12 rounded-full bg-white/[0.06] flex items-center justify-center">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                  </div>
-                  <p class="font-display text-lg">Referência</p>
-                  <p class="text-muted text-xs">Arraste ou clique</p>
-                </div>
-              </div>
-            </div>
-            <div>
-              <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Sua Pintura</p>
-              <div id="cp-upload-pin"
-                class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-3 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]"
-                style="min-height:180px"
-                onclick="document.getElementById('cp-file-pin').click()"
-                ondragover="cpHandleDragPinOver(event)"
-                ondragleave="cpHandleDragPinLeave(event)"
-                ondrop="cpHandleDropPin(event)">
-                <input type="file" id="cp-file-pin" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="cpHandleFilePin(event)" />
-                <div id="cp-upload-pin-placeholder" class="flex flex-col items-center gap-2 text-center p-6">
-                  <div class="w-12 h-12 rounded-full bg-white/[0.06] flex items-center justify-center">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" class="text-muted"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                  </div>
-                  <p class="font-display text-lg">Sua Pintura</p>
-                  <p class="text-muted text-xs">Arraste ou clique</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Hint -->
-          <div id="cp-hint" class="hidden mb-6 p-4 rounded-xl border border-accent/20 bg-accent/[0.03] text-center">
-            <p id="cp-hint-text" class="text-sm text-accent font-medium"></p>
-          </div>
-
-          <!-- Canvases -->
-          <div id="cp-canvas-section" class="hidden mb-8">
-            <div class="grid md:grid-cols-2 gap-6">
-              <div>
-                <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Referência</p>
-                <canvas id="cp-canvas-ref" class="w-full rounded-xl border border-white/10 cursor-crosshair" style="max-height:400px;object-fit:contain"></canvas>
-              </div>
-              <div>
-                <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Sua Pintura</p>
-                <canvas id="cp-canvas-pin" class="w-full rounded-xl border border-white/10 cursor-crosshair" style="max-height:400px;object-fit:contain"></canvas>
-              </div>
-            </div>
-          </div>
-
-          <!-- Comparison panel -->
-          <div id="cp-comparison-section" class="hidden mb-8">
-            <div class="grid grid-cols-3 gap-4 mb-4">
-              <!-- Ref card -->
-              <div id="cp-ref-card" class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
-                <p class="text-[10px] uppercase tracking-[0.15em] text-muted mb-2">Referência</p>
-                <div id="cp-ref-swatch" class="w-12 h-12 rounded-lg mx-auto mb-2 border border-white/10"></div>
-                <p id="cp-ref-valor" class="font-display text-2xl text-fg">—</p>
-                <p id="cp-ref-nome" class="text-xs text-muted mt-1"></p>
-              </div>
-              <!-- Pin card -->
-              <div id="cp-pin-card" class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
-                <p class="text-[10px] uppercase tracking-[0.15em] text-muted mb-2">Sua Pintura</p>
-                <div id="cp-pin-swatch" class="w-12 h-12 rounded-lg mx-auto mb-2 border border-white/10"></div>
-                <p id="cp-pin-valor" class="font-display text-2xl text-fg">—</p>
-                <p id="cp-pin-nome" class="text-xs text-muted mt-1"></p>
-              </div>
-              <!-- Diff card -->
-              <div id="cp-diff-card" class="p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center">
-                <p class="text-[10px] uppercase tracking-[0.15em] text-muted mb-2">Diferença</p>
-                <div id="cp-diff-icon" class="w-12 h-12 rounded-lg mx-auto mb-2 flex items-center justify-center border border-white/10 bg-white/[0.04]">
-                  <span id="cp-diff-symbol" class="text-2xl">→</span>
-                </div>
-                <p id="cp-diff-valor" class="font-display text-2xl text-fg">—</p>
-                <p id="cp-diff-msg" class="text-xs text-muted mt-1 leading-snug"></p>
-              </div>
-            </div>
-            <!-- Visual bar -->
-            <div id="cp-diff-bar-wrap" class="hidden p-4 rounded-xl border border-white/10 bg-white/[0.02]">
-              <div class="flex justify-between text-[10px] text-muted mb-2">
-                <span>0 (Branco)</span><span>5 (Médio)</span><span>10 (Preto)</span>
-              </div>
-              <div class="relative h-4 rounded-full overflow-hidden" style="background:linear-gradient(to right,#fff,#888,#000)">
-                <div id="cp-marker-ref" class="absolute top-0 w-0.5 h-full bg-accent transition-all duration-300" style="left:50%"></div>
-                <div id="cp-marker-pin" class="absolute top-0 w-0.5 h-full bg-blue-400 transition-all duration-300" style="left:50%"></div>
-              </div>
-              <div class="flex justify-between mt-2 text-[10px]">
-                <span class="text-accent font-medium">● Ref</span>
-                <span class="text-blue-400 font-medium">● Sua Pintura</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- History -->
-          <div id="cp-history-section" class="hidden mb-8">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="font-display text-xl">Histórico</h3>
-              <button onclick="cpLimparHistorico()" class="text-xs text-muted hover:text-fg transition-colors">Limpar</button>
-            </div>
-            <div id="cp-history-grid" class="grid grid-cols-3 sm:grid-cols-6 gap-3"></div>
-          </div>
-
-          <!-- Controls -->
-          <div id="cp-controls-section" class="hidden p-4 md:p-8 rounded-2xl border border-white/10 bg-white/[0.02] mb-6">
-            <div class="flex flex-wrap items-center gap-6">
-              <div>
-                <p class="text-sm mb-2">Método</p>
-                <div class="flex gap-2">
-                  <button onclick="cpSetMetodo('luminancia')" id="cp-btn-luminancia" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-accent text-accent transition-all">Luminância</button>
-                  <button onclick="cpSetMetodo('media')" id="cp-btn-media" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted transition-all">Média</button>
-                </div>
-              </div>
-              <div class="flex-1"></div>
-              <button onclick="cpExportarComparacao()" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent active:scale-95 transition-all">Baixar Comparação (PNG)</button>
-              <button onclick="cpLimparPontos()" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted hover:border-accent/40 hover:text-accent active:scale-95 transition-all">Limpar Pontos</button>
-              <button onclick="cpRedefinir()" class="px-4 py-2.5 min-h-[44px] rounded-lg text-xs border border-white/10 text-muted hover:border-red-500/40 hover:text-red-400 active:scale-95 transition-all">Redefinir Tudo</button>
-            </div>
-          </div>
-
-        </div>
-      </div>`;
-  }
-
-  // ── Upload handlers ─────────────────────────────────────────────────────
-  function cpHandleDragRefOver(e) { e.preventDefault(); document.getElementById('cp-upload-ref').classList.add('border-accent/60','bg-accent/[0.02]'); }
-  function cpHandleDragRefLeave(e) { document.getElementById('cp-upload-ref').classList.remove('border-accent/60','bg-accent/[0.02]'); }
-  function cpHandleDropRef(e) { e.preventDefault(); document.getElementById('cp-upload-ref').classList.remove('border-accent/60','bg-accent/[0.02]'); if (e.dataTransfer.files[0]) cpProcessFile(e.dataTransfer.files[0], 'ref'); }
-  function cpHandleFileRef(e) { if (e.target.files[0]) cpProcessFile(e.target.files[0], 'ref'); }
-
-  function cpHandleDragPinOver(e) { e.preventDefault(); document.getElementById('cp-upload-pin').classList.add('border-accent/60','bg-accent/[0.02]'); }
-  function cpHandleDragPinLeave(e) { document.getElementById('cp-upload-pin').classList.remove('border-accent/60','bg-accent/[0.02]'); }
-  function cpHandleDropPin(e) { e.preventDefault(); document.getElementById('cp-upload-pin').classList.remove('border-accent/60','bg-accent/[0.02]'); if (e.dataTransfer.files[0]) cpProcessFile(e.dataTransfer.files[0], 'pin'); }
-  function cpHandleFilePin(e) { if (e.target.files[0]) cpProcessFile(e.target.files[0], 'pin'); }
-
-  function cpProcessFile(file, target) {
-    if (!file.type.match(/image\/(jpeg|png|webp)/)) { alert('Formato não suportado. Use JPG, PNG ou WebP.'); return; }
-    if (file.size > 12 * 1024 * 1024) { alert('Imagem muito grande. Use arquivos de até 10MB.'); return; }
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = new Image();
-      img.onload = () => {
-        const maxW = 800, maxH = 600;
-        let w = img.width, h = img.height;
-        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
-        if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
-
-        const canvasId = target === 'ref' ? 'cp-canvas-ref' : 'cp-canvas-pin';
-        const c = document.getElementById(canvasId);
-        c.width = w; c.height = h;
-        const ctx = c.getContext('2d');
-        ctx.drawImage(img, 0, 0, w, h);
-        const imgData = ctx.getImageData(0, 0, w, h);
-
-        // Pre-compute grayscale
-        const src = imgData.data;
-        const grayArr = new Float32Array(w * h);
-        for (let i = 0; i < src.length; i += 4) {
-          grayArr[i / 4] = comparadorState.metodo === 'luminancia'
-            ? 0.299 * src[i] + 0.587 * src[i + 1] + 0.114 * src[i + 2]
-            : (src[i] + src[i + 1] + src[i + 2]) / 3;
-        }
-
-        if (target === 'ref') {
-          comparadorState.refImageData = imgData;
-          comparadorState.refGray = grayArr;
-          comparadorState.refW = w;
-          comparadorState.refH = h;
-          document.getElementById('cp-upload-ref-placeholder').innerHTML =
-            `<p class="text-muted text-sm">Carregada: <span class="text-fg">${file.name}</span></p>`;
-          document.getElementById('cp-upload-ref').classList.remove('hover:border-accent/60','hover:bg-white/[0.02]','cursor-pointer');
-          document.getElementById('cp-upload-ref').classList.add('border-accent/30');
-        } else {
-          comparadorState.pinImageData = imgData;
-          comparadorState.pinGray = grayArr;
-          comparadorState.pinW = w;
-          comparadorState.pinH = h;
-          document.getElementById('cp-upload-pin-placeholder').innerHTML =
-            `<p class="text-muted text-sm">Carregada: <span class="text-fg">${file.name}</span></p>`;
-          document.getElementById('cp-upload-pin').classList.remove('hover:border-accent/60','hover:bg-white/[0.02]','cursor-pointer');
-          document.getElementById('cp-upload-pin').classList.add('border-accent/30');
-        }
-
-        // If both loaded, show canvases + controls
-        if (comparadorState.refImageData && comparadorState.pinImageData) {
-          comparadorState.fase = 'ready';
-          document.getElementById('cp-canvas-section').classList.remove('hidden');
-          document.getElementById('cp-controls-section').classList.remove('hidden');
-          cpSetupCanvasEvents();
-          cpShowHint('Clique em um ponto na referência para começar');
-        }
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  // ── Canvas events ───────────────────────────────────────────────────────
-  function cpSetupCanvasEvents() {
-    const cRef = document.getElementById('cp-canvas-ref');
-    const cPin = document.getElementById('cp-canvas-pin');
-
-    if (comparadorState.abortRef) comparadorState.abortRef.abort();
-    if (comparadorState.abortPin) comparadorState.abortPin.abort();
-    comparadorState.abortRef = new AbortController();
-    comparadorState.abortPin = new AbortController();
-
-    const signalRef = comparadorState.abortRef.signal;
-    const signalPin = comparadorState.abortPin.signal;
-
-    cRef.addEventListener('click', cpClickRef, { signal: signalRef });
-    cPin.addEventListener('click', cpClickPin, { signal: signalPin });
-    cRef.addEventListener('touchstart', cpClickRef, { passive: false, signal: signalRef });
-    cPin.addEventListener('touchstart', cpClickPin, { passive: false, signal: signalPin });
-  }
-
-  function cpGetCoords(e, canvas) {
-    const rect = canvas.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    return {
-      x: Math.min(canvas.width - 1, Math.max(0, Math.floor(((clientX - rect.left) / rect.width) * canvas.width))),
-      y: Math.min(canvas.height - 1, Math.max(0, Math.floor(((clientY - rect.top) / rect.height) * canvas.height)))
-    };
-  }
-
-  function cpClickRef(e) {
-    if (!comparadorState.refGray) return;
-    e.preventDefault();
-    const c = document.getElementById('cp-canvas-ref');
-    const { x, y } = cpGetCoords(e, c);
-    const gray = comparadorState.refGray[y * comparadorState.refW + x];
-    const pi = (y * comparadorState.refW + x) * 4;
-    const src = comparadorState.refImageData.data;
-    const valor = Math.min(10, Math.max(0, Math.round((1 - gray / 255) * 10)));
-    const r = src[pi], g = src[pi + 1], b = src[pi + 2];
-    const hex = '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
-    const nomeIdx = Math.min(10, Math.max(0, Math.round((gray / 255) * 10)));
-    const nome = escalaCinza[nomeIdx].nome;
-
-    comparadorState.pontoRef = { x, y, gray, valor, r, g, b, hex, nome };
-
-    // Redraw canvas + marker
-    const ctx = c.getContext('2d');
-    ctx.putImageData(comparadorState.refImageData, 0, 0);
-    cpDrawMarker(ctx, x, y, '#d88800');
-
-    comparadorState.fase = 'picked-ref';
-    cpShowHint('Agora clique no mesmo ponto na sua pintura →');
-  }
-
-  function cpClickPin(e) {
-    if (!comparadorState.pinGray) return;
-    e.preventDefault();
-    const c = document.getElementById('cp-canvas-pin');
-    const { x, y } = cpGetCoords(e, c);
-    const gray = comparadorState.pinGray[y * comparadorState.pinW + x];
-    const pi = (y * comparadorState.pinW + x) * 4;
-    const src = comparadorState.pinImageData.data;
-    const valor = Math.min(10, Math.max(0, Math.round((1 - gray / 255) * 10)));
-    const r = src[pi], g = src[pi + 1], b = src[pi + 2];
-    const hex = '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
-    const nomeIdx = Math.min(10, Math.max(0, Math.round((gray / 255) * 10)));
-    const nome = escalaCinza[nomeIdx].nome;
-
-    comparadorState.pontoPin = { x, y, gray, valor, r, g, b, hex, nome };
-
-    // Redraw canvas + marker
-    const ctx = c.getContext('2d');
-    ctx.putImageData(comparadorState.pinImageData, 0, 0);
-    cpDrawMarker(ctx, x, y, '#60a5fa');
-
-    comparadorState.fase = 'picked-both';
-    cpShowHint('');
-    document.getElementById('cp-hint').classList.add('hidden');
-
-    cpMostrarComparacao();
-    cpAdicionarHistorico();
-  }
-
-  function cpDrawMarker(ctx, x, y, color) {
-    ctx.beginPath();
-    ctx.arc(x, y, 8, 0, Math.PI * 2);
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 3;
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(x, y, 8, 0, Math.PI * 2);
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(x, y, 3, 0, Math.PI * 2);
-    ctx.fillStyle = color;
-    ctx.fill();
-  }
-
-  // ── Export comparison as PNG ─────────────────────────────────────────────
-  function cpExportarComparacao() {
-    const { pontoRef: ref, pontoPin: pin } = comparadorState;
-    if (!ref || !pin) return;
-
-    const cRef = document.getElementById('cp-canvas-ref');
-    const cPin = document.getElementById('cp-canvas-pin');
-    const gap = 16;
-    const headerH = 50;
-    const footerH = 80;
-    const totalW = cRef.width + gap + cPin.width;
-    const totalH = headerH + Math.max(cRef.height, cPin.height) + footerH;
-
-    const canvas = document.createElement('canvas');
-    canvas.width = totalW;
-    canvas.height = totalH;
-    const ctx = canvas.getContext('2d');
-
-    // Background
-    ctx.fillStyle = '#1a1a1a';
-    ctx.fillRect(0, 0, totalW, totalH);
-
-    // Header labels
-    ctx.font = '600 16px Inter, system-ui, sans-serif';
-    ctx.fillStyle = '#999';
-    ctx.textAlign = 'left';
-    ctx.fillText('Referência', 0, 30);
-    ctx.textAlign = 'left';
-    ctx.fillText('Sua Pintura', cRef.width + gap, 30);
-
-    // Draw canvases
-    ctx.drawImage(cRef, 0, headerH);
-    ctx.drawImage(cPin, cRef.width + gap, headerH);
-
-    // Footer — comparison data
-    const fy = headerH + Math.max(cRef.height, cPin.height) + 16;
-
-    // Ref swatch + value
-    ctx.fillStyle = ref.hex;
-    ctx.fillRect(0, fy, 20, 20);
-    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-    ctx.strokeRect(0, fy, 20, 20);
-    ctx.font = '600 14px Inter, system-ui, sans-serif';
-    ctx.fillStyle = '#fff';
-    ctx.textAlign = 'left';
-    ctx.fillText(`Ref: ${ref.valor}/10 (${ref.nome})`, 28, fy + 15);
-
-    // Pin swatch + value
-    const pinX = cRef.width + gap;
-    ctx.fillStyle = pin.hex;
-    ctx.fillRect(pinX, fy, 20, 20);
-    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-    ctx.strokeRect(pinX, fy, 20, 20);
-    ctx.fillStyle = '#fff';
-    ctx.fillText(`Sua: ${pin.valor}/10 (${pin.nome})`, pinX + 28, fy + 15);
-
-    // Diff
-    const diff = Math.abs(ref.valor - pin.valor);
-    const diffCor = diff <= 1 ? '#4ade80' : diff <= 3 ? '#facc15' : diff <= 5 ? '#f97316' : '#ef4444';
-    ctx.fillStyle = diffCor;
-    ctx.font = '700 18px Inter, system-ui, sans-serif';
-    ctx.fillText(`Δ ${diff.toFixed(1)}`, totalW / 2 - 20, fy + 15);
-
-    // Diff message
-    const diffMsg = diff === 0 ? 'Valor idêntico!' :
-      ref.valor > pin.valor ? 'Adicione mais grafite/tinta preta' :
-      'Reduza a intensidade';
-    ctx.font = '400 12px Inter, system-ui, sans-serif';
-    ctx.fillStyle = '#777';
-    ctx.fillText(diffMsg, 0, fy + 40);
-
-    // Download
-    canvas.toBlob(blob => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'comparacao-tonal.png';
-      document.body.appendChild(a); a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }, 'image/png');
-  }
-
-  // ── Comparison display ──────────────────────────────────────────────────
-  function cpMostrarComparacao() {
-    const { pontoRef: ref, pontoPin: pin } = comparadorState;
-    if (!ref || !pin) return;
-
-    document.getElementById('cp-comparison-section').classList.remove('hidden');
-
-    // Ref card
-    document.getElementById('cp-ref-swatch').style.backgroundColor = ref.hex;
-    document.getElementById('cp-ref-valor').textContent = ref.valor + '/10';
-    document.getElementById('cp-ref-nome').textContent = ref.nome;
-
-    // Pin card
-    document.getElementById('cp-pin-swatch').style.backgroundColor = pin.hex;
-    document.getElementById('cp-pin-valor').textContent = pin.valor + '/10';
-    document.getElementById('cp-pin-nome').textContent = pin.nome;
-
-    // Diff
-    const diff = Math.abs(ref.valor - pin.valor);
-    const direcao = ref.valor > pin.valor ? 'mais' : 'menos';
-    const corClasse = diff <= 1 ? 'text-green-400' : diff <= 3 ? 'text-yellow-400' : diff <= 5 ? 'text-orange-400' : 'text-red-400';
-
-    let msg = '';
-    if (diff === 0) msg = 'Valor idêntico!';
-    else if (diff <= 1) msg = 'Excelente! Praticamente igual.';
-    else if (diff <= 3) msg = `Quase lá. Adicione ${direcao} intensidade.`;
-    else if (diff <= 5) msg = `Diferença moderada. ${ref.valor > pin.valor ? 'Escureça' : 'Clareie'} um pouco.`;
-    else msg = ref.valor > pin.valor ? 'Adicione mais grafite/tinta preta.' : 'Reduza a intensidade — está escurecido demais.';
-
-    document.getElementById('cp-diff-valor').textContent = diff.toFixed(1);
-    document.getElementById('cp-diff-valor').className = `font-display text-2xl ${corClasse}`;
-    document.getElementById('cp-diff-msg').textContent = msg;
-    document.getElementById('cp-diff-symbol').textContent = diff === 0 ? '=' : ref.valor > pin.valor ? '↑' : '↓';
-
-    // Visual bar
-    document.getElementById('cp-diff-bar-wrap').classList.remove('hidden');
-    const refPos = (ref.valor / 10) * 100;
-    const pinPos = (pin.valor / 10) * 100;
-    document.getElementById('cp-marker-ref').style.left = refPos + '%';
-    document.getElementById('cp-marker-pin').style.left = pinPos + '%';
-  }
-
-  // ── History ─────────────────────────────────────────────────────────────
-  function cpAdicionarHistorico() {
-    const { pontoRef: ref, pontoPin: pin } = comparadorState;
-    if (!ref || !pin) return;
-    const diff = Math.abs(ref.valor - pin.valor);
-    comparadorState.historico.push({
-      ref: { ...ref },
-      pin: { ...pin },
-      diff,
-    });
-    if (comparadorState.historico.length > 12) comparadorState.historico.shift();
-    document.getElementById('cp-history-section').classList.remove('hidden');
-    cpRenderHistorico();
-  }
-
-  function cpRenderHistorico() {
-    const grid = document.getElementById('cp-history-grid');
-    grid.innerHTML = comparadorState.historico.map((item, i) => {
-      const corBg = item.diff <= 1 ? 'border-green-500/30' : item.diff <= 3 ? 'border-yellow-500/30' : item.diff <= 5 ? 'border-orange-500/30' : 'border-red-500/30';
-      return `
-        <div class="p-3 rounded-xl border ${corBg} bg-white/[0.02] text-center fade-in" style="animation-delay:${i * 0.03}s">
-          <div class="flex items-center justify-center gap-1 mb-2">
-            <div class="w-4 h-4 rounded border border-white/10" style="background:${item.ref.hex}"></div>
-            <span class="text-[10px] text-muted">→</span>
-            <div class="w-4 h-4 rounded border border-white/10" style="background:${item.pin.hex}"></div>
-          </div>
-          <p class="text-xs font-mono text-fg">${item.ref.valor}→${item.pin.valor}</p>
-          <p class="text-[10px] text-muted mt-0.5">Δ${item.diff.toFixed(1)}</p>
-        </div>`;
-    }).join('');
-  }
-
-  // ── Controls ────────────────────────────────────────────────────────────
-  function cpSetMetodo(m) {
-    comparadorState.metodo = m;
-    document.getElementById('cp-btn-luminancia').className = `px-4 py-2.5 min-h-[44px] rounded-lg text-xs border ${m === 'luminancia' ? 'border-accent text-accent' : 'border-white/10 text-muted'} transition-all`;
-    document.getElementById('cp-btn-media').className = `px-4 py-2.5 min-h-[44px] rounded-lg text-xs border ${m === 'media' ? 'border-accent text-accent' : 'border-white/10 text-muted'} transition-all`;
-
-    // Re-process both images with new method
-    if (comparadorState.refImageData) cpReprocessGray('ref');
-    if (comparadorState.pinImageData) cpReprocessGray('pin');
-
-    // Re-pick if points were selected
-    if (comparadorState.pontoRef) {
-      const g = comparadorState.refGray[comparadorState.pontoRef.y * comparadorState.refW + comparadorState.pontoRef.x];
-      comparadorState.pontoRef.gray = g;
-      comparadorState.pontoRef.valor = Math.min(10, Math.max(0, Math.round((1 - g / 255) * 10)));
-    }
-    if (comparadorState.pontoPin) {
-      const g = comparadorState.pinGray[comparadorState.pontoPin.y * comparadorState.pinW + comparadorState.pontoPin.x];
-      comparadorState.pontoPin.gray = g;
-      comparadorState.pontoPin.valor = Math.min(10, Math.max(0, Math.round((1 - g / 255) * 10)));
-    }
-    if (comparadorState.pontoRef && comparadorState.pontoPin) cpMostrarComparacao();
-  }
-
-  function cpReprocessGray(target) {
-    const state = comparadorState;
-    const imgData = target === 'ref' ? state.refImageData : state.pinImageData;
-    const w = target === 'ref' ? state.refW : state.pinW;
-    const h = target === 'ref' ? state.refH : state.pinH;
-    const src = imgData.data;
-    const grayArr = new Float32Array(w * h);
-    for (let i = 0; i < src.length; i += 4) {
-      grayArr[i / 4] = state.metodo === 'luminancia'
-        ? 0.299 * src[i] + 0.587 * src[i + 1] + 0.114 * src[i + 2]
-        : (src[i] + src[i + 1] + src[i + 2]) / 3;
-    }
-    if (target === 'ref') state.refGray = grayArr;
-    else state.pinGray = grayArr;
-  }
-
-  // ── Hint ────────────────────────────────────────────────────────────────
-  function cpShowHint(text) {
-    const el = document.getElementById('cp-hint');
-    const txt = document.getElementById('cp-hint-text');
-    if (!text) { el.classList.add('hidden'); return; }
-    el.classList.remove('hidden');
-    txt.textContent = text;
-  }
-
-  // ── Reset ───────────────────────────────────────────────────────────────
-  function cpLimparPontos() {
-    comparadorState.pontoRef = null;
-    comparadorState.pontoPin = null;
-    comparadorState.fase = 'ready';
-
-    // Redraw canvases without markers
-    if (comparadorState.refImageData) {
-      const c = document.getElementById('cp-canvas-ref');
-      c.getContext('2d').putImageData(comparadorState.refImageData, 0, 0);
-    }
-    if (comparadorState.pinImageData) {
-      const c = document.getElementById('cp-canvas-pin');
-      c.getContext('2d').putImageData(comparadorState.pinImageData, 0, 0);
-    }
-
-    // Reset comparison display
-    document.getElementById('cp-ref-valor').textContent = '—';
-    document.getElementById('cp-ref-nome').textContent = '';
-    document.getElementById('cp-ref-swatch').style.backgroundColor = '';
-    document.getElementById('cp-pin-valor').textContent = '—';
-    document.getElementById('cp-pin-nome').textContent = '';
-    document.getElementById('cp-pin-swatch').style.backgroundColor = '';
-    document.getElementById('cp-diff-valor').textContent = '—';
-    document.getElementById('cp-diff-valor').className = 'font-display text-2xl text-fg';
-    document.getElementById('cp-diff-msg').textContent = '';
-    document.getElementById('cp-diff-symbol').textContent = '→';
-    document.getElementById('cp-diff-bar-wrap').classList.add('hidden');
-    document.getElementById('cp-comparison-section').classList.add('hidden');
-
-    cpShowHint('Clique em um ponto na referência para começar');
-  }
-
-  function cpRedefinir() {
-    if (comparadorState.abortRef) comparadorState.abortRef.abort();
-    if (comparadorState.abortPin) comparadorState.abortPin.abort();
-
-    comparadorState.refImageData = null;
-    comparadorState.refGray = null;
-    comparadorState.refW = 0;
-    comparadorState.refH = 0;
-    comparadorState.pinImageData = null;
-    comparadorState.pinGray = null;
-    comparadorState.pinW = 0;
-    comparadorState.pinH = 0;
-    comparadorState.pontoRef = null;
-    comparadorState.pontoPin = null;
-    comparadorState.historico = [];
-    comparadorState.fase = 'upload-ref';
-    comparadorState.abortRef = null;
-    comparadorState.abortPin = null;
-
-    // Re-render the whole page
-    renderComparador();
-  }
-
-  function cpLimparHistorico() {
-    comparadorState.historico = [];
-    document.getElementById('cp-history-section').classList.add('hidden');
-    document.getElementById('cp-history-grid').innerHTML = '';
-  }
-
-
   // ── Ilusão de Óptica do Valor ───────────────────────────────────────────
   let ilusaoState = { valor: 5 };
 
@@ -4431,160 +3826,6 @@
   }
 
   // ══════════════════════════════════════════════════════════════════════
-  // ── 3. SIMULADOR DE CAMADAS ──────────────────────────────────────────
-  // ══════════════════════════════════════════════════════════════════════
-  let camadasState = { imageData: null };
-
-  function renderCamadas() {
-    const app = document.getElementById('app');
-    app.innerHTML = `
-      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
-        <div class="max-w-6xl mx-auto">
-          <div class="fade-in mb-10">
-            <h1 class="font-display text-4xl md:text-5xl mb-4">Simulador de Camadas</h1>
-            <p class="text-muted max-w-2xl font-light">Visualize a ordem ideal de pintura: fundo → formas médias → sombras → detalhes → destaques.</p>
-          </div>
-          <div id="ly-upload-zone" class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 mb-8 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]" style="min-height:200px" onclick="document.getElementById('ly-file-input').click()">
-            <input type="file" id="ly-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="lyProcessFile(event)" />
-            <p class="font-display text-xl text-muted">Clique ou arraste uma imagem</p>
-          </div>
-          <div id="ly-result" class="hidden">
-            <div class="grid md:grid-cols-2 gap-6 mb-8">
-              <div>
-                <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Original</p>
-                <canvas id="ly-canvas-orig" class="w-full rounded-xl border border-white/10" style="max-height:400px;object-fit:contain"></canvas>
-              </div>
-              <div>
-                <p class="text-xs uppercase tracking-[0.2em] text-accent mb-3" id="ly-layer-label">Camada 1: Fundo</p>
-                <canvas id="ly-canvas-layer" class="w-full rounded-xl border border-white/10" style="max-height:400px;object-fit:contain"></canvas>
-              </div>
-            </div>
-            <div class="flex flex-wrap gap-2 justify-center mb-6">
-              <button onclick="lyShowLayer(0)" class="ly-btn px-4 py-2 rounded-full text-sm border border-accent text-accent transition">1. Fundo</button>
-              <button onclick="lyShowLayer(1)" class="ly-btn px-4 py-2 rounded-full text-sm border border-white/10 text-muted hover:border-accent/40 transition">2. Formas</button>
-              <button onclick="lyShowLayer(2)" class="ly-btn px-4 py-2 rounded-full text-sm border border-white/10 text-muted hover:border-accent/40 transition">3. Sombras</button>
-              <button onclick="lyShowLayer(3)" class="ly-btn px-4 py-2 rounded-full text-sm border border-white/10 text-muted hover:border-accent/40 transition">4. Detalhes</button>
-              <button onclick="lyShowLayer(4)" class="ly-btn px-4 py-2 rounded-full text-sm border border-white/10 text-muted hover:border-accent/40 transition">5. Destaques</button>
-            </div>
-            <div class="p-5 rounded-xl border border-white/10 bg-white/[0.02] max-w-2xl mx-auto">
-              <p id="ly-tip" class="text-sm text-muted leading-relaxed"></p>
-            </div>
-          </div>
-        </div>
-      </div>`;
-  }
-
-  function lyProcessFile(e) {
-    const file = e.target.files ? e.target.files[0] : e.dataTransfer.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      const img = new Image();
-      img.onload = () => {
-        const maxW = 600, maxH = 450;
-        let w = img.width, h = img.height;
-        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
-        if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
-
-        const cOrig = document.getElementById('ly-canvas-orig');
-        cOrig.width = w; cOrig.height = h;
-        const ctxO = cOrig.getContext('2d');
-        ctxO.drawImage(img, 0, 0, w, h);
-        camadasState.imageData = ctxO.getImageData(0, 0, w, h);
-        camadasState.w = w;
-        camadasState.h = h;
-
-        document.getElementById('ly-result').classList.remove('hidden');
-        document.getElementById('ly-upload-zone').innerHTML = `
-          <p class="text-muted text-sm">Imagem carregada</p>
-          <button onclick="document.getElementById('ly-file-input').value=''; document.getElementById('ly-file-input').click()" class="mt-2 px-4 py-1.5 text-xs rounded-full border border-white/10 text-muted hover:border-accent/40 hover:text-fg transition-colors">Trocar Imagem</button>
-        `;
-        lyShowLayer(0);
-      };
-      img.src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function lyShowLayer(layer) {
-    const { imageData, w, h } = camadasState;
-    const src = new Uint8ClampedArray(imageData.data);
-    const cRes = document.getElementById('ly-canvas-layer');
-    cRes.width = w; cRes.height = h;
-    const ctx = cRes.getContext('2d');
-
-    const d = new Uint8ClampedArray(src);
-    const tips = [
-      'Camada 1 — Fundo: Pinte toda a tela com um tom médio que represente o tom geral da imagem. Use pinceladas largas. Não se preocupe com detalhes.',
-      'Camada 2 — Formas: Identifique as formas principais e pinte suas silhuetas com valores aproximados. Use pincéis médios.',
-      'Camada 3 — Sombras: Adicione as regiões mais escuras. Defina a direção da luz e pinte as sombras projetadas e de forma.',
-      'Camada 4 — Detalhes: Trabalhe nos detalhes finos — texturas, bordas, transições suaves. Use pincéis pequenos.',
-      'Camada 5 — Destaques: Por último, adicione os pontos mais brilhantes da imagem. São poucos mas definem o realismo.'
-    ];
-
-    const names = ['Camada 1: Fundo', 'Camada 2: Formas', 'Camada 3: Sombras', 'Camada 4: Detalhes', 'Camada 5: Destaques'];
-
-    if (layer === 0) {
-      let rSum = 0, gSum = 0, bSum = 0, count = 0;
-      for (let i = 0; i < src.length; i += 4) { rSum += src[i]; gSum += src[i+1]; bSum += src[i+2]; count++; }
-      const rAvg = Math.round(rSum/count), gAvg = Math.round(gSum/count), bAvg = Math.round(bSum/count);
-      ctx.fillStyle = `rgb(${rAvg},${gAvg},${bAvg})`;
-      ctx.fillRect(0, 0, w, h);
-    } else if (layer === 1) {
-      for (let i = 0; i < d.length; i += 4) {
-        const gray = Math.round(0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2]);
-        let v;
-        if (gray < 51) v = 20;
-        else if (gray < 102) v = 60;
-        else if (gray < 153) v = 110;
-        else if (gray < 204) v = 180;
-        else v = 235;
-        d[i] = d[i+1] = d[i+2] = v;
-      }
-      ctx.putImageData(new ImageData(d, w, h), 0, 0);
-    } else if (layer === 2) {
-      for (let i = 0; i < d.length; i += 4) {
-        const gray = Math.round(0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2]);
-        d[i] = d[i+1] = d[i+2] = gray < 80 ? gray : 200;
-        d[i+3] = gray < 80 ? 255 : 60;
-      }
-      ctx.fillStyle = '#f0ece5';
-      ctx.fillRect(0, 0, w, h);
-      ctx.putImageData(new ImageData(d, w, h), 0, 0);
-    } else if (layer === 3) {
-      for (let i = 0; i < d.length; i += 4) {
-        const gray = Math.round(0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2]);
-        const edge = i > w*4 && i < d.length - w*4 ? Math.abs(gray - Math.round(0.299*d[i-w*4] + 0.587*d[i-w*4+1] + 0.114*d[i-w*4+2])) : 0;
-        const show = edge > 15 || (gray > 200) || (gray < 30);
-        d[i] = show ? src[i] : 230;
-        d[i+1] = show ? src[i+1] : 225;
-        d[i+2] = show ? src[i+2] : 220;
-        d[i+3] = 255;
-      }
-      ctx.putImageData(new ImageData(d, w, h), 0, 0);
-    } else if (layer === 4) {
-      ctx.fillStyle = '#1a1a1a';
-      ctx.fillRect(0, 0, w, h);
-      for (let i = 0; i < d.length; i += 4) {
-        const gray = Math.round(0.299*src[i] + 0.587*src[i+1] + 0.114*src[i+2]);
-        if (gray > 200) {
-          d[i] = src[i]; d[i+1] = src[i+1]; d[i+2] = src[i+2]; d[i+3] = 255;
-        } else {
-          d[i+3] = 0;
-        }
-      }
-      ctx.putImageData(new ImageData(d, w, h), 0, 0);
-    }
-
-    document.getElementById('ly-layer-label').textContent = names[layer];
-    document.getElementById('ly-tip').textContent = tips[layer];
-
-    document.querySelectorAll('.ly-btn').forEach((btn, i) => {
-      btn.className = 'ly-btn px-4 py-2 rounded-full text-sm transition ' + (i === layer ? 'border border-accent text-accent' : 'border border-white/10 text-muted hover:border-accent/40');
-    });
-  }
-
-  // ══════════════════════════════════════════════════════════════════════
   // ── 4. EXERCÍCIOS PROGRESSIVOS ───────────────────────────────────────
   // ══════════════════════════════════════════════════════════════════════
   function renderExercicios() {
@@ -4622,7 +3863,7 @@
       { semana: 7, titulo: 'Referência e Grade', foco: 'Transferência precisa', exercicios: [
         { nome: 'Retrato com grade 5×5', desc: 'Use o quadricular para transferir um retrato com precisão.', tempo: '6h', dificuldade: 'Difícil' },
         { nome: 'Detalhe ampliado', desc: 'Amplie um olho ou boca e pinte com grade densa (10×10).', tempo: '5h', dificuldade: 'Difícil' },
-        { nome: 'Comparação lado a lado', desc: 'Pinte ao lado da referência e use o comparador para ajustar valores.', tempo: '4h', dificuldade: 'Médio' },
+        { nome: 'Comparação lado a lado', desc: 'Pinte ao lado da referência e compare visualmente para ajustar valores.', tempo: '4h', dificuldade: 'Médio' },
       ]},
       { semana: 8, titulo: 'Projeto Final', foco: 'Integração completa', exercicios: [
         { nome: 'Hiperrealismo: objeto', desc: 'Escolha um objeto com textura e luz definida. Pinte em tamanho real.', tempo: '8h', dificuldade: 'Difícil' },
@@ -4862,6 +4103,90 @@
 
     document.getElementById('la-tip').innerHTML = `<span class="text-accent font-medium">Dica:</span> A luz vem de <span class="text-fg font-medium">${direction}</span>. Ao pintar, comece pelas sombras do lado oposto e vá adicionando luz gradualmente. Contraste de <span class="text-fg font-medium">${contrastPct}%</span> — ${contrastPct > 70 ? 'use preto puro nas sombras e branco nos destaques.' : contrastPct > 40 ? 'evite preto puro, use camadas de cinza escuro.' : 'foque em transições suaves de meia-tom.'}`;
   }
+
+  // ── TUTORIAIS (YouTube embutido) ────────────────────────────────────────
+  const tutoriais = [
+    { id: 'YOUTUBE_ID_AQUI', titulo: 'O que é Valor Tonal', descricao: 'Entenda a diferença entre cor e valor — a base de tudo na pintura realista.', duracao: '00:00' },
+    { id: 'YOUTUBE_ID_AQUI', titulo: 'Escala de Cinzas na Prática', descricao: 'Como treinar o olhar para enxergar apenas valores, ignorando a cor.', duracao: '00:00' },
+    { id: 'YOUTUBE_ID_AQUI', titulo: 'Compreendendo a Luz', descricao: 'O princípio fundamental por trás do hiperrealismo: luz determina forma.', duracao: '00:00' },
+  ];
+
+  function renderTutoriais() {
+    const app = document.getElementById('app');
+    const hasVideos = tutoriais.length > 0 && !tutoriais[0].id.includes('AQUI');
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-6xl mx-auto">
+          <div class="fade-in mb-10">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Tutoriais</h1>
+            <p class="text-muted max-w-2xl font-light">Aulas de teoria para treinar seu olhar. Assista, estudе e aplique na prática.</p>
+          </div>
+          ${hasVideos ? `
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              ${tutoriais.map((v, i) => `
+                <button onclick="abrirTutorial('${v.id}')" class="group text-left rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden hover:border-accent/40 transition-all fade-in" style="animation-delay:${i * 0.05}s">
+                  <div class="relative aspect-video bg-black/40 overflow-hidden">
+                    <img src="https://img.youtube.com/vi/${v.id}/mqdefault.jpg" alt="${v.titulo}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30">
+                      <div class="w-14 h-14 rounded-full bg-accent/90 flex items-center justify-center">
+                        <svg width="22" height="22" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                      </div>
+                    </div>
+                    ${v.duracao && v.duracao !== '00:00' ? `<span class="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/70 text-white text-[11px] font-mono">${v.duracao}</span>` : ''}
+                  </div>
+                  <div class="p-5">
+                    <h3 class="font-display text-lg text-fg mb-1.5 group-hover:text-accent transition-colors">${v.titulo}</h3>
+                    <p class="text-sm text-muted leading-relaxed">${v.descricao}</p>
+                  </div>
+                </button>
+              `).join('')}
+            </div>
+          ` : `
+            <div class="flex flex-col items-center justify-center py-20 text-center">
+              <div class="w-20 h-20 rounded-full bg-white/[0.04] flex items-center justify-center mb-6">
+                <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" class="text-muted/50"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </div>
+              <p class="font-display text-2xl text-fg mb-3">Em breve</p>
+              <p class="text-muted max-w-md mb-8">Os tutoriais estarão disponíveis aqui quando os vídeos estiverem prontos. Enquanto isso, conheça nosso canal.</p>
+              <a href="https://www.youtube.com/@leobarbosa-art-studio" target="_blank" rel="noopener" class="px-8 py-4 rounded-full text-sm font-medium transition-colors" style="background:#d88800;color:hsl(0 0% 4%)" onmouseenter="this.style.background='#c07800'" onmouseleave="this.style.background='#d88800'">
+                Ver no YouTube
+              </a>
+            </div>
+          `}
+        </div>
+      </div>
+
+      <!-- Modal de vídeo -->
+      <div id="tutorial-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8" style="background:rgba(0,0,0,0.85);backdrop-filter:blur(8px)" onclick="fecharTutorial(event)">
+        <button onclick="fecharTutorial()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors z-10">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="4" x2="16" y2="16"/><line x1="16" y1="4" x2="4" y2="16"/></svg>
+        </button>
+        <div class="w-full max-w-4xl" onclick="event.stopPropagation()">
+          <div class="relative pt-[56.25%] rounded-2xl overflow-hidden border border-white/10">
+            <iframe id="tutorial-iframe" class="absolute inset-0 w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function abrirTutorial(id) {
+    const modal = document.getElementById('tutorial-modal');
+    const iframe = document.getElementById('tutorial-iframe');
+    iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function fecharTutorial(e) {
+    if (e && e.target !== document.getElementById('tutorial-modal') && !e.target.closest('button')) return;
+    const modal = document.getElementById('tutorial-modal');
+    const iframe = document.getElementById('tutorial-iframe');
+    iframe.src = '';
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharTutorial(); });
 
 
     navigate('home');
