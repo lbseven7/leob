@@ -31,9 +31,45 @@
     { nome: 'Negro Fumo',       codigo: 'PBk6/7', papel: 'Alternativa ao Negro de Marfim', desc: 'Muito intenso e frio; cobre bem, mas domina a mistura em pequenas quantidades.' },
   ];
 
+  // ── Premium ──────────────────────────────────────────────────────────
+  if (new URLSearchParams(location.search).get('pro') === 'true') {
+    localStorage.setItem('tono_pro', 'true');
+    history.replaceState(null, '', location.pathname);
+  }
+  const isPro = localStorage.getItem('tono_pro') === 'true';
+
   // ── Router ────────────────────────────────────────────────────────────
+  const ferramentasGratis = ['home', 'escala', 'treino', 'posterizar'];
+
+  function mostrarModalPremium() {
+    if (document.querySelector('.premium-overlay')) return;
+    const overlay = document.createElement('div');
+    overlay.className = 'premium-overlay';
+    overlay.innerHTML = `
+      <div class="premium-modal">
+        <div class="w-14 h-14 rounded-full bg-accent/15 flex items-center justify-center mb-5 mx-auto">
+          <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" class="text-accent"><rect x="5" y="11" width="18" height="14" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        </div>
+        <h2 class="font-display text-2xl mb-2">Tono Premium</h2>
+        <p class="text-muted text-sm leading-relaxed mb-6 max-w-xs mx-auto">Esta ferramenta é exclusiva do plano premium. Desbloqueie todas as ferramentas e domine a pintura hiperrealista.</p>
+        <a href="https://pay.hotmart.com/SEU_PRODUTO" target="_blank" class="inline-flex items-center gap-2 px-8 py-3 bg-accent text-bg rounded-full text-sm font-medium hover:brightness-110 active:scale-95 transition-all">
+          Desbloquear Acesso
+        </a>
+        <button onclick="this.closest('.premium-overlay').remove()" class="block mt-4 text-xs text-muted hover:text-fg transition-colors">
+          Voltar
+        </button>
+      </div>`;
+    document.body.appendChild(overlay);
+  }
+
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('[data-premium]');
+    if (btn) { e.stopPropagation(); mostrarModalPremium(); }
+  });
+
   function navigate(page) {
     const map = { home: renderHome, ensino: renderEnsino, escala: renderEscala, treino: renderTreino, misturas: renderEscala, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, isolador: renderLocalizador, janela: renderJanela, quadricular: renderQuadricular, comparador: renderComparador, ilusao: renderIlusao, localizador: renderLocalizador, paleta: renderPaleta, camadas: renderCamadas, exercicios: renderExercicios, luz: renderLuz };
+    if (!isPro && !ferramentasGratis.includes(page)) { mostrarModalPremium(); return; }
     document.getElementById('app').innerHTML = '';
     (map[page] || renderHome)();
     document.querySelectorAll('.sidebar-link').forEach(el => {
@@ -4818,3 +4854,17 @@
 
 
     navigate('home');
+
+    if (isPro) {
+      const banner = document.getElementById('sidebar-banner');
+      if (banner) banner.remove();
+      document.querySelectorAll('[data-premium]').forEach(btn => {
+        btn.removeAttribute('data-premium');
+        btn.classList.remove('sidebar-premium', 'cursor-not-allowed', 'text-muted/40');
+        btn.classList.add('text-muted', 'hover:text-fg', 'hover:bg-white/5');
+        const badge = btn.querySelector('span:last-child');
+        if (badge && badge.textContent === 'PRO') badge.remove();
+        const icon = btn.querySelector('span:first-child');
+        if (icon) { icon.classList.remove('text-accent/40'); icon.classList.add('text-accent'); }
+      });
+    }
