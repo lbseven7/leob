@@ -33,7 +33,7 @@
 
   // ── Router ────────────────────────────────────────────────────────────
   function navigate(page) {
-    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, isolador: renderIsolador, janela: renderJanela, quadricular: renderQuadricular, comparador: renderComparador, ilusao: renderIlusao };
+    const map = { home: renderHome, escala: renderEscala, treino: renderTreino, misturas: renderMisturas, converter: renderConverter, posterizar: renderPosterizar, zonas: renderZonas, riscoLinear: renderRiscoLinear, isolador: renderIsolador, janela: renderJanela, quadricular: renderQuadricular, comparador: renderComparador, ilusao: renderIlusao, localizador: renderLocalizador, paleta: renderPaleta, camadas: renderCamadas, exercicios: renderExercicios, luz: renderLuz };
     document.getElementById('app').innerHTML = '';
     (map[page] || renderHome)();
     document.querySelectorAll('.sidebar-link').forEach(el => {
@@ -3652,6 +3652,704 @@
   function ioSetValor(v) {
     ilusaoState.valor = v;
     renderIlusao();
+  }
+
+  // ══════════════════════════════════════════════════════════════════════
+  // ── 1. LOCALIZADOR DE VALOR ──────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════
+  let localizadorState = { imageData: null };
+
+  function renderLocalizador() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-5xl mx-auto">
+          <div class="fade-in mb-10">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Localizar Valor</h1>
+            <p class="text-muted max-w-2xl font-light">Clique em qualquer ponto da imagem para descobrir o valor tonal exato (0–10) e os componentes RGB.</p>
+          </div>
+          <div id="lv-upload-zone" class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 mb-8 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]" style="min-height:200px" onclick="document.getElementById('lv-file-input').click()">
+            <input type="file" id="lv-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="lvProcessFile(event)" />
+            <p class="font-display text-xl text-muted">Clique ou arraste uma imagem</p>
+          </div>
+          <div id="lv-result" class="hidden">
+            <div class="grid md:grid-cols-[1fr,280px] gap-6">
+              <div class="relative">
+                <canvas id="lv-canvas" class="w-full rounded-xl border border-white/10 cursor-crosshair" style="max-height:500px;object-fit:contain"></canvas>
+                <div id="lv-loupe" class="hidden fixed w-32 h-32 rounded-full border-2 border-accent pointer-events-none z-50 shadow-2xl" style="image-rendering:pixelated"></div>
+              </div>
+              <div id="lv-info" class="p-6 rounded-2xl border border-white/10 bg-white/[0.02] space-y-5 self-start sticky top-20">
+                <p class="text-xs uppercase tracking-[0.2em] text-muted">Clique na imagem</p>
+                <div class="text-center py-8">
+                  <div id="lv-color-preview" class="w-20 h-20 rounded-2xl mx-auto mb-4 border border-white/10" style="background:#808080"></div>
+                  <p id="lv-valor" class="font-display text-5xl font-bold text-accent">5</p>
+                  <p class="text-xs text-muted mt-1">valor tonal (0–10)</p>
+                </div>
+                <div class="space-y-2 text-sm">
+                  <div class="flex justify-between"><span class="text-muted">R</span><span id="lv-r" class="font-mono text-fg">128</span></div>
+                  <div class="flex justify-between"><span class="text-muted">G</span><span id="lv-g" class="font-mono text-fg">128</span></div>
+                  <div class="flex justify-between"><span class="text-muted">B</span><span id="lv-b" class="font-mono text-fg">128</span></div>
+                  <div class="flex justify-between border-t border-white/10 pt-2"><span class="text-muted">Hex</span><span id="lv-hex" class="font-mono text-accent">#808080</span></div>
+                  <div class="flex justify-between"><span class="text-muted">Brilho</span><span id="lv-bri" class="font-mono text-fg">50%</span></div>
+                </div>
+                <div class="pt-2 border-t border-white/10">
+                  <p class="text-[10px] uppercase tracking-[0.2em] text-muted mb-2">Zona</p>
+                  <div id="lv-zona-bar" class="flex gap-0.5 h-6 rounded-lg overflow-hidden"></div>
+                  <p id="lv-zona-text" class="text-xs text-muted mt-2 text-center"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function lvProcessFile(e) {
+    const file = e.target.files ? e.target.files[0] : e.dataTransfer.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const c = document.getElementById('lv-canvas');
+        const maxW = 800, maxH = 600;
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
+        c.width = w; c.height = h;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        localizadorState.imageData = ctx.getImageData(0, 0, w, h);
+        document.getElementById('lv-result').classList.remove('hidden');
+        document.getElementById('lv-upload-zone').innerHTML = `
+          <p class="text-muted text-sm">Imagem carregada</p>
+          <button onclick="document.getElementById('lv-file-input').value=''; document.getElementById('lv-file-input').click()" class="mt-2 px-4 py-1.5 text-xs rounded-full border border-white/10 text-muted hover:border-accent/40 hover:text-fg transition-colors">Trocar Imagem</button>
+        `;
+        c.onclick = lvClick;
+        c.onmousemove = lvMove;
+        c.onmouseleave = () => document.getElementById('lv-loupe').classList.add('hidden');
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function lvClick(e) {
+    const c = document.getElementById('lv-canvas');
+    const rect = c.getBoundingClientRect();
+    const sx = c.width / rect.width, sy = c.height / rect.height;
+    const px = Math.floor((e.clientX - rect.left) * sx);
+    const py = Math.floor((e.clientY - rect.top) * sy);
+    const d = localizadorState.imageData.data;
+    const idx = (py * c.width + px) * 4;
+    const r = d[idx], g = d[idx+1], b = d[idx+2];
+    const luma = 0.299*r + 0.587*g + 0.114*b;
+    const valor = Math.round((1 - luma/255) * 10);
+    const hex = '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join('');
+
+    document.getElementById('lv-color-preview').style.background = `rgb(${r},${g},${b})`;
+    document.getElementById('lv-valor').textContent = valor;
+    document.getElementById('lv-r').textContent = r;
+    document.getElementById('lv-g').textContent = g;
+    document.getElementById('lv-b').textContent = b;
+    document.getElementById('lv-hex').textContent = hex;
+    document.getElementById('lv-bri').textContent = Math.round(luma/255*100) + '%';
+
+    const zonaBar = document.getElementById('lv-zona-bar');
+    zonaBar.innerHTML = '';
+    for (let i = 0; i <= 10; i++) {
+      const brightness = Math.round((1 - i/10) * 255);
+      const div = document.createElement('div');
+      div.className = 'flex-1 h-full transition-all ' + (i === valor ? 'ring-2 ring-accent ring-offset-1 ring-offset-bg rounded' : '');
+      div.style.background = `rgb(${brightness},${brightness},${brightness})`;
+      zonaBar.appendChild(div);
+    }
+    const nomes = ['Branco Puro','Cinza Muito Claro','Cinza Claro','Cinza Médio Claro','Cinza Médio','Cinza Médio Escuro','Cinza Escuro','Cinza Muito Escuro','Preto Claro','Preto','Preto Puro'];
+    document.getElementById('lv-zona-text').textContent = `Zona ${valor}: ${nomes[valor]}`;
+  }
+
+  function lvMove(e) {
+    const c = document.getElementById('lv-canvas');
+    const rect = c.getBoundingClientRect();
+    const sx = c.width / rect.width, sy = c.height / rect.height;
+    const px = Math.floor((e.clientX - rect.left) * sx);
+    const py = Math.floor((e.clientY - rect.top) * sy);
+    if (px < 0 || py < 0 || px >= c.width || py >= c.height) return;
+
+    const loupe = document.getElementById('lv-loupe');
+    loupe.classList.remove('hidden');
+    loupe.style.left = (e.clientX + 20) + 'px';
+    loupe.style.top = (e.clientY - 64) + 'px';
+
+    const zoom = 8, size = 16;
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = size; tempCanvas.height = size;
+    const tCtx = tempCanvas.getContext('2d');
+    tCtx.imageSmoothingEnabled = false;
+    tCtx.drawImage(c, px - size/2, py - size/2, size, size, 0, 0, size * zoom, size * zoom);
+
+    const grid = tempCanvas.getContext('2d');
+    grid.strokeStyle = 'rgba(255,255,255,0.15)';
+    grid.lineWidth = 1;
+    for (let i = 0; i <= size; i++) {
+      grid.beginPath(); grid.moveTo(i*zoom, 0); grid.lineTo(i*zoom, size*zoom); grid.stroke();
+      grid.beginPath(); grid.moveTo(0, i*zoom); grid.lineTo(size*zoom, i*zoom); grid.stroke();
+    }
+
+    loupe.style.backgroundImage = `url(${tempCanvas.toDataURL()})`;
+    loupe.style.backgroundSize = 'cover';
+  }
+
+  // ══════════════════════════════════════════════════════════════════════
+  // ── 2. EXTRATOR DE PALETA ────────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════
+  let paletaState = { imageData: null };
+
+  function renderPaleta() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-5xl mx-auto">
+          <div class="fade-in mb-10">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Extrair Paleta</h1>
+            <p class="text-muted max-w-2xl font-light">Analisa a imagem e extrai as cores dominantes com os valores hex exatos para misturar.</p>
+          </div>
+          <div id="pe-upload-zone" class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 mb-8 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]" style="min-height:200px" onclick="document.getElementById('pe-file-input').click()">
+            <input type="file" id="pe-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="peProcessFile(event)" />
+            <p class="font-display text-xl text-muted">Clique ou arraste uma imagem</p>
+          </div>
+          <div id="pe-result" class="hidden">
+            <canvas id="pe-canvas" class="w-full rounded-xl border border-white/10 mb-6" style="max-height:350px;object-fit:contain"></canvas>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4" id="pe-palette"></div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function peProcessFile(e) {
+    const file = e.target.files ? e.target.files[0] : e.dataTransfer.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const c = document.getElementById('pe-canvas');
+        const maxW = 800, maxH = 500;
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
+        c.width = w; c.height = h;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        paletaState.imageData = ctx.getImageData(0, 0, w, h);
+        document.getElementById('pe-result').classList.remove('hidden');
+        document.getElementById('pe-upload-zone').innerHTML = `
+          <p class="text-muted text-sm">Imagem carregada</p>
+          <button onclick="document.getElementById('pe-file-input').value=''; document.getElementById('pe-file-input').click()" class="mt-2 px-4 py-1.5 text-xs rounded-full border border-white/10 text-muted hover:border-accent/40 hover:text-fg transition-colors">Trocar Imagem</button>
+        `;
+        peExtractPalette();
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function peExtractPalette() {
+    const d = paletaState.imageData.data;
+    const numColors = 10;
+    const step = Math.max(4, Math.floor(d.length / 4 / 5000));
+    const samples = [];
+    for (let i = 0; i < d.length; i += step * 4) {
+      samples.push([d[i], d[i+1], d[i+2]]);
+    }
+
+    let centroids = [];
+    for (let i = 0; i < numColors; i++) {
+      centroids.push([...samples[Math.floor(Math.random() * samples.length)]]);
+    }
+
+    for (let iter = 0; iter < 15; iter++) {
+      const clusters = Array.from({length: numColors}, () => []);
+      for (const s of samples) {
+        let minD = Infinity, minI = 0;
+        for (let c = 0; c < numColors; c++) {
+          const dist = (s[0]-centroids[c][0])**2 + (s[1]-centroids[c][1])**2 + (s[2]-centroids[c][2])**2;
+          if (dist < minD) { minD = dist; minI = c; }
+        }
+        clusters[minI].push(s);
+      }
+      for (let c = 0; c < numColors; c++) {
+        if (clusters[c].length === 0) continue;
+        centroids[c] = [0,0,0];
+        for (const s of clusters[c]) { centroids[c][0] += s[0]; centroids[c][1] += s[1]; centroids[c][2] += s[2]; }
+        centroids[c] = centroids[c].map(v => Math.round(v / clusters[c].length));
+      }
+    }
+
+    const totalPixels = samples.length;
+    const colorCounts = centroids.map(() => 0);
+    for (const s of samples) {
+      let minD = Infinity, minI = 0;
+      for (let c = 0; c < numColors; c++) {
+        const dist = (s[0]-centroids[c][0])**2 + (s[1]-centroids[c][1])**2 + (s[2]-centroids[c][2])**2;
+        if (dist < minD) { minD = dist; minI = c; }
+      }
+      colorCounts[minI]++;
+    }
+
+    const palette = centroids.map((c, i) => ({
+      r: c[0], g: c[1], b: c[2],
+      hex: '#' + c.map(v => v.toString(16).padStart(2,'0')).join(''),
+      pct: Math.round(colorCounts[i] / totalPixels * 100)
+    })).sort((a, b) => b.pct - a.pct);
+
+    const cont = document.getElementById('pe-palette');
+    cont.innerHTML = palette.map(p => {
+      const luma = 0.299*p.r + 0.587*p.g + 0.114*p.b;
+      const textColor = luma > 140 ? '#000000' : '#ffffff';
+      return `<div class="rounded-xl border border-white/10 overflow-hidden">
+        <div class="h-20 flex items-end justify-between px-3 pb-2" style="background:${p.hex}">
+          <span class="text-xs font-mono font-bold px-1.5 py-0.5 rounded" style="background:rgba(0,0,0,0.4);color:#fff">${p.hex}</span>
+          <span class="text-xs font-mono px-1.5 py-0.5 rounded" style="background:rgba(0,0,0,0.4);color:#fff">${p.pct}%</span>
+        </div>
+        <div class="px-3 py-2 bg-card text-xs text-muted">
+          <span>R:${p.r} G:${p.g} B:${p.b}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ══════════════════════════════════════════════════════════════════════
+  // ── 3. SIMULADOR DE CAMADAS ──────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════
+  let camadasState = { imageData: null };
+
+  function renderCamadas() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-6xl mx-auto">
+          <div class="fade-in mb-10">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Simulador de Camadas</h1>
+            <p class="text-muted max-w-2xl font-light">Visualize a ordem ideal de pintura: fundo → formas médias → sombras → detalhes → destaques.</p>
+          </div>
+          <div id="ly-upload-zone" class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 mb-8 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]" style="min-height:200px" onclick="document.getElementById('ly-file-input').click()">
+            <input type="file" id="ly-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="lyProcessFile(event)" />
+            <p class="font-display text-xl text-muted">Clique ou arraste uma imagem</p>
+          </div>
+          <div id="ly-result" class="hidden">
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Original</p>
+                <canvas id="ly-canvas-orig" class="w-full rounded-xl border border-white/10" style="max-height:400px;object-fit:contain"></canvas>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-accent mb-3" id="ly-layer-label">Camada 1: Fundo</p>
+                <canvas id="ly-canvas-layer" class="w-full rounded-xl border border-white/10" style="max-height:400px;object-fit:contain"></canvas>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 justify-center mb-6">
+              <button onclick="lyShowLayer(0)" class="ly-btn px-4 py-2 rounded-full text-sm border border-accent text-accent transition">1. Fundo</button>
+              <button onclick="lyShowLayer(1)" class="ly-btn px-4 py-2 rounded-full text-sm border border-white/10 text-muted hover:border-accent/40 transition">2. Formas</button>
+              <button onclick="lyShowLayer(2)" class="ly-btn px-4 py-2 rounded-full text-sm border border-white/10 text-muted hover:border-accent/40 transition">3. Sombras</button>
+              <button onclick="lyShowLayer(3)" class="ly-btn px-4 py-2 rounded-full text-sm border border-white/10 text-muted hover:border-accent/40 transition">4. Detalhes</button>
+              <button onclick="lyShowLayer(4)" class="ly-btn px-4 py-2 rounded-full text-sm border border-white/10 text-muted hover:border-accent/40 transition">5. Destaques</button>
+            </div>
+            <div class="p-5 rounded-xl border border-white/10 bg-white/[0.02] max-w-2xl mx-auto">
+              <p id="ly-tip" class="text-sm text-muted leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function lyProcessFile(e) {
+    const file = e.target.files ? e.target.files[0] : e.dataTransfer.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const maxW = 600, maxH = 450;
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
+
+        const cOrig = document.getElementById('ly-canvas-orig');
+        cOrig.width = w; cOrig.height = h;
+        const ctxO = cOrig.getContext('2d');
+        ctxO.drawImage(img, 0, 0, w, h);
+        camadasState.imageData = ctxO.getImageData(0, 0, w, h);
+        camadasState.w = w;
+        camadasState.h = h;
+
+        document.getElementById('ly-result').classList.remove('hidden');
+        document.getElementById('ly-upload-zone').innerHTML = `
+          <p class="text-muted text-sm">Imagem carregada</p>
+          <button onclick="document.getElementById('ly-file-input').value=''; document.getElementById('ly-file-input').click()" class="mt-2 px-4 py-1.5 text-xs rounded-full border border-white/10 text-muted hover:border-accent/40 hover:text-fg transition-colors">Trocar Imagem</button>
+        `;
+        lyShowLayer(0);
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function lyShowLayer(layer) {
+    const { imageData, w, h } = camadasState;
+    const src = new Uint8ClampedArray(imageData.data);
+    const cRes = document.getElementById('ly-canvas-layer');
+    cRes.width = w; cRes.height = h;
+    const ctx = cRes.getContext('2d');
+
+    const d = new Uint8ClampedArray(src);
+    const tips = [
+      'Camada 1 — Fundo: Pinte toda a tela com um tom médio que represente o tom geral da imagem. Use pinceladas largas. Não se preocupe com detalhes.',
+      'Camada 2 — Formas: Identifique as formas principais e pinte suas silhuetas com valores aproximados. Use pincéis médios.',
+      'Camada 3 — Sombras: Adicione as regiões mais escuras. Defina a direção da luz e pinte as sombras projetadas e de forma.',
+      'Camada 4 — Detalhes: Trabalhe nos detalhes finos — texturas, bordas, transições suaves. Use pincéis pequenos.',
+      'Camada 5 — Destaques: Por último, adicione os pontos mais brilhantes da imagem. São poucos mas definem o realismo.'
+    ];
+
+    const names = ['Camada 1: Fundo', 'Camada 2: Formas', 'Camada 3: Sombras', 'Camada 4: Detalhes', 'Camada 5: Destaques'];
+
+    if (layer === 0) {
+      let rSum = 0, gSum = 0, bSum = 0, count = 0;
+      for (let i = 0; i < src.length; i += 4) { rSum += src[i]; gSum += src[i+1]; bSum += src[i+2]; count++; }
+      const rAvg = Math.round(rSum/count), gAvg = Math.round(gSum/count), bAvg = Math.round(bSum/count);
+      ctx.fillStyle = `rgb(${rAvg},${gAvg},${bAvg})`;
+      ctx.fillRect(0, 0, w, h);
+    } else if (layer === 1) {
+      for (let i = 0; i < d.length; i += 4) {
+        const gray = Math.round(0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2]);
+        let v;
+        if (gray < 51) v = 20;
+        else if (gray < 102) v = 60;
+        else if (gray < 153) v = 110;
+        else if (gray < 204) v = 180;
+        else v = 235;
+        d[i] = d[i+1] = d[i+2] = v;
+      }
+      ctx.putImageData(new ImageData(d, w, h), 0, 0);
+    } else if (layer === 2) {
+      for (let i = 0; i < d.length; i += 4) {
+        const gray = Math.round(0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2]);
+        d[i] = d[i+1] = d[i+2] = gray < 80 ? gray : 200;
+        d[i+3] = gray < 80 ? 255 : 60;
+      }
+      ctx.fillStyle = '#f0ece5';
+      ctx.fillRect(0, 0, w, h);
+      ctx.putImageData(new ImageData(d, w, h), 0, 0);
+    } else if (layer === 3) {
+      for (let i = 0; i < d.length; i += 4) {
+        const gray = Math.round(0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2]);
+        const edge = i > w*4 && i < d.length - w*4 ? Math.abs(gray - Math.round(0.299*d[i-w*4] + 0.587*d[i-w*4+1] + 0.114*d[i-w*4+2])) : 0;
+        const show = edge > 15 || (gray > 200) || (gray < 30);
+        d[i] = show ? src[i] : 230;
+        d[i+1] = show ? src[i+1] : 225;
+        d[i+2] = show ? src[i+2] : 220;
+        d[i+3] = 255;
+      }
+      ctx.putImageData(new ImageData(d, w, h), 0, 0);
+    } else if (layer === 4) {
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(0, 0, w, h);
+      for (let i = 0; i < d.length; i += 4) {
+        const gray = Math.round(0.299*src[i] + 0.587*src[i+1] + 0.114*src[i+2]);
+        if (gray > 200) {
+          d[i] = src[i]; d[i+1] = src[i+1]; d[i+2] = src[i+2]; d[i+3] = 255;
+        } else {
+          d[i+3] = 0;
+        }
+      }
+      ctx.putImageData(new ImageData(d, w, h), 0, 0);
+    }
+
+    document.getElementById('ly-layer-label').textContent = names[layer];
+    document.getElementById('ly-tip').textContent = tips[layer];
+
+    document.querySelectorAll('.ly-btn').forEach((btn, i) => {
+      btn.className = 'ly-btn px-4 py-2 rounded-full text-sm transition ' + (i === layer ? 'border border-accent text-accent' : 'border border-white/10 text-muted hover:border-accent/40');
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════════════════
+  // ── 4. EXERCÍCIOS PROGRESSIVOS ───────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════
+  function renderExercicios() {
+    const semanas = [
+      { semana: 1, titulo: 'Escala de Cinzas', foco: 'Valor tonal', exercicios: [
+        { nome: 'Barra de 11 valores', desc: 'Pinte uma barra contínua do branco ao preto em 11 passos iguais. Use apenas preto e branco.', tempo: '2h', dificuldade: 'Fácil' },
+        { nome: 'Esfera em grayscale', desc: 'Pinte uma esfera com sombra, meia-tom e destaque usando apenas valores.', tempo: '3h', dificuldade: 'Médio' },
+        { nome: 'Cubo com luz direcional', desc: 'Pratique 3 planos com valores distintos sob uma mesma fonte de luz.', tempo: '2h', dificuldade: 'Fácil' },
+      ]},
+      { semana: 2, titulo: 'Misturas e Proporções', foco: 'Controle de tom', exercicios: [
+        { nome: 'Cartela de 50 cinzas', desc: 'Misture 50 tons de cinza partindo de proporções exatas de preto e branco.', tempo: '3h', dificuldade: 'Médio' },
+        { nome: 'Degradê vertical', desc: 'Pinte um degradê suave de 30cm sem bandas visíveis.', tempo: '2h', dificuldade: 'Médio' },
+        { nome: 'Match de valor', desc: 'Use um cartão cinza de referência e tente reproduzir o mesmo tom na tela.', tempo: '1h', dificuldade: 'Fácil' },
+      ]},
+      { semana: 3, titulo: 'Formas e Silhuetas', foco: 'Contorno e preenchimento', exercicios: [
+        { nome: 'Natur-morto simplificado', desc: 'Reduza uma natureza-morta a 3 valores: fundo, objeto claro, objeto escuro.', tempo: '3h', dificuldade: 'Médio' },
+        { nome: 'Silhuetas de frutas', desc: 'Pinte apenas as silhuetas de frutas usando um único valor médio.', tempo: '2h', dificuldade: 'Fácil' },
+        { nome: 'Composição com recortes', desc: 'Crie uma composição onde o negative space é tão importante quanto o positive.', tempo: '3h', dificuldade: 'Difícil' },
+      ]},
+      { semana: 4, titulo: 'Transições e Blending', foco: 'Suavidade de tons', exercicios: [
+        { nome: 'Bola de bilhar', desc: 'Pinte uma esfera com reflexo especular e sombra de oclusão.', tempo: '4h', dificuldade: 'Difícil' },
+        { nome: 'Rosto em escala de cinzas', desc: 'Use a técnica de grade para transferir um retrato em P&B.', tempo: '6h', dificuldade: 'Difícil' },
+        { nome: 'Tecido dobrado', desc: 'Pratique dobras e sombras em tecido branco sobre fundo escuro.', tempo: '3h', dificuldade: 'Médio' },
+      ]},
+      { semana: 5, titulo: 'Texturas', foco: 'Superfícies diferentes', exercicios: [
+        { nome: 'Madeira', desc: 'Pinte a textura de madeira com veios e variações de tom.', tempo: '3h', dificuldade: 'Médio' },
+        { nome: 'Metal', desc: 'Trabalhe reflexos especulares e sombras duras em uma superfície metálica.', tempo: '3h', dificuldade: 'Médio' },
+        { nome: 'Pele humana', desc: 'Pratique tons de pele com transições suaves e poros simulados.', tempo: '4h', dificuldade: 'Difícil' },
+      ]},
+      { semana: 6, titulo: 'Luz e Sombra', foco: 'Direção e intensidade', exercicios: [
+        { nome: 'Retrato com chiaroscuro', desc: 'Use contraste extremo de luz e sombra no estilo Caravaggio.', tempo: '5h', dificuldade: 'Difícil' },
+        { nome: 'Sombras projetadas', desc: 'Pinte um objeto projetando sombra em superfície curva.', tempo: '3h', dificuldade: 'Médio' },
+        { nome: 'Luz ambiente', desc: 'Cena com múltiplas fontes de luz e sombras coloridas.', tempo: '4h', dificuldade: 'Difícil' },
+      ]},
+      { semana: 7, titulo: 'Referência e Grade', foco: 'Transferência precisa', exercicios: [
+        { nome: 'Retrato com grade 5×5', desc: 'Use o quadricular para transferir um retrato com precisão.', tempo: '6h', dificuldade: 'Difícil' },
+        { nome: 'Detalhe ampliado', desc: 'Amplie um olho ou boca e pinte com grade densa (10×10).', tempo: '5h', dificuldade: 'Difícil' },
+        { nome: 'Comparação lado a lado', desc: 'Pinte ao lado da referência e use o comparador para ajustar valores.', tempo: '4h', dificuldade: 'Médio' },
+      ]},
+      { semana: 8, titulo: 'Projeto Final', foco: 'Integração completa', exercicios: [
+        { nome: 'Hiperrealismo: objeto', desc: 'Escolha um objeto com textura e luz definida. Pinte em tamanho real.', tempo: '8h', dificuldade: 'Difícil' },
+        { nome: 'Hiperrealismo: retrato', desc: 'Retrato completo usando todas as técnicas das semanas anteriores.', tempo: '10h', dificuldade: 'Difícil' },
+      ]},
+    ];
+
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-4xl mx-auto">
+          <div class="fade-in mb-10">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Exercícios Progressivos</h1>
+            <p class="text-muted max-w-2xl font-light">8 semanas estruturadas do básico ao hiperrealismo. Cada semana tem um foco e exercícios práticos.</p>
+          </div>
+          <div class="space-y-4">
+            ${semanas.map(s => `
+              <div class="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
+                <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-white/[0.02] transition-colors">
+                  <div class="flex items-center gap-4">
+                    <span class="w-10 h-10 rounded-xl bg-accent/10 text-accent font-display text-lg flex items-center justify-center font-bold">${s.semana}</span>
+                    <div>
+                      <p class="font-display text-lg text-fg">${s.titulo}</p>
+                      <p class="text-xs text-muted">${s.foco} · ${s.exercicios.length} exercícios</p>
+                    </div>
+                  </div>
+                  <svg class="w-5 h-5 text-muted transition-transform" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div class="exercises-list hidden px-6 pb-4 space-y-3">
+                  ${s.exercicios.map(ex => `
+                    <div class="p-4 rounded-xl border border-white/5 bg-white/[0.02]">
+                      <div class="flex items-start justify-between gap-3 mb-1">
+                        <p class="text-sm font-medium text-fg">${ex.nome}</p>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full border ${ex.dificuldade === 'Fácil' ? 'border-green-500/30 text-green-400' : ex.dificuldade === 'Médio' ? 'border-yellow-500/30 text-yellow-400' : 'border-red-500/30 text-red-400'}">${ex.dificuldade}</span>
+                      </div>
+                      <p class="text-xs text-muted leading-relaxed">${ex.desc}</p>
+                      <p class="text-[10px] text-accent mt-2">⏱ ${ex.tempo}</p>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>`;
+
+    document.querySelectorAll('.exercises-list').forEach(el => {
+      el.previousElementSibling.addEventListener('click', () => {
+        el.classList.toggle('hidden');
+        el.previousElementSibling.querySelector('svg').classList.toggle('rotate-180');
+      });
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════════════════
+  // ── 5. ANÁLISE DE LUZ ────────────────────────────────────────────────
+  // ══════════════════════════════════════════════════════════════════════
+  let luzState = { imageData: null };
+
+  function renderLuz() {
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div style="min-height:calc(100vh - 4rem)" class="px-6 py-12 md:py-16">
+        <div class="max-w-5xl mx-auto">
+          <div class="fade-in mb-10">
+            <h1 class="font-display text-4xl md:text-5xl mb-4">Análise de Luz</h1>
+            <p class="text-muted max-w-2xl font-light">Identifica a direção da luz na referência e mostra como ela afeta os valores em cada zona da imagem.</p>
+          </div>
+          <div id="la-upload-zone" class="w-full rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-4 mb-8 cursor-pointer transition-all hover:border-accent/60 hover:bg-white/[0.02]" style="min-height:200px" onclick="document.getElementById('la-file-input').click()">
+            <input type="file" id="la-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="laProcessFile(event)" />
+            <p class="font-display text-xl text-muted">Clique ou arraste uma imagem</p>
+          </div>
+          <div id="la-result" class="hidden">
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-muted mb-3">Original</p>
+                <canvas id="la-canvas-orig" class="w-full rounded-xl border border-white/10" style="max-height:400px;object-fit:contain"></canvas>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-accent mb-3">Mapa de Luz</p>
+                <canvas id="la-canvas-map" class="w-full rounded-xl border border-white/10" style="max-height:400px;object-fit:contain"></canvas>
+              </div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-4 mb-6">
+              <div class="p-5 rounded-xl border border-white/10 bg-white/[0.02]">
+                <p class="text-xs uppercase tracking-[0.2em] text-accent mb-3">Direção da Luz</p>
+                <div class="flex items-center gap-4">
+                  <div id="la-arrow" class="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center text-2xl">↘</div>
+                  <div>
+                    <p id="la-direction" class="text-fg font-medium">Superior Esquerda</p>
+                    <p id="la-angle" class="text-xs text-muted mt-1">~135°</p>
+                  </div>
+                </div>
+              </div>
+              <div class="p-5 rounded-xl border border-white/10 bg-white/[0.02]">
+                <p class="text-xs uppercase tracking-[0.2em] text-accent mb-3">Zonas de Luz</p>
+                <div id="la-zones" class="space-y-1.5"></div>
+              </div>
+              <div class="p-5 rounded-xl border border-white/10 bg-white/[0.02]">
+                <p class="text-xs uppercase tracking-[0.2em] text-accent mb-3">Contraste</p>
+                <p id="la-contrast-val" class="text-3xl font-display font-bold text-fg mb-1"></p>
+                <p id="la-contrast-desc" class="text-xs text-muted"></p>
+                <div class="mt-3 h-2 rounded-full overflow-hidden bg-white/5">
+                  <div id="la-contrast-bar" class="h-full rounded-full transition-all" style="width:50%"></div>
+                </div>
+              </div>
+            </div>
+            <div class="p-5 rounded-xl border border-white/10 bg-white/[0.02] max-w-2xl mx-auto">
+              <p id="la-tip" class="text-sm text-muted leading-relaxed"></p>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function laProcessFile(e) {
+    const file = e.target.files ? e.target.files[0] : e.dataTransfer.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const maxW = 600, maxH = 450;
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        if (h > maxH) { w = Math.round(w * maxH / h); h = maxH; }
+
+        const cOrig = document.getElementById('la-canvas-orig');
+        cOrig.width = w; cOrig.height = h;
+        const ctxO = cOrig.getContext('2d');
+        ctxO.drawImage(img, 0, 0, w, h);
+        luzState.imageData = ctxO.getImageData(0, 0, w, h);
+        luzState.w = w;
+        luzState.h = h;
+
+        document.getElementById('la-result').classList.remove('hidden');
+        document.getElementById('la-upload-zone').innerHTML = `
+          <p class="text-muted text-sm">Imagem carregada</p>
+          <button onclick="document.getElementById('la-file-input').value=''; document.getElementById('la-file-input').click()" class="mt-2 px-4 py-1.5 text-xs rounded-full border border-white/10 text-muted hover:border-accent/40 hover:text-fg transition-colors">Trocar Imagem</button>
+        `;
+        laAnalyze();
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function laAnalyze() {
+    const { imageData, w, h } = luzState;
+    const src = imageData.data;
+
+    const cMap = document.getElementById('la-canvas-map');
+    cMap.width = w; cMap.height = h;
+    const ctx = cMap.getContext('2d');
+    const mapData = ctx.createImageData(w, h);
+
+    let totalLuma = 0, count = 0;
+    let minLuma = 255, maxLuma = 0;
+    for (let i = 0; i < src.length; i += 4) {
+      const luma = 0.299*src[i] + 0.587*src[i+1] + 0.114*src[i+2];
+      totalLuma += luma; count++;
+      if (luma < minLuma) minLuma = luma;
+      if (luma > maxLuma) maxLuma = luma;
+    }
+    const avgLuma = totalLuma / count;
+
+    for (let i = 0; i < src.length; i += 4) {
+      const luma = 0.299*src[i] + 0.587*src[i+1] + 0.114*src[i+2];
+      const norm = (luma - minLuma) / (maxLuma - minLuma);
+      const r = Math.round(norm * 255);
+      const b = Math.round((1 - norm) * 255);
+      mapData.data[i] = r;
+      mapData.data[i+1] = Math.round(norm * 80);
+      mapData.data[i+2] = b;
+      mapData.data[i+3] = 255;
+    }
+    ctx.putImageData(mapData, 0, 0);
+
+    let topLuma = 0, botLuma = 0, leftLuma = 0, rightLuma = 0;
+    let topN = 0, botN = 0, leftN = 0, rightN = 0;
+    const halfH = Math.floor(h/2), halfW = Math.floor(w/2);
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const luma = 0.299*src[(y*w+x)*4] + 0.587*src[(y*w+x)*4+1] + 0.114*src[(y*w+x)*4+2];
+        if (y < halfH) { topLuma += luma; topN++; }
+        else { botLuma += luma; botN++; }
+        if (x < halfW) { leftLuma += luma; leftN++; }
+        else { rightLuma += luma; rightN++; }
+      }
+    }
+    const topAvg = topLuma/topN, botAvg = botLuma/botN;
+    const leftAvg = leftLuma/leftN, rightAvg = rightLuma/rightN;
+
+    const yBias = topAvg - botAvg;
+    const xBias = leftAvg - rightAvg;
+    const angle = Math.atan2(-yBias, xBias) * 180 / Math.PI;
+    const normalizedAngle = ((angle % 360) + 360) % 360;
+
+    let arrow, direction;
+    if (normalizedAngle > 315 || normalizedAngle <= 45) { arrow = '→'; direction = 'Direita'; }
+    else if (normalizedAngle > 45 && normalizedAngle <= 135) { arrow = '↓'; direction = 'Abaixo'; }
+    else if (normalizedAngle > 135 && normalizedAngle <= 225) { arrow = '←'; direction = 'Esquerda'; }
+    else { arrow = '↑'; direction = 'Acima'; }
+
+    if (Math.abs(yBias) > 30 && Math.abs(xBias) > 30) {
+      const diagAngle = Math.atan2(yBias > 0 ? -1 : 1, xBias > 0 ? -1 : 1);
+      const deg = diagAngle * 180 / Math.PI;
+      if (deg > -45 && deg <= 45) { arrow = '↘'; direction = 'Superior Esquerda'; }
+      else if (deg > 45 && deg <= 135) { arrow = '↗'; direction = 'Inferior Esquerda'; }
+      else if (deg > -135 && deg <= -45) { arrow = '↙'; direction = 'Superior Direita'; }
+      else { arrow = '↖'; direction = 'Inferior Direita'; }
+    }
+
+    document.getElementById('la-arrow').textContent = arrow;
+    document.getElementById('la-direction').textContent = direction;
+    document.getElementById('la-angle').textContent = '~' + Math.round(normalizedAngle) + '°';
+
+    const zoneLabels = [
+      { pct: Math.round(src.filter((_,i) => i%4===0 && 0.299*src[i]+0.587*src[i+1]+0.114*src[i+2] > 230).length / (w*h) * 100), label: 'Destaques', color: 'bg-white' },
+      { pct: Math.round(src.filter((_,i) => i%4===0 && {l: 0.299*src[i]+0.587*src[i+1]+0.114*src[i+2]}.l > 180 && {l: 0.299*src[i]+0.587*src[i+1]+0.114*src[i+2]}.l <= 230).length / (w*h) * 100), label: 'Claras', color: 'bg-gray-300' },
+      { pct: Math.round(src.filter((_,i) => i%4===0 && {l: 0.299*src[i]+0.587*src[i+1]+0.114*src[i+2]}.l > 75 && {l: 0.299*src[i]+0.587*src[i+1]+0.114*src[i+2]}.l <= 180).length / (w*h) * 100), label: 'Médios', color: 'bg-gray-500' },
+      { pct: Math.round(src.filter((_,i) => i%4===0 && {l: 0.299*src[i]+0.587*src[i+1]+0.114*src[i+2]}.l > 25 && {l: 0.299*src[i]+0.587*src[i+1]+0.114*src[i+2]}.l <= 75).length / (w*h) * 100), label: 'Escuras', color: 'bg-gray-700' },
+      { pct: Math.round(src.filter((_,i) => i%4===0 && 0.299*src[i]+0.587*src[i+1]+0.114*src[i+2] <= 25).length / (w*h) * 100), label: 'Sombras', color: 'bg-gray-900' },
+    ];
+
+    document.getElementById('la-zones').innerHTML = zoneLabels.map(z =>
+      `<div class="flex items-center gap-2 text-xs"><div class="w-3 h-3 rounded ${z.color} border border-white/10"></div><span class="text-muted flex-1">${z.label}</span><span class="text-fg font-mono">${z.pct}%</span></div>`
+    ).join('');
+
+    const contrast = maxLuma - minLuma;
+    const contrastPct = Math.round(contrast / 255 * 100);
+    document.getElementById('la-contrast-val').textContent = contrastPct + '%';
+    const bar = document.getElementById('la-contrast-bar');
+    bar.style.width = contrastPct + '%';
+    bar.style.background = contrastPct > 70 ? '#22c55e' : contrastPct > 40 ? '#eab308' : '#ef4444';
+    document.getElementById('la-contrast-desc').textContent = contrastPct > 70 ? 'Alto contraste — luz e sombra bem definidas' : contrastPct > 40 ? 'Contraste médio — tons intermediários dominam' : 'Baixo contraste — pouca variação tonal';
+
+    document.getElementById('la-tip').innerHTML = `<span class="text-accent font-medium">Dica:</span> A luz vem de <span class="text-fg font-medium">${direction}</span>. Ao pintar, comece pelas sombras do lado oposto e vá adicionando luz gradualmente. Contraste de <span class="text-fg font-medium">${contrastPct}%</span> — ${contrastPct > 70 ? 'use preto puro nas sombras e branco nos destaques.' : contrastPct > 40 ? 'evite preto puro, use camadas de cinza escuro.' : 'foque em transições suaves de meia-tom.'}`;
   }
 
 
