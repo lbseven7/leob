@@ -380,10 +380,14 @@
         (l.estado === 'aberto' ? L('acompanhar') : L('agendado')) + ' →</a></div>';
     }
 
-    return '<article class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden transition-all duration-300 hover:shadow-xl">' +
+    var destaque = l.estado === 'aberto' ? ' border-brand-orange/60 ring-2 ring-brand-orange/40 shadow-lg' : '';
+
+    return '<article class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden transition-all duration-300 hover:shadow-xl' + destaque + '">' +
       '<a href="' + href + '"><div class="aspect-[4/5] overflow-hidden bg-zinc-100 dark:bg-zinc-900 relative">' +
-      '<img src="' + (l.imagem_url || '') + '" alt="' + titulo + '" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" onerror="this.style.opacity=0.15">' +
-      '<div class="absolute top-3 left-3">' + badgeEstado(l.estado) + '</div></div></a>' +
+      '<img src="' + (l.imagem_url || '') + '" alt="' + titulo + '" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105' + (l.estado === 'aberto' ? ' opacity-95' : '') + '" onerror="this.style.opacity=0.15">' +
+      '<div class="absolute top-3 left-3">' + badgeEstado(l.estado) + '</div>' +
+      (l.estado === 'aberto' ? '<div class="absolute inset-x-0 bottom-0 h-1 bg-brand-orange animate-pulse"></div>' : '') +
+      '</div></a>' +
       '<div class="p-5">' +
       '<div class="flex items-start justify-between gap-3 mb-2">' +
       '<h3 class="text-lg serif font-medium leading-tight">' + titulo + '</h3>' +
