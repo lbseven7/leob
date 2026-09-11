@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>leob. — O que você quer explorar?</title>
+    <meta name="description" content="Portal de acesso ao mundo de Leo Barbosa: catálogo de obras, eventos, leilões, blog, cursos e mais.">
+    <meta property="og:title" content="leob. — O que você quer explorar?">
+    <meta property="og:description" content="Portal de acesso ao mundo de Leo Barbosa: catálogo de obras, eventos, leilões, blog, cursos e mais.">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/png" href="../images/logo-black3-sbg.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { orange: '#d88800' }
+                    },
+                    fontFamily: {
+                        sans: ['Comfortaa', 'cursive', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fade-up {
+            opacity: 0;
+            animation: fadeUp .8s cubic-bezier(.22, 1, .36, 1) forwards;
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn .8s ease-out forwards;
+        }
+    </style>
+</head>
+
+<body class="bg-zinc-950 text-zinc-100 font-sans transition-colors duration-300">
+
+    <div class="fixed inset-0 -z-10 bg-cover bg-center"
+        style="background-image:url('../images/casa-do-vaqueiro.jpg')">
+        <div class="absolute inset-0 bg-zinc-950/85 dark:bg-zinc-950/90"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-zinc-950/70 via-transparent to-zinc-950"></div>
+    </div>
+
+    <header class="relative z-20 flex items-center justify-between max-w-5xl mx-auto px-6 py-6 fade-in"
+        style="animation-delay:.1s">
+        <a href="../index.html" aria-label="Catálogo">
+            <img src="../images/logo/logo-white-gold-removebg-preview.png" alt="Logo leob."
+                class="max-w-[132px] sm:max-w-[152px] h-auto opacity-90 hover:opacity-100 transition-opacity duration-300">
+        </a>
+
+        <button onclick="toggleTheme()"
+            class="p-2.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 hover:border-brand-orange/40 transition text-zinc-300"
+            aria-label="Alternar tema">
+            <span id="theme-icon-light" class="hidden dark:block"><i class="fa-solid fa-sun"></i></span>
+            <span id="theme-icon-dark" class="block dark:hidden"><i class="fa-solid fa-moon"></i></span>
+        </button>
+    </header>
+
+    <main class="relative z-10 flex flex-col items-center justify-center px-6 pb-10 pt-6 sm:pt-10">
+        <p class="text-[11px] sm:text-xs uppercase tracking-[0.35em] text-brand-orange font-bold text-center fade-up"
+            style="animation-delay:.2s">Leo Barbosa Art Studio</p>
+
+        <h1 class="font-serif text-4xl sm:text-5xl md:text-[3.4rem] font-bold text-center mt-4 leading-tight fade-up"
+            style="animation-delay:.3s">
+            O que você quer <span class="text-brand-orange italic">explorar</span>?
+        </h1>
+
+        <p class="text-sm sm:text-base text-zinc-400 text-center mt-4 max-w-md fade-up" style="animation-delay:.4s">
+            Escolha um caminho e mergulhe no universo das pinturas hiper-realistas.
+        </p>
+
+        <nav class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5 w-full max-w-4xl mt-10 sm:mt-14" aria-label="Seções do site">
+            <a href="../index.html"
+                class="group relative flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-8 sm:py-10 text-center hover:border-brand-orange/50 hover:bg-brand-orange/10 hover:-translate-y-1 transition-all duration-300 fade-up"
+                style="animation-delay:.5s">
+                <i class="fa-solid fa-palette text-3xl text-brand-orange group-hover:scale-110 transition-transform duration-300"></i>
+                <span class="text-sm sm:text-base font-bold tracking-wide">Catálogo de Obras</span>
+                <span class="hidden sm:block text-xs text-zinc-400 group-hover:text-zinc-300 transition-colors">Pinturas disponíveis e séries limitadas</span>
+            </a>
+
+            <a href="eventos.html"
+                class="group relative flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-8 sm:py-10 text-center hover:border-brand-orange/50 hover:bg-brand-orange/10 hover:-translate-y-1 transition-all duration-300 fade-up"
+                style="animation-delay:.6s">
+                <i class="fa-solid fa-calendar-star text-3xl text-brand-orange group-hover:scale-110 transition-transform duration-300"></i>
+                <span class="text-sm sm:text-base font-bold tracking-wide">Eventos</span>
+                <span class="hidden sm:block text-xs text-zinc-400 group-hover:text-zinc-300 transition-colors">Galeria de fotos e bastidores</span>
+            </a>
+
+            <a href="leiloes.html"
+                class="group relative flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-8 sm:py-10 text-center hover:border-brand-orange/50 hover:bg-brand-orange/10 hover:-translate-y-1 transition-all duration-300 fade-up"
+                style="animation-delay:.7s">
+                <i class="fa-solid fa-gavel text-3xl text-brand-orange group-hover:scale-110 transition-transform duration-300"></i>
+                <span class="text-sm sm:text-base font-bold tracking-wide">Leilões</span>
+                <span class="hidden sm:block text-xs text-zinc-400 group-hover:text-zinc-300 transition-colors">Lances ao vivo e lotes exclusivos</span>
+            </a>
+
+            <a href="blog.html"
+                class="group relative flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-8 sm:py-10 text-center hover:border-brand-orange/50 hover:bg-brand-orange/10 hover:-translate-y-1 transition-all duration-300 fade-up"
+                style="animation-delay:.8s">
+                <i class="fa-solid fa-pen-nib text-3xl text-brand-orange group-hover:scale-110 transition-transform duration-300"></i>
+                <span class="text-sm sm:text-base font-bold tracking-wide">Blog</span>
+                <span class="hidden sm:block text-xs text-zinc-400 group-hover:text-zinc-300 transition-colors">Dicas, técnicas e bastidores da pintura</span>
+            </a>
+
+            <a href="curso-metal.html"
+                class="group relative flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-8 sm:py-10 text-center hover:border-brand-orange/50 hover:bg-brand-orange/10 hover:-translate-y-1 transition-all duration-300 fade-up"
+                style="animation-delay:.9s">
+                <i class="fa-solid fa-graduation-cap text-3xl text-brand-orange group-hover:scale-110 transition-transform duration-300"></i>
+                <span class="text-sm sm:text-base font-bold tracking-wide">Cursos</span>
+                <span class="hidden sm:block text-xs text-zinc-400 group-hover:text-zinc-300 transition-colors">Métodos, guias e e-books exclusivos</span>
+            </a>
+
+            <a href="sobre.html"
+                class="group relative flex flex-col items-center gap-3 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm px-5 py-8 sm:py-10 text-center hover:border-brand-orange/50 hover:bg-brand-orange/10 hover:-translate-y-1 transition-all duration-300 fade-up"
+                style="animation-delay:1s">
+                <i class="fa-solid fa-user-painter text-3xl text-brand-orange group-hover:scale-110 transition-transform duration-300"></i>
+                <span class="text-sm sm:text-base font-bold tracking-wide">Sobre</span>
+                <span class="hidden sm:block text-xs text-zinc-400 group-hover:text-zinc-300 transition-colors">Quem é Leo Barbosa e sua trajetória</span>
+            </a>
+        </nav>
+    </main>
+
+    <footer class="relative z-10 flex items-center justify-center gap-6 px-6 pb-8 pt-10 text-xl fade-in"
+        style="animation-delay:1.2s">
+        <a href="https://wa.me/5573988279832" target="_blank" aria-label="WhatsApp" class="text-zinc-400 hover:text-brand-orange transition">
+            <i class="fa-brands fa-whatsapp"></i>
+        </a>
+        <a href="https://www.instagram.com/leob_pinturas/" target="_blank" aria-label="Instagram" class="text-zinc-400 hover:text-brand-orange transition">
+            <i class="fa-brands fa-instagram"></i>
+        </a>
+        <a href="https://www.youtube.com/@leobarbosa-art-studio" target="_blank" aria-label="YouTube" class="text-zinc-400 hover:text-brand-orange transition">
+            <i class="fa-brands fa-youtube"></i>
+        </a>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const root = document.documentElement;
+            const dark = root.classList.toggle('dark');
+            localStorage.setItem('theme', dark ? 'dark' : 'light');
+        }
+
+        (function initTheme() {
+            const saved = localStorage.getItem('theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+
+    <script src="https://leobchat.vercel.app/widget-loader.js" defer></script>
+</body>
+
+</html>
