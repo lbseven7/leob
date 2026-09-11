@@ -21,7 +21,7 @@ const obras = [
         total: 30,
         linkPayment: null,
         pt: {
-            titulo: "Casa de Vaqueiro",
+            titulo: "Série Fazenda Ouro Verde",
             tecnica: "Papel Ultra Smooth",
             dimensoes: "20x28cm",
             valor: "R$ 1.200"

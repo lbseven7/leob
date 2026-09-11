@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>leob. — Catálogo de Arte</title>
+    <meta name="description" content="Catálogo de arte de Leo Barbosa (leob.) — pinturas hiperrealistas, cursos e plataforma Tono.">
+    <meta property="og:title" content="leob. — Catálogo de Arte">
+    <meta property="og:description" content="Catálogo de arte de Leo Barbosa — pinturas hiperrealistas, cursos e plataforma Tono.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tono.art.br">
+    <meta property="og:image" content="https://tono.art.br/images/hero-site.jpg">
+    <meta property="og:site_name" content="leob.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="leob. — Catálogo de Arte">
+    <meta name="twitter:description" content="Catálogo de arte de Leo Barbosa — pinturas hiperrealistas, cursos e plataforma Tono.">
+    <meta name="twitter:image" content="https://tono.art.br/images/hero-site.jpg">
+    <link rel="icon" href="images/logo-black3-sbg.png" type="image/png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brand: { orange: '#d88800' } }
+                }
+            }
+        }
+    </script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/barra-progresso.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-white text-black dark:bg-black dark:text-white transition-colors duration-500 antialiased">
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+    <div id="custom-cursor"></div>
+
+    <header
+        class="fixed w-full top-0 z-40 bg-white/90 dark:bg-zinc-950/90 border-b border-zinc-100 dark:border-zinc-800/50 backdrop-blur-sm text-zinc-800 dark:text-zinc-100 transition-colors duration-300">
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 h-20 flex justify-between items-center gap-3">
+            <a href="#top">
+            <img id="header-logo" src="images/logo/logo-white-gold-removebg-preview.png" alt="Logo"
+                class="max-w-[132px] sm:max-w-[140px] h-auto opacity-100 transition-opacity duration-300">
+                </a>
+
+            <div class="flex items-center gap-2">
+                <nav id="main-nav"
+                    class="hidden md:flex absolute md:static top-full left-4 right-4 md:left-auto md:right-auto mt-3 md:mt-0 flex-col md:flex-row items-start md:items-center gap-4 md:gap-5 bg-white md:bg-transparent dark:bg-zinc-900 md:dark:bg-transparent rounded-2xl md:rounded-none border border-zinc-100 md:border-0 dark:border-zinc-800 p-5 md:p-0 shadow-lg md:shadow-none text-sm font-medium text-zinc-700 dark:text-zinc-200">
+                    <a href="#catalogo" id="nav-catalogo"
+                        class="hover:text-brand-orange dark:hover:text-brand-orange transition">Catálogo</a>
+                    <a href="./pages/eventos.html" id="nav-eventos"
+                    class="hover:text-brand-orange dark:hover:text-brand-orange transition">Eventos</a>
+                    <a href="./pages/leiloes.html" id="nav-leiloes"
+                        class="hover:text-brand-orange dark:hover:text-brand-orange transition">Leilões</a>
+                    <a href="./pages/blog.html" id="nav-blog"
+                    class="hover:text-brand-orange dark:hover:text-brand-orange transition">Blog</a>
+                    <a href="./pages/curso-metal.html" id="nav-venda-curso-metal" target="_blank"
+                        class="hover:text-brand-orange dark:hover:text-brand-orange transition">Cursos</a>
+                    <a href="./pages/sobre.html" id="nav-sobre" target="_blank"
+                        class="hover:text-brand-orange dark:hover:text-brand-orange transition">Sobre</a>
+
+                    <div class="h-4 w-px bg-zinc-200 dark:bg-zinc-700 hidden md:block mx-1"></div>
+
+                    <div
+                        class="flex items-center gap-2 text-xs font-bold tracking-widest border border-zinc-200 dark:border-zinc-800 px-2.5 py-1 rounded-full">
+                        <button onclick="changeLanguage('pt')" id="lang-pt" class="text-brand-orange">PT</button>
+                        <span class="text-zinc-300 dark:text-zinc-700">|</span>
+                        <button onclick="changeLanguage('en')" id="lang-en"
+                            class="text-zinc-400 hover:text-black dark:hover:text-white transition">EN</button>
+                    </div>
+
+                    <button onclick="toggleTheme()"
+                        class="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition text-zinc-600 dark:text-zinc-300"
+                        aria-label="Alternar tema">
+                        <span id="theme-icon-light" class="hidden dark:block">☀️</span>
+                        <span id="theme-icon-dark" class="block dark:hidden">🌙</span>
+                    </button>
+                </nav>
+                <button id="mobile-menu-btn"
+                    class="md:hidden p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition text-zinc-700 dark:text-zinc-200"
+                    aria-label="Abrir menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-20">
+        <section class="bg-zinc-900 dark:bg-zinc-950 border-b border-zinc-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-center">
+                <div class="flex items-center gap-3">
+                    <span class="px-2.5 py-1 rounded-full bg-brand-orange/15 text-brand-orange text-[10px] uppercase tracking-widest font-bold">Novo</span>
+                    <p class="text-sm text-zinc-300 dark:text-zinc-400">
+                        <span class="text-white dark:text-white font-semibold">Tono</span> — Ferramentas de análise tonal para pintores hiperrealistas.
+                    </p>
+                </div>
+                <a href="https://www.tono.art.br/sales-page.html" class="inline-flex items-center gap-2 px-5 py-2 bg-brand-orange text-black text-xs font-bold uppercase tracking-wider rounded-full hover:brightness-110 active:scale-95 transition-all whitespace-nowrap">
+                    Experimentar <span>&rarr;</span>
+                </a>
+            </div>
+        </section>
+
+        <section id="catalogo" class="max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-12 gap-6 sm:gap-8">
+                <div>
+                    <h2 id="catalog-heading" class="serif text-4xl sm:text-5xl font-normal">Séries Limitadas Fine Art
+                    </h2>
+                    <div class="h-1 w-20 bg-brand-orange mt-2"></div>
+                </div>
+                <div id="catalog-filters"
+                    class="w-full grid grid-cols-3 gap-2 sm:w-auto sm:flex sm:gap-2 pb-1 text-[10px] sm:text-xs font-bold uppercase tracking-wide sm:tracking-widest">
+                    <button onclick="filterGallery('todos', event)" id="filter-all"
+                        class="filter-btn active w-full border border-zinc-200 dark:border-zinc-800 px-3 sm:px-6 py-2 transition-all hover:border-brand-orange">Todos</button>
+                    <button onclick="filterGallery('disponível', event)" id="filter-available"
+                        class="filter-btn w-full border border-zinc-200 dark:border-zinc-800 px-3 sm:px-6 py-2 transition-all hover:border-brand-orange">Disponíveis</button>
+                    <button onclick="filterGallery('urgente', event)" id="filter-urgent"
+                        class="filter-btn w-full border border-zinc-200 dark:border-zinc-800 px-3 sm:px-6 py-2 transition-all hover:border-brand-orange">Últimas
+                        Unidades</button>
+                </div>
+            </div>
+
+            <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12"></div>
+        </section>
+    </main>
+
+    <footer class="border-t border-gray-100 dark:border-zinc-800 py-12 opacity-60">
+        <div
+            class="relative max-w-7xl mx-auto px-6 flex flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
+            <p class="text-sm">&copy; 2026 leobarbosa - por lbseven7</p>
+            <div class="flex items-center gap-6 text-xl md:ml-auto">
+                <a href="https://wa.me/5573988279832" target="_blank" aria-label="WhatsApp"
+                    class="hover:text-brand-orange transition"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="https://www.instagram.com/leob_pinturas/" target="_blank" aria-label="Instagram"
+                    class="hover:text-brand-orange transition"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.youtube.com/@leobarbosa-art-studio" target="_blank" aria-label="YouTube"
+                    class="hover:text-brand-orange transition"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="modal-overlay"
+        class="fixed inset-0 bg-black/92 z-50 hidden opacity-0 flex items-center justify-center p-3 sm:p-5 backdrop-blur-md">
+        <div
+            class="bg-[#f8f3ec] dark:bg-zinc-900 max-w-6xl w-full max-h-[92vh] overflow-y-auto md:overflow-hidden flex flex-col md:flex-row shadow-[0_30px_80px_rgba(0,0,0,0.28)] rounded-3xl border border-white/20">
+            <div class="md:w-[62%] bg-[#efe7dc] dark:bg-black flex items-center justify-center p-6 sm:p-8 md:p-12">
+                <div class="bg-white p-3 sm:p-4 shadow-[0_16px_40px_rgba(0,0,0,0.15)] flex items-center justify-center">
+                    <img id="modal-img" src="" alt=""
+                        class="w-auto h-auto max-w-full max-h-[65vh] md:max-h-[70vh] object-contain">
+                </div>
+            </div>
+            <div class="md:w-[38%] p-6 sm:p-8 md:p-10 flex flex-col justify-between relative">
+                <button onclick="closeModal()"
+                    class="absolute top-4 right-4 w-10 h-10 rounded-full border border-black/10 dark:border-white/10 text-xl hover:text-brand-orange hover:border-brand-orange transition">&times;</button>
+                <div>
+                    <p class="text-[10px] uppercase tracking-[0.35em] text-zinc-500 mb-4">Catálogo de Obras</p>
+                    <div id="modal-stock-badge"
+                        class="inline-flex px-3 py-1.5 bg-white/80 dark:bg-zinc-800 text-[10px] font-semibold uppercase tracking-[0.24em] mb-5 w-fit border border-black/5 dark:border-white/10">
+                    </div>
+                    <h3 id="modal-title" class="serif text-4xl sm:text-5xl font-normal leading-none mb-6"></h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8 text-sm text-zinc-700 dark:text-zinc-300">
+                        <div class="bg-white/70 dark:bg-zinc-800/70 border border-black/5 dark:border-white/10 p-4">
+                            <p id="modal-label-support"
+                                class="text-[10px] uppercase tracking-[0.28em] text-zinc-400 mb-2">Suporte</p>
+                            <p id="modal-technique" class="font-medium"></p>
+                        </div>
+                        <div class="bg-white/70 dark:bg-zinc-800/70 border border-black/5 dark:border-white/10 p-4">
+                            <p id="modal-label-dimensions"
+                                class="text-[10px] uppercase tracking-[0.28em] text-zinc-400 mb-2">Dimensões</p>
+                            <p id="modal-dimensions" class="font-medium"></p>
+                        </div>
+                        <div class="bg-white/70 dark:bg-zinc-800/70 border border-black/5 dark:border-white/10 p-4">
+                            <p id="modal-label-valor"
+                                class="text-[10px] uppercase tracking-[0.28em] text-zinc-400 mb-2">Valor</p>
+                            <p id="modal-valor" class="font-medium text-brand-orange"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-black/10 dark:border-white/10 pt-6 space-y-3">
+                    <p id="modal-label-cta" class="text-xs uppercase tracking-[0.28em] text-zinc-400">quero obra
+                        exclusiva agora</p>
+                    <p id="payment-helper" class="text-sm text-zinc-500 leading-relaxed"></p>
+                    <a id="payment-link" href="#"
+                        class="inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300">Verificar
+                        Disponibilidade</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+    <script src="https://leobchat.vercel.app/widget-loader.js" defer></script>
+</body>
+
+</html>

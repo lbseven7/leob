@@ -6,15 +6,15 @@ Static artist portfolio and art catalog site for Leo Barbosa, deployed to **Verc
 
 ## Key files
 
-- `pages/inicio.html` — entry "hub" page (default landing via Vercel rewrite of `/`)
+- `index.html` — entry "hub" page (default landing: "O que você quer explorar?")
+- `catalogo.html` — main catalog page (reached from the hub's "Catálogo" card). Renamed from the former root `index.html` — keep catalog links pointing to `catalogo.html`, home/logo/"Início" links to `index.html`.
 - `pages/sobre.html` — about page (reference for secondary-page layout/theme config)
-- `index.html` — main catalog page (reached from the hub's "Catálogo" card)
 - `js/script.js` — all catalog data, gallery rendering, i18n, modal, dark mode
 - `css/style.css` — custom styles + Avallon font face
 - `css/barra-progresso.css` — scroll progress bar
 - `posts/post.py` — Markdown → HTML blog generator (requires Python `markdown` lib)
 - `pages/admin.html` — Google Sheets–backed artwork management panel
-- `vercel.json` — `cleanUrls: true` + host rewrite to `tono/` for `tono.art.br` + `/` → `/pages/inicio` redirect
+- `vercel.json` — `cleanUrls: true` + host rewrite to `tono/` for `tono.art.br`. The hub is served from the root `index.html` (no rewrite needed — Vercel ignores `/` rewrites when a root `index.html` exists).
 
 ### Live auctions (Leilões)
 

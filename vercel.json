@@ -5,10 +5,6 @@
       "source": "/(.*)",
       "destination": "/tono/$1",
       "has": [{ "type": "host", "value": "tono.art.br" }]
-    },
-    {
-      "source": "/",
-      "destination": "/pages/inicio"
     }
   ]
 }
