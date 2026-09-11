@@ -101,9 +101,20 @@
                     <h2 class="serif text-4xl sm:text-5xl font-normal" data-lel="tituloLeiloes" data-lel-pt="Próximos Lotes" data-lel-en="Upcoming Lots">Próximos Lotes</h2>
                     <div class="h-1 w-20 bg-brand-orange mt-2"></div>
                 </div>
-                <button onclick="abrirRegistro()" class="hidden sm:inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 px-5 py-2 text-xs font-bold uppercase tracking-[0.2em] hover:border-brand-orange hover:text-brand-orange transition">
-                    <i class="fa-solid fa-user-plus"></i> <span data-lel="seuCadastro" data-lel-pt="Cadastrar" data-lel-en="Register">Cadastrar</span>
-                </button>
+                <div class="flex items-center justify-end gap-3">
+                    <div id="area-logado" class="hidden sm:flex items-center gap-3">
+                        <div class="border border-brand-orange/40 bg-brand-orange/5 px-4 py-2 flex items-center gap-2 text-xs">
+                            <span class="text-zinc-500 dark:text-zinc-400" data-lel="seuCadastro2" data-lel-pt="Participando como" data-lel-en="Registered as">Participando como</span>
+                            <span class="font-bold text-brand-orange" id="participante-nome"></span>
+                        </div>
+                        <button onclick="sair()" class="text-[10px] uppercase tracking-widest text-zinc-400 hover:text-red-500 transition" data-lel="sair" data-lel-pt="Sair" data-lel-en="Log out">Sair</button>
+                    </div>
+                    <div id="area-anonimo" class="hidden">
+                        <button onclick="abrirRegistro()" class="hidden sm:inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 px-5 py-2 text-xs font-bold uppercase tracking-[0.2em] hover:border-brand-orange hover:text-brand-orange transition">
+                            <i class="fa-solid fa-user-plus"></i> <span data-lel="seuCadastro" data-lel-pt="Cadastrar" data-lel-en="Register">Cadastrar</span>
+                        </button>
+                    </div>
+                </div>
             </div>
             <div id="vitrine-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10"></div>
         </section>
