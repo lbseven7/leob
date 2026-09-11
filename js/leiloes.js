@@ -368,6 +368,11 @@
     var media = l.lanceMaximo !== null ? L('lanceMaximo') + ': <span class="text-brand-orange font-bold">' + formatarMoeda(l.lanceMaximo) + '</span>'
       : L('lanceInicial') + ': <span class="font-bold">' + formatarMoeda(l.lance_inicial) + '</span>';
 
+    // Miniatura para a vitrine (nome -thumb), com fallback para a imagem cheia
+    var urlCheia = l.imagem_url || '';
+    var urlThumb = urlCheia.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, '-thumb.$1$2');
+    var imgSrc = 'src="' + urlThumb + '" onerror="this.onerror=null;this.src=\'' + urlCheia.replace(/'/g, '\\\'') + '\'"';
+
     var rodape = '';
     if (l.estado === 'encerrado') {
       rodape = '<div class="pt-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">' +
@@ -384,7 +389,7 @@
 
     return '<article class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden transition-all duration-300 hover:shadow-xl' + destaque + '">' +
       '<a href="' + href + '"><div class="aspect-[4/5] overflow-hidden bg-zinc-100 dark:bg-zinc-900 relative">' +
-      '<img src="' + (l.imagem_url || '') + '" alt="' + titulo + '" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105' + (l.estado === 'aberto' ? ' opacity-95' : '') + '" onerror="this.style.opacity=0.15">' +
+      '<img ' + imgSrc + ' alt="' + titulo + '" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105' + (l.estado === 'aberto' ? ' opacity-95' : '') + '">' +
       '<div class="absolute top-3 left-3">' + badgeEstado(l.estado) + '</div>' +
       (l.estado === 'aberto' && l.youtube_id ? '<a href="https://www.youtube.com/watch?v=' + l.youtube_id + '" target="_blank" rel="noopener" title="AO VIVO no YouTube" class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-red-600 text-white rounded-full hover:scale-110 transition"><i class="fa-brands fa-youtube"></i></a>' : '') +
       (l.estado === 'aberto' ? '<div class="absolute inset-x-0 bottom-0 h-1 bg-brand-orange animate-pulse"></div>' : '') +
@@ -468,6 +473,9 @@
     document.title = titulo + ' | Leilão leob.';
 
     $('leilao-img').src = l.imagem_url || '';
+    $('leilao-img').srcset = (l.imagem_url || '').replace(/\.(jpe?g|png|webp)$/i, '-thumb.$1') + ' 800w, ' + (l.imagem_url || '') + ' 1600w';
+    $('leilao-img').sizes = '(max-width: 1024px) 96vw, 600px';
+    $('leilao-img').loading = 'eager';
     $('leilao-titulo').innerText = titulo;
     if ($('leilao-tecnica')) $('leilao-tecnica').innerText = l.tecnica || '—';
     if ($('leilao-dimensoes')) $('leilao-dimensoes').innerText = l.dimensoes || '—';
