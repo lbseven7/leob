@@ -170,6 +170,15 @@
                     <input type="checkbox" id="reg-aceito" class="mt-1 accent-brand-orange">
                     <span data-lel-frete-aceite></span>
                 </label>
+                <details class="text-xs text-zinc-500 mt-2">
+                    <summary class="cursor-pointer font-bold uppercase tracking-widest text-brand-orange hover:underline" data-lel="lerRegras" data-lel-pt="Ler as regras do leilão" data-lel-en="Read the auction rules">Ler as regras do leilão</summary>
+                    <ul class="mt-3 space-y-2 list-disc pl-4">
+                        <li data-lel="regraPix" data-lel-pt="Pagamento exclusivo via PIX, emitido pelo sistema ao fim do leilão." data-lel-en="Payment exclusively via PIX, issued by the system at the end of the auction.">Pagamento exclusivo via PIX, emitido pelo sistema ao fim do leilão.</li>
+                        <li data-lel-frete></li>
+                        <li data-lel="regraPrazo" data-lel-pt="Lance nos 2 minutos finais estende o prazo em +2 min, dando chance a quem chegou no último instante." data-lel-en="A bid in the final 2 minutes extends the deadline by +2 min, giving a fair chance to late arrivals.">Lance nos 2 minutos finais estende o prazo em +2 min, dando chance a quem chegou no último instante.</li>
+                        <li data-lel="regraVencedor" data-lel-pt="O vencedor é o maior lance registrado ao final; ele será contatado pelo WhatsApp para finalizar a compra." data-lel-en="The winner is the highest bid at the end; they will be contacted via WhatsApp to complete the purchase.">O vencedor é o maior lance registrado ao final; ele será contatado pelo WhatsApp para finalizar a compra.</li>
+                    </ul>
+                </details>
                 <p id="reg-erro" class="hidden text-red-500 text-sm"></p>
                 <button type="submit" id="reg-enviar-btn" class="w-full bg-black dark:bg-brand-orange dark:text-black text-white py-4 font-bold uppercase tracking-[0.2em] hover:bg-brand-orange dark:hover:bg-black dark:hover:text-white transition mt-4" data-lel="regEnviar" data-lel-pt="Cadastrar e participar" data-lel-en="Register and join">Cadastrar e participar</button>
             </form>
