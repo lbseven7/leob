@@ -405,8 +405,8 @@
     var rotulo = l.estado === 'aberto' ? L('terminara') : L('comecaEm');
     function tick() {
       var rest = alvo - Date.now();
-      if (rest <= 0) { el.innerText = rotulo + ': 0s'; window.location.reload(); return; }
-      el.innerText = rotulo + ': <b>' + tempoRestante(rest) + '</b>';
+      if (rest <= 0) { el.innerHTML = rotulo + ': 0s'; window.location.reload(); return; }
+      el.innerHTML = rotulo + ': <b>' + tempoRestante(rest) + '</b>';
     }
     tick();
     setInterval(tick, 1000);
