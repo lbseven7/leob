@@ -669,7 +669,10 @@
     var alvo;
     if (l.estado === 'aberto') alvo = l.fim;
     else if (l.estado === 'agendado') alvo = l.inicio;
-    else return;
+    else { return; }
+
+    var rotuloEl = $('cronometro-rotulo');
+    if (rotuloEl) rotuloEl.innerText = l.estado === 'aberto' ? L('terminara') : L('comecaEm');
 
     var rest = alvo - agoraServidor();
     var el = $('cronometro');
