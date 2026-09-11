@@ -204,6 +204,7 @@ function apurarVencedor(loteId) {
     atualizarCampo(ABA_LOTES, loteId, 'vencedor_id', topo.particid);
     atualizarCampo(ABA_LOTES, loteId, 'valor_final', topo.valor);
     atualizarCampo(ABA_LOTES, loteId, 'status_pagamento', 'aguardando_pagamento');
+    limparCachesPublicos();
     return { vencedor_id: topo.particid, valor_final: topo.valor, status_pagamento: 'aguardando_pagamento' };
   } finally {
     lock.releaseLock();
@@ -351,6 +352,7 @@ function registrar(p) {
     aceitou_regras: 'sim',
     criado_em: isoMs(Date.now())
   });
+  limparCachesPublicos();
   return { ok: true, id: id, nome: nome };
 }
 
@@ -408,6 +410,7 @@ function fazerLance(p) {
 
     var cache = CacheService.getScriptCache();
     cache.remove(PREFIXO_CACHE + 'estado_' + loteId);
+    limparCachesPublicos();
 
     return { ok: true, valor: valor, novoMaximo: valor, terminaEm: novoFim };
   } finally {
@@ -417,6 +420,11 @@ function fazerLance(p) {
 
 // ---------- Lista de lotes (vitrine) ----------
 function listarLotes() {
+  var key = PREFIXO_CACHE + 'lista_lotes';
+  var cache = CacheService.getScriptCache();
+  var cacheado = cache.get(key);
+  if (cacheado) return JSON.parse(cacheado);
+
   var linhas = lerLinhas(ABA_LOTES);
   var agora = Date.now();
   var lances = lerLinhas(ABA_LANCES);
@@ -431,6 +439,12 @@ function listarLotes() {
     }
   });
 
+  // Mapa de participantes carregado UMA vez
+  var participantePorId = {};
+  lerLinhas(ABA_PARTICIPANTES).forEach(function (p) {
+    if (p.id) participantePorId[String(p.id)] = p;
+  });
+
   var out = linhas.filter(function (l) { return l.id; }).map(function (l) {
     var inicioMs = parseMs(l.inicio);
     var fimMs = parseMs(l.fim);
@@ -438,7 +452,7 @@ function listarLotes() {
     var info = porLote[k] || { maxi: null, qtd: 0 };
     var vencedor = null;
     if (l.vencedor_id) {
-      var p = buscarParticipante(l.vencedor_id);
+      var p = participantePorId[String(l.vencedor_id)] || null;
       vencedor = { id: l.vencedor_id, nome: p ? p.nome : null, cidade: p ? p.cidade : null };
     }
     return {
@@ -463,15 +477,28 @@ function listarLotes() {
     };
   });
   out.sort(function (a, b) { return (a.inicio || 0) - (b.inicio || 0); });
-  return { ok: true, lotes: out };
+  var resultado = { ok: true, lotes: out };
+  cache.put(key, JSON.stringify(resultado), 6);
+  return resultado;
 }
 
 // ---------- Admin ----------
 function adminData() {
+  var key = PREFIXO_CACHE + 'admin';
+  var cache = CacheService.getScriptCache();
+  var cacheado = cache.get(key);
+  if (cacheado) return JSON.parse(cacheado);
+
   var lotes = lerLinhas(ABA_LOTES);
   var participantes = lerLinhas(ABA_PARTICIPANTES);
   var lances = lerLinhas(ABA_LANCES);
   var agora = Date.now();
+
+  // Mapa de participantes carregado UMA vez
+  var participantePorId = {};
+  participantes.forEach(function (p) {
+    if (p.id) participantePorId[String(p.id)] = p;
+  });
 
   var lotesApi = lotes.filter(function (l) { return l.id; }).map(function (l) {
     var lancesLote = lances.filter(function (x) { return String(x.lote_id) === String(l.id); });
@@ -501,7 +528,7 @@ function adminData() {
   });
 
   var lancesApi = lances.map(function (l) {
-    var p = buscarParticipante(l.participante_id);
+    var p = participantePorId[String(l.participante_id)] || null;
     return {
       id: l.id,
       lote_id: l.lote_id,
@@ -515,7 +542,9 @@ function adminData() {
     };
   });
 
-  return { ok: true, lotes: lotesApi, participantes: participantes, lances: lancesApi };
+  var resultado = { ok: true, lotes: lotesApi, participantes: participantes, lances: lancesApi };
+  cache.put(key, JSON.stringify(resultado), 6);
+  return resultado;
 }
 
 function addEditLote(dados, isEdit) {
@@ -560,10 +589,12 @@ function addEditLote(dados, isEdit) {
     });
     var cache = CacheService.getScriptCache();
     cache.remove(PREFIXO_CACHE + 'estado_' + dados.id);
+    limparCachesPublicos();
     return { ok: true, id: dados.id };
   }
 
   appendLinha(ABA_LOTES, linha);
+  limparCachesPublicos();
   return { ok: true, id: linha.id };
 }
 
@@ -574,6 +605,7 @@ function setStatus(dados) {
   atualizarCampo(ABA_LOTES, loteId, 'status_pagamento', status);
   var cache = CacheService.getScriptCache();
   cache.remove(PREFIXO_CACHE + 'estado_' + loteId);
+  limparCachesPublicos();
   return { ok: true };
 }
 
@@ -583,6 +615,7 @@ function deleteLote(dados) {
   SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ABA_LOTES).deleteRow(lin);
   var cache = CacheService.getScriptCache();
   cache.remove(PREFIXO_CACHE + 'estado_' + String(dados.lote_id || ''));
+  limparCachesPublicos();
   return { ok: true };
 }
 
@@ -595,6 +628,7 @@ function deleteLance(dados) {
   sh.deleteRow(lin);
   var cache = CacheService.getScriptCache();
   cache.remove(PREFIXO_CACHE + 'estado_' + loteId);
+  limparCachesPublicos();
   return { ok: true };
 }
 
@@ -620,6 +654,12 @@ function limparCache() {
   var cache = CacheService.getScriptCache();
   cache.removeAll([]);
   return { ok: true };
+}
+
+function limparCachesPublicos() {
+  var cache = CacheService.getScriptCache();
+  cache.remove(PREFIXO_CACHE + 'admin');
+  cache.remove(PREFIXO_CACHE + 'lista_lotes');
 }
 
 // ---------- Menu no editor do Apps Script ----------
