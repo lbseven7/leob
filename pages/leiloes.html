@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leilões ao Vivo | leob.</title>
+    <meta name="description" content="Leilões ao vivo de obras do artista Leo Barbosa. Lance em tempo real e leve uma obra exclusiva.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { brand: { orange: '#d88800' } }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/barra-progresso.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="bg-white text-black dark:bg-black dark:text-white transition-colors duration-500 antialiased">
+    <div id="progress-container"><div id="progress-bar"></div></div>
+    <div id="custom-cursor"></div>
+
+    <header class="fixed w-full top-0 z-40 bg-white/90 dark:bg-zinc-950/90 border-b border-zinc-100 dark:border-zinc-800/50 backdrop-blur-sm text-zinc-800 dark:text-zinc-100 transition-colors duration-300">
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 h-20 flex justify-between items-center gap-3">
+            <a href="../index.html">
+                <img src="../images/logo/logo-white-gold-removebg-preview.png" alt="leob." class="max-w-[132px] sm:max-w-[140px] h-auto">
+            </a>
+            <div class="flex items-center gap-2">
+                <nav id="main-nav" class="hidden md:flex absolute md:static top-full left-4 right-4 md:left-auto md:right-auto mt-3 md:mt-0 flex-col md:flex-row items-start md:items-center gap-4 md:gap-5 bg-white md:bg-transparent dark:bg-zinc-900 md:dark:bg-transparent rounded-2xl md:rounded-none border border-zinc-100 md:border-0 dark:border-zinc-800 p-5 md:p-0 shadow-lg md:shadow-none text-sm font-medium text-zinc-700 dark:text-zinc-200">
+                    <a href="../index.html#catalogo" id="nav-catalogo" class="hover:text-brand-orange transition">Catálogo</a>
+                    <a href="leiloes.html" class="text-brand-orange font-bold">Leilões</a>
+                    <a href="eventos.html" id="nav-eventos" class="hover:text-brand-orange transition">Eventos</a>
+                    <a href="blog.html" id="nav-blog" class="hover:text-brand-orange transition">Blog</a>
+                    <a href="curso-metal.html" id="nav-venda-curso-metal" target="_blank" class="hover:text-brand-orange transition">Cursos</a>
+                    <a href="sobre.html" id="nav-sobre" target="_blank" class="hover:text-brand-orange transition">Sobre</a>
+
+                    <div class="h-4 w-px bg-zinc-200 dark:bg-zinc-700 hidden md:block mx-1"></div>
+
+                    <div class="flex items-center gap-2 text-xs font-bold tracking-widest border border-zinc-200 dark:border-zinc-800 px-2.5 py-1 rounded-full">
+                        <button onclick="changeLanguage('pt')" id="lang-pt" class="text-brand-orange">PT</button>
+                        <span class="text-zinc-300 dark:text-zinc-700">|</span>
+                        <button onclick="changeLanguage('en')" id="lang-en" class="text-zinc-400 hover:text-black dark:hover:text-white transition">EN</button>
+                    </div>
+
+                    <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition text-zinc-600 dark:text-zinc-300" aria-label="Alternar tema">
+                        <i id="darkModeIcon" class="fas fa-moon text-zinc-500 dark:text-yellow-500"></i>
+                    </button>
+                </nav>
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition" aria-label="Abrir menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-20">
+        <!-- Hero -->
+        <section class="relative bg-zinc-900 dark:bg-zinc-950 text-white overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 text-center">
+                <span class="inline-block px-4 py-1 bg-brand-orange/15 border border-brand-orange/30 rounded-full text-[11px] uppercase tracking-[0.3em] text-brand-orange mb-6" data-lel="relacionados"></span>
+                <h1 class="serif text-5xl sm:text-7xl font-light mb-6" data-lel="tituloHero" data-lel-pt="Leilões ao Vivo" data-lel-en="Live Auctions">Leilões ao Vivo</h1>
+                <p data-lel="subtituloHero" data-lel-pt="Obras exclusivas disputadas lance a lance, em tempo real. Cadastre-se, participe da hora marcada e leve uma obra do ateliê leob."
+                   data-lel-en="Exclusive artworks bid live, in real time. Register, join at the scheduled time and take home a piece from the leob. studio."
+                   class="text-zinc-400 max-w-2xl mx-auto leading-relaxed">Obras exclusivas disputadas lance a lance, em tempo real. Cadastre-se, participe da hora marcada e leve uma obra do ateliê leob.</p>
+                <button onclick="abrirRegistro()" class="mt-8 inline-flex items-center gap-2 px-8 py-4 bg-brand-orange text-black text-xs font-bold uppercase tracking-[0.2em] hover:brightness-110 active:scale-95 transition-all">
+                    <i class="fa-solid fa-gavel"></i> <span data-lel="participar">Participar do leilão</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Regras -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                <div class="border border-zinc-200 dark:border-zinc-800 p-6">
+                    <i class="fa-solid fa-piggy-bank text-brand-orange text-xl mb-3"></i>
+                    <h3 class="font-bold mb-2" data-lel="regra1t" data-lel-pt="Pagamento via PIX" data-lel-en="PIX payment">Pagamento via PIX</h3>
+                    <p class="text-zinc-500 dark:text-zinc-400" data-lel="regra1d" data-lel-pt="O vencedor paga o valor do lance por PIX e envia o comprovante." data-lel-en="The winner pays the bid amount via PIX and sends the receipt.">O vencedor paga o valor do lance por PIX e envia o comprovante.</p>
+                </div>
+                <div class="border border-zinc-200 dark:border-zinc-800 p-6">
+                    <i class="fa-solid fa-truck-fast text-brand-orange text-xl mb-3"></i>
+                    <h3 class="font-bold mb-2" data-lel="regra2t" data-lel-pt="Envio e frete" data-lel-en="Shipping">Envio e frete</h3>
+                    <p data-lel="regra2d" class="text-zinc-500 dark:text-zinc-400" data-lel-frete></p>
+                </div>
+                <div class="border border-zinc-200 dark:border-zinc-800 p-6">
+                    <i class="fa-solid fa-shield-halved text-brand-orange text-xl mb-3"></i>
+                    <h3 class="font-bold mb-2" data-lel="regra3t" data-lel-pt="Jogo limpo" data-lel-en="Fair play">Jogo limpo</h3>
+                    <p class="text-zinc-500 dark:text-zinc-400" data-lel="regra3d" data-lel-pt="Lance nos 2 minutos finais estende o prazo em +2 min, dando chance a quem chegou no último instante." data-lel-en="A bid in the final 2 minutes extends the deadline by +2 min, giving a fair chance to late arrivals.">Lance nos 2 minutos finais estende o prazo em +2 min, dando chance a quem chegou no último instante.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vitrine -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+            <div class="flex items-end justify-between mb-8">
+                <div>
+                    <h2 class="serif text-4xl sm:text-5xl font-normal" data-lel="tituloLeiloes" data-lel-pt="Próximos Lotes" data-lel-en="Upcoming Lots">Próximos Lotes</h2>
+                    <div class="h-1 w-20 bg-brand-orange mt-2"></div>
+                </div>
+                <button onclick="abrirRegistro()" class="hidden sm:inline-flex items-center gap-2 border border-zinc-200 dark:border-zinc-800 px-5 py-2 text-xs font-bold uppercase tracking-[0.2em] hover:border-brand-orange hover:text-brand-orange transition">
+                    <i class="fa-solid fa-user-plus"></i> <span data-lel="seuCadastro" data-lel-pt="Cadastrar" data-lel-en="Register">Cadastrar</span>
+                </button>
+            </div>
+            <div id="vitrine-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10"></div>
+        </section>
+    </main>
+
+    <footer class="border-t border-zinc-200 dark:border-zinc-800 py-12 opacity-60">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col items-center gap-4 text-center md:flex-row md:justify-between md:text-left">
+            <p class="text-sm">&copy; 2026 leobarbosa - por lbseven7</p>
+            <div class="flex items-center gap-6 text-xl md:ml-auto">
+                <a href="https://wa.me/5573988279832" target="_blank" aria-label="WhatsApp" class="hover:text-brand-orange transition"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="https://www.instagram.com/leob_pinturas/" target="_blank" aria-label="Instagram" class="hover:text-brand-orange transition"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.youtube.com/@leobarbosa-art-studio" target="_blank" aria-label="YouTube" class="hover:text-brand-orange transition"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal de Registro -->
+    <div id="modal-registro" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-[60] p-4">
+        <div class="bg-white dark:bg-zinc-900 p-8 w-full max-w-lg shadow-2xl border border-zinc-100 dark:border-zinc-800 max-h-[92vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="serif text-2xl font-bold" data-lel="regTitulo" data-lel-pt="Cadastre-se para dar lances" data-lel-en="Register to bid">Cadastre-se para dar lances</h2>
+                <button onclick="fecharRegistro()" class="text-zinc-400 hover:text-black dark:hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <form class="space-y-4" onsubmit="event.preventDefault(); enviarRegistro();">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1" data-lel="regNome" data-lel-pt="Nome completo" data-lel-en="Full name">Nome completo</label>
+                    <input type="text" id="reg-nome" required class="w-full p-3 border border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 bg-zinc-50 focus:border-brand-orange outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1" data-lel="regWhats" data-lel-pt="WhatsApp (com DDD, só números)" data-lel-en="WhatsApp (area code + number)">WhatsApp (com DDD, só números)</label>
+                    <input type="tel" id="reg-whatsapp" required placeholder="73900000000" class="w-full p-3 border border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 bg-zinc-50 focus:border-brand-orange outline-none">
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1" data-lel="regCidade" data-lel-pt="Cidade" data-lel-en="City">Cidade</label>
+                        <input type="text" id="reg-cidade" required class="w-full p-3 border border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 bg-zinc-50 focus:border-brand-orange outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1" data-lel="regUf" data-lel-pt="UF" data-lel-en="State">UF</label>
+                        <select id="reg-uf" required class="w-full p-3 border border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 bg-zinc-50 focus:border-brand-orange outline-none">
+                            <option value=""></option>
+                            <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+                            <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+                            <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+                            <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+                            <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+                            <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+                            <option>SP</option><option>SE</option><option>TO</option>
+                        </select>
+                    </div>
+                </div>
+                <label class="flex items-start gap-3 text-sm text-zinc-600 dark:text-zinc-300 cursor-pointer">
+                    <input type="checkbox" id="reg-aceito" class="mt-1 accent-brand-orange">
+                    <span data-lel-frete-aceite></span>
+                </label>
+                <p id="reg-erro" class="hidden text-red-500 text-sm"></p>
+                <button type="submit" id="reg-enviar-btn" class="w-full bg-black dark:bg-brand-orange dark:text-black text-white py-4 font-bold uppercase tracking-[0.2em] hover:bg-brand-orange dark:hover:bg-black dark:hover:text-white transition mt-4" data-lel="regEnviar" data-lel-pt="Cadastrar e participar" data-lel-en="Register and join">Cadastrar e participar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/script.js"></script>
+    <script src="../js/config-leiloes.js"></script>
+    <script src="../js/leiloes.js"></script>
+</body>
+</html>

@@ -236,11 +236,13 @@ function changeLanguage(lang) {
 
         const navCatalogo = document.getElementById('nav-catalogo');
         const navEventos = document.getElementById('nav-eventos');
+        const navLeiloes = document.getElementById('nav-leiloes');
         const navBlog = document.getElementById('nav-blog');
         const navSobre = document.getElementById('nav-sobre');
 
         if (navCatalogo) navCatalogo.innerText = "Catalogue";
         if (navEventos) navEventos.innerText = "Events";
+        if (navLeiloes) navLeiloes.innerText = "Auctions";
         if (navBlog) navBlog.innerText = "Blog";
         if (navSobre) navSobre.innerText = "About";
 
@@ -278,11 +280,13 @@ function changeLanguage(lang) {
 
         const navCatalogo = document.getElementById('nav-catalogo');
         const navEventos = document.getElementById('nav-eventos');
+        const navLeiloes = document.getElementById('nav-leiloes');
         const navBlog = document.getElementById('nav-blog');
         const navSobre = document.getElementById('nav-sobre');
 
         if (navCatalogo) navCatalogo.innerText = "Catálogo";
         if (navEventos) navEventos.innerText = "Eventos";
+        if (navLeiloes) navLeiloes.innerText = "Leilões";
         if (navBlog) navBlog.innerText = "Blog";
         if (navSobre) navSobre.innerText = "Sobre";
 

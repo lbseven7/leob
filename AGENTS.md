@@ -14,6 +14,21 @@ Static artist portfolio and art catalog site for Leo Barbosa, deployed to **Verc
 - `pages/admin.html` — Google Sheets–backed artwork management panel
 - `vercel.json` — only `cleanUrls: true`
 
+### Live auctions (Leilões)
+
+- `pages/leiloes.html` — auction showcase (upcoming / live / ended)
+- `pages/leilao.html?id=<id>` — single lot page: bidding, countdown, live history, PIX
+- `pages/leilao-admin.html` — auctions admin panel (mirrors `admin.html` pattern)
+- `js/leiloes.js` — auction client logic (polling ~4s, bids, register, PIX BR Code)
+- `js/config-leiloes.js` — auction config: Apps Script URL, PIX key, WhatsApp
+- `apps-script/Code.gs` — Apps Script backend (Google Sheets): endpoints `estado`,
+  `lance`, `registrar`, `lotes`, `admin` (read via GET, writes via POST `no-cors`)
+- `README-LEILOES.md` — full setup guide for the auctions system
+
+Auction backend lives in a Google Sheet (`Lotes` / `Participantes` / `Lances` / `Config`)
+called via the Apps Script Web App URL configured in `js/config-leiloes.js` (public ease)
+or via "Configurar API" in the admin panel (per-browser localStorage, key `leob_leiloes_api`).
+
 ## Architecture
 
 - **No build step.** Edit HTML/CSS/JS directly; Vercel serves as-is.

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Leilões | leob.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { brand: { orange: '#d88800' } },
+                    fontFamily: {
+                        sans: ['Comfortaa', 'cursive', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body { font-family: 'Comfortaa', cursive; background: #f6f2eb; color: #171717; }
+        .serif { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col bg-zinc-100">
+
+    <!-- Header Mobile -->
+    <header class="md:hidden w-full bg-black text-white py-3 px-4 flex justify-between items-center shadow-md fixed top-0 left-0 right-0 z-40">
+        <div class="flex items-center gap-3">
+            <a href="../index.html"><img src="../images/logo-black3-sbg.png" alt="leob." class="max-h-10 cursor-pointer transition hover:scale-110"></a>
+            <span class="text-xs tracking-widest uppercase opacity-70 border-l border-white/20 pl-3">Leilões</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="configurarAPI()" class="text-xs text-brand-orange hover:text-white transition"><i class="fa-solid fa-gear"></i></button>
+            <button onclick="toggleSidebar()" class="text-white text-lg"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-black text-white z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col shadow-xl">
+        <div class="p-6 border-b border-white/10">
+            <a href="../index.html" class="flex items-center gap-3">
+                <img src="../images/logo-black3-sbg.png" alt="leob." class="max-h-12 cursor-pointer transition hover:scale-110">
+                <span class="text-sm tracking-widest uppercase opacity-70">leob.</span>
+            </a>
+        </div>
+        <nav class="flex-1 py-4">
+            <a href="../index.html" class="flex items-center gap-3 px-6 py-3 text-sm hover:bg-white/10 transition">
+                <i class="fa-solid fa-house w-5 text-center text-brand-orange"></i> Catálogo
+            </a>
+            <a href="admin.html" class="flex items-center gap-3 px-6 py-3 text-sm hover:bg-white/10 transition">
+                <i class="fa-solid fa-table-columns w-5 text-center text-brand-orange"></i> Vendas & Entregas
+            </a>
+            <a href="leilao-admin.html" class="flex items-center gap-3 px-6 py-3 text-sm bg-white/10 border-l-2 border-brand-orange">
+                <i class="fa-solid fa-gavel w-5 text-center text-brand-orange"></i> Leilões
+            </a>
+            <button onclick="configurarAPI()" class="w-full flex items-center gap-3 px-6 py-3 text-sm hover:bg-white/10 transition text-left">
+                <i class="fa-solid fa-gear w-5 text-center text-brand-orange"></i> Configurar API
+            </button>
+        </nav>
+        <div class="p-6 border-t border-white/10 text-xs text-zinc-500">
+            &copy; 2026 leob.
+        </div>
+    </aside>
+
+    <div class="md:ml-64 flex flex-col min-h-screen pt-14 md:pt-0">
+        <main class="flex-grow p-6 max-w-7xl mx-auto w-full">
+
+            <div class="flex justify-between items-end mb-8 flex-wrap gap-4">
+                <div>
+                    <h1 class="serif text-3xl font-bold mb-2">Gestão de Leilões</h1>
+                    <p class="text-sm text-zinc-600">Lotes, lances e pagamentos em tempo real.</p>
+                </div>
+                <button onclick="abrirModalNovoLote()" class="bg-brand-orange text-white px-6 py-3 font-bold uppercase tracking-widest text-xs hover:bg-black transition shadow-lg">
+                    <i class="fa-solid fa-plus mr-2"></i> Novo Lote
+                </button>
+            </div>
+
+            <!-- Config aviso -->
+            <div id="aviso-config" class="hidden mb-6 border border-brand-orange/40 bg-brand-orange/10 text-brand-orange px-6 py-4 text-sm font-bold">
+                ⚠️ Conecte a URL do Apps Script em "Configurar API" no menu.
+            </div>
+
+            <!-- Resumo -->
+            <div id="resumo" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"></div>
+
+            <!-- Tabela Lotes -->
+            <div class="bg-white shadow-xl overflow-hidden border border-zinc-200">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse" id="tabela-lotes">
+                        <thead>
+                            <tr class="bg-zinc-100 text-xs uppercase tracking-widest text-zinc-500">
+                                <th class="p-4 border-b border-zinc-200">Lote</th>
+                                <th class="p-4 border-b border-zinc-200">Janela</th>
+                                <th class="p-4 border-b border-zinc-200">Estado</th>
+                                <th class="p-4 border-b border-zinc-200">Lances</th>
+                                <th class="p-4 border-b border-zinc-200">Máximo</th>
+                                <th class="p-4 border-b border-zinc-200">Vencedor</th>
+                                <th class="p-4 border-b border-zinc-200">Pagamento</th>
+                                <th class="p-4 border-b border-zinc-200">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-lotes-corpo"><tr><td colspan="8" class="p-8 text-center text-zinc-500">Carregando dados...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Filtro e Lances -->
+            <div class="mt-10">
+                <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+                    <h2 class="serif text-2xl font-bold">Lances</h2>
+                    <select id="filtro-lote" onchange="renderLances()" class="border border-zinc-300 bg-white px-4 py-2 text-sm">
+                        <option value="">Todos os lotes</option>
+                    </select>
+                </div>
+                <div class="bg-white shadow-xl overflow-hidden border border-zinc-200">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-zinc-100 text-xs uppercase tracking-widest text-zinc-500">
+                                    <th class="p-4 border-b border-zinc-200">Quando</th>
+                                    <th class="p-4 border-b border-zinc-200">Lote</th>
+                                    <th class="p-4 border-b border-zinc-200">Participante</th>
+                                    <th class="p-4 border-b border-zinc-200">Cidade</th>
+                                    <th class="p-4 border-b border-zinc-200">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-lances-corpo" class="text-sm"><tr><td colspan="5" class="p-8 text-center text-zinc-500">—</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Participantes -->
+            <div class="mt-10">
+                <h2 class="serif text-2xl font-bold mb-4">Participantes</h2>
+                <div class="bg-white shadow-xl overflow-hidden border border-zinc-200">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-zinc-100 text-xs uppercase tracking-widest text-zinc-500">
+                                    <th class="p-4 border-b border-zinc-200">Nome</th>
+                                    <th class="p-4 border-b border-zinc-200">WhatsApp</th>
+                                    <th class="p-4 border-b border-zinc-200">Cidade/UF</th>
+                                    <th class="p-4 border-b border-zinc-200">Cadastro</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-participantes-corpo" class="text-sm"><tr><td colspan="4" class="p-8 text-center text-zinc-500">—</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modal Novo/Editar Lote -->
+    <div id="modal-lote" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-[60] p-4">
+        <div class="bg-white p-8 w-full max-w-2xl shadow-2xl max-h-[92vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="modal-lote-titulo" class="serif text-2xl font-bold">Novo Lote</h2>
+                <button onclick="fecharModalLote()" class="text-zinc-400 hover:text-black"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <form id="form-lote" class="space-y-4" onsubmit="event.preventDefault(); salvarLote();">
+                <input type="hidden" id="linha-id" value="">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Título (PT)</label>
+                        <input type="text" id="l-titulo_pt" required class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Título (EN)</label>
+                        <input type="text" id="l-titulo_en" class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">URL da imagem</label>
+                    <input type="url" id="l-imagem_url" class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none" placeholder="https://...">
+                </div>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Técnica</label>
+                        <input type="text" id="l-tecnica" class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none" placeholder="Papel Ultra Smooth">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Dimensões</label>
+                        <input type="text" id="l-dimensoes" class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none" placeholder="20x28cm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Observações</label>
+                        <input type="text" id="l-obs" class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Descrição (PT)</label>
+                    <textarea id="l-descricao_pt" rows="2" class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Descrição (EN)</label>
+                    <textarea id="l-descricao_en" rows="2" class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none"></textarea>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Lance inicial (R$)</label>
+                        <input type="number" step="0.01" id="l-lance_inicial" required class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Incremento mínimo (R$)</label>
+                        <input type="number" step="0.01" id="l-incremento" required class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Início (local)</label>
+                        <input type="datetime-local" id="l-inicio" required class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Fim (local)</label>
+                        <input type="datetime-local" id="l-fim" required class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
+                    </div>
+                </div>
+                <button type="submit" id="salvar-lote-btn" class="w-full bg-black text-white py-4 font-bold uppercase tracking-[0.2em] hover:bg-brand-orange transition mt-4">
+                    Salvar Lote
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        var apiUrl = localStorage.getItem('leob_leiloes_api') || '';
+        var dadosAtuais = { lotes: [], participantes: [], lances: [] };
+
+        function toggleSidebar() {
+            var sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        function configurarAPI() {
+            var url = prompt("Cole a URL do Apps Script do leilão (/exec):", apiUrl || '');
+            if (url !== null) {
+                if (url.trim() === '') {
+                    localStorage.removeItem('leob_leiloes_api');
+                    apiUrl = '';
+                } else {
+                    apiUrl = url.trim();
+                    localStorage.setItem('leob_leiloes_api', apiUrl);
+                }
+                carregarDados();
+            }
+        }
+
+        function moeda(v) {
+            if (v === null || v === undefined || isNaN(v)) return '—';
+            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+        }
+
+        function dataFmt(ms) {
+            if (!ms) return '—';
+            var d = new Date(ms);
+            return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function estadoBadge(estado) {
+            if (estado === 'aberto') return '<span class="px-2 py-1 text-xs font-bold uppercase bg-brand-orange text-white">Ao Vivo</span>';
+            if (estado === 'agendado') return '<span class="px-2 py-1 text-xs font-bold uppercase bg-zinc-200 text-zinc-700">Agendado</span>';
+            return '<span class="px-2 py-1 text-xs font-bold uppercase bg-zinc-500 text-white">Encerrado</span>';
+        }
+
+        function statusLabel(s) {
+            return {
+                'aguardando_pagamento': 'Aguardando',
+                'pago': 'Pago',
+                'enviado': 'Enviado',
+                'entregue': 'Entregue',
+                'cancelado': 'Cancelado'
+            }[s] || s || '—';
+        }
+
+        async function carregarDados() {
+            apiUrl = localStorage.getItem('leob_leiloes_api') || '';
+            var aviso = document.getElementById('aviso-config');
+            aviso.classList.toggle('hidden', !!apiUrl);
+            if (!apiUrl) return;
+
+            try {
+                var resp = await fetch(apiUrl + '?action=admin');
+                var dados = await resp.json();
+                if (!dados.ok) throw new Error(dados.motivo);
+                dadosAtuais = dados;
+                renderResumo();
+                renderLotes();
+                renderLances();
+                renderParticipantes();
+            } catch (e) {
+                console.error(e);
+                alert('Erro ao carregar dados. Verifique a URL do Apps Script.');
+            }
+        }
+
+        function renderResumo() {
+            var lotes = dadosAtuais.lotes;
+            var aberto = lotes.filter(function (l) { return l.estado === 'aberto'; }).length;
+            var pendentes = lotes.filter(function (l) { return l.status_pagamento === 'aguardando_pagamento' && l.estado === 'encerrado'; }).length;
+            var cards = [
+                { v: lotes.length, t: 'Lotes', i: 'fa-gavel' },
+                { v: aberto, t: 'Ao vivo', i: 'fa-tower-broadcast' },
+                { v: dadosAtuais.lances.length, t: 'Lances', i: 'fa-bolt' },
+                { v: pendentes, t: 'Pag. pendentes', i: 'fa-wallet' }
+            ];
+            document.getElementById('resumo').innerHTML = cards.map(function (c) {
+                return '<div class="bg-white border border-zinc-200 p-4 flex items-center gap-4">' +
+                    '<i class="fa-solid ' + c.i + ' text-brand-orange text-xl"></i>' +
+                    '<div><p class="text-2xl font-bold">' + c.v + '</p><p class="text-[10px] uppercase tracking-widest text-zinc-500">' + c.t + '</p></div></div>';
+            }).join('');
+        }
+
+        function renderLotes() {
+            var tbody = document.getElementById('tabela-lotes-corpo');
+            if (!dadosAtuais.lotes.length) {
+                tbody.innerHTML = '<tr><td colspan="8" class="p-8 text-center text-zinc-500">Nenhum lote. Crie o primeiro!</td></tr>';
+                return;
+            }
+            tbody.innerHTML = dadosAtuais.lotes.map(function (l, i) {
+                var venc = '—';
+                if (l.vencedor_id) {
+                    var p = dadosAtuais.participantes.find(function (x) { return String(x.id) === String(l.vencedor_id); });
+                    venc = p ? p.nome : '?';
+                }
+                return '<tr class="hover:bg-zinc-50 transition border-b border-zinc-100">' +
+                    '<td class="p-4"><b>' + (l.titulo_pt || l.id) + '</b>' +
+                    '<div class="text-[10px] text-zinc-500 truncate max-w-[180px]">' + (l.imagem_url || '') + '</div></td>' +
+                    '<td class="p-4 text-xs">' + dataFmt(l.inicio) + '<div class="opacity-50 mt-1">→ ' + dataFmt(l.fim) + '</div></td>' +
+                    '<td class="p-4">' + estadoBadge(l.estado) + '</td>' +
+                    '<td class="p-4 font-bold">' + l.totalLances + '</td>' +
+                    '<td class="p-4 font-bold text-brand-orange">' + moeda(l.lanceMaximo) + '</td>' +
+                    '<td class="p-4 text-sm">' + venc + '</td>' +
+                    '<td class="p-4"><select onchange="setStatus(\'' + l.id + '\', this.value)" class="border border-zinc-300 bg-white px-2 py-1 text-xs">' +
+                    ['aguardando_pagamento', 'pago', 'enviado', 'entregue', 'cancelado'].map(function (s) {
+                        return '<option value="' + s + '"' + (l.status_pagamento === s ? ' selected' : '') + '>' + statusLabel(s) + '</option>';
+                    }).join('') +
+                    '</select></td>' +
+                    '<td class="p-4 whitespace-nowrap">' +
+                    '<button onclick="editarLote(' + i + ')" class="text-zinc-400 hover:text-brand-orange transition px-2 py-1" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>' +
+                    '<button onclick="removerLote(\'' + l.id + '\')" class="text-zinc-400 hover:text-red-500 transition px-2 py-1" title="Remover"><i class="fa-solid fa-trash"></i></button>' +
+                    '</td></tr>';
+            }).join('');
+        }
+
+        function renderLances() {
+            var filtro = document.getElementById('filtro-lote').value;
+            var selec = document.getElementById('filtro-lote');
+            selec.innerHTML = '<option value="">Todos os lotes</option>' + dadosAtuais.lotes.map(function (l) {
+                return '<option value="' + l.id + '">' + (l.titulo_pt || l.id) + '</option>';
+            }).join('') + (filtro ? '<option value="' + filtro + '" selected></option>' : '');
+            // garante seleção após rebuild
+            if (filtro) {
+                var opts = selec.querySelectorAll('option');
+                for (var i = 0; i < opts.length; i++) if (opts[i].value === filtro) selec.selectedIndex = i;
+            }
+
+            var tbody = document.getElementById('tabela-lances-corpo');
+            var lances = dadosAtuais.lances;
+            if (filtro) lances = lances.filter(function (x) { return String(x.lote_id) === String(filtro); });
+            lances = lances.slice().sort(function (a, b) { return (b.criado_em || 0) - (a.criado_em || 0); });
+
+            if (!lances.length) {
+                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-zinc-500">Nenhum lance.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = lances.map(function (x, i) {
+                var lote = dadosAtuais.lotes.find(function (l) { return String(l.id) === String(x.lote_id); });
+                return '<tr class="' + (i === 0 ? 'bg-brand-orange/5' : '') + ' border-b border-zinc-100">' +
+                    '<td class="p-4 text-xs">' + dataFmt(x.criado_em) + '</td>' +
+                    '<td class="p-4 text-sm">' + (lote ? lote.titulo_pt : x.lote_id) + '</td>' +
+                    '<td class="p-4"><b>' + x.nome + '</b>' +
+                    '<div class="text-[10px] text-zinc-500"><a class="hover:text-brand-orange" target="_blank" href="https://wa.me/55' + x.whatsapp + '">' + x.whatsapp + '</a></div></td>' +
+                    '<td class="p-4 text-sm">' + x.cidade + ' / ' + x.uf + '</td>' +
+                    '<td class="p-4 font-bold text-brand-orange">' + moeda(x.valor) + '</td></tr>';
+            }).join('');
+        }
+
+        function renderParticipantes() {
+            var tbody = document.getElementById('tabela-participantes-corpo');
+            if (!dadosAtuais.participantes.length) {
+                tbody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-zinc-500">Nenhum participante.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = dadosAtuais.participantes.map(function (p) {
+                return '<tr class="border-b border-zinc-100">' +
+                    '<td class="p-4"><b>' + p.nome + '</b></td>' +
+                    '<td class="p-4 text-sm"><a class="hover:text-brand-orange" target="_blank" href="https://wa.me/55' + p.whatsapp + '">' + p.whatsapp + '</a></td>' +
+                    '<td class="p-4 text-sm">' + p.cidade + ' / ' + p.uf + '</td>' +
+                    '<td class="p-4 text-xs">' + dataFmt(Date.parse(p.criado_em) || null) + '</td></tr>';
+            }).join('');
+        }
+
+        // ---------- CRUD ----------
+        function abrirModalNovoLote() {
+            if (!apiUrl) return configurarAPI();
+            document.getElementById('form-lote').reset();
+            document.getElementById('linha-id').value = '';
+            document.getElementById('modal-lote-titulo').innerText = 'Novo Lote';
+            document.getElementById('modal-lote').classList.remove('hidden');
+        }
+
+        function fecharModalLote() {
+            document.getElementById('modal-lote').classList.add('hidden');
+        }
+
+        function toLocalInput(ms) {
+            if (!ms) return '';
+            var d = new Date(ms);
+            function p(n) { return String(n).padStart(2, '0'); }
+            return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + 'T' + p(d.getHours()) + ':' + p(d.getMinutes());
+        }
+
+        function editarLote(idx) {
+            var l = dadosAtuais.lotes[idx];
+            if (!l) return;
+            if (!apiUrl) return configurarAPI();
+            document.getElementById('linha-id').value = l.id;
+            document.getElementById('l-titulo_pt').value = l.titulo_pt || '';
+            document.getElementById('l-titulo_en').value = l.titulo_en || '';
+            document.getElementById('l-imagem_url').value = l.imagem_url || '';
+            document.getElementById('l-tecnica').value = l.tecnica || '';
+            document.getElementById('l-dimensoes').value = l.dimensoes || '';
+            document.getElementById('l-obs').value = l.obs || '';
+            document.getElementById('l-descricao_pt').value = l.descricao_pt || '';
+            document.getElementById('l-descricao_en').value = l.descricao_en || '';
+            document.getElementById('l-lance_inicial').value = l.lance_inicial || '';
+            document.getElementById('l-incremento').value = l.incremento || '';
+            document.getElementById('l-inicio').value = toLocalInput(l.inicio);
+            document.getElementById('l-fim').value = toLocalInput(l.fim);
+            document.getElementById('modal-lote-titulo').innerText = 'Editar Lote';
+            document.getElementById('modal-lote').classList.remove('hidden');
+        }
+
+        function salvarLote() {
+            var id = document.getElementById('linha-id').value;
+            var payload = {
+                action: id ? 'editLote' : 'addLote',
+                id: id,
+                titulo_pt: document.getElementById('l-titulo_pt').value,
+                titulo_en: document.getElementById('l-titulo_en').value,
+                imagem_url: document.getElementById('l-imagem_url').value,
+                tecnica: document.getElementById('l-tecnica').value,
+                dimensoes: document.getElementById('l-dimensoes').value,
+                descricao_pt: document.getElementById('l-descricao_pt').value,
+                descricao_en: document.getElementById('l-descricao_en').value,
+                obs: document.getElementById('l-obs').value,
+                lance_inicial: document.getElementById('l-lance_inicial').value,
+                incremento: document.getElementById('l-incremento').value,
+                inicio: new Date(document.getElementById('l-inicio').value).toISOString(),
+                fim: new Date(document.getElementById('l-fim').value).toISOString()
+            };
+            var btn = document.getElementById('salvar-lote-btn');
+            var original = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = 'Salvando...';
+
+            fetch(apiUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(function () {
+                fecharModalLote();
+                setTimeout(carregarDados, 2500);
+            }).catch(function () {
+                alert('Erro ao salvar. Tente novamente.');
+            }).finally(function () {
+                btn.disabled = false;
+                btn.innerText = original;
+            });
+        }
+
+        function setStatus(loteId, status) {
+            fetch(apiUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'setStatus', lote_id: loteId, status_pagamento: status })
+            }).then(function () {
+                setTimeout(carregarDados, 1500);
+            }).catch(function () {
+                alert('Erro ao atualizar status.');
+            });
+        }
+
+        function removerLote(loteId) {
+            if (!confirm('Remover este lote definitivamente?')) return;
+            fetch(apiUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'deleteLote', lote_id: loteId })
+            }).then(function () {
+                setTimeout(carregarDados, 1500);
+            }).catch(function () {
+                alert('Erro ao remover.');
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            carregarDados();
+            // atualiza periodicamente (lances ao vivo)
+            var poll = setInterval(function () {
+                if (apiUrl) carregarDados();
+            }, 10000);
+        });
+    </script>
+</body>
+</html>
