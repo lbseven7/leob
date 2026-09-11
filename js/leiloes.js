@@ -362,16 +362,34 @@
     return '<span class="inline-flex px-3 py-1 bg-zinc-500 text-white text-[10px] font-bold uppercase tracking-widest">' + L('encerrado') + '</span>';
   }
 
+  // Fallback em cascata das imagens dos cards: webp → miniatura original → imagem cheia
+  window.leilaoThumb = function (img) {
+    var fila = (img.getAttribute('data-fb') || '').split('|');
+    if (!fila.length) { img.onerror = null; return; }
+    img.removeAttribute('onerror');
+    var prox = fila.shift();
+    if (prox) {
+      img.setAttribute('data-fb', fila.join('|'));
+      img.src = prox;
+      if (fila.length) img.onerror = function () { window.leilaoThumb(img); };
+    }
+  };
+
   function cardVitrine(l) {
     var href = 'leilao.html?id=' + encodeURIComponent(l.id);
     var titulo = (_lang() === 'en' && l.titulo_en) ? l.titulo_en : l.titulo_pt;
     var media = l.lanceMaximo !== null ? L('lanceMaximo') + ': <span class="text-brand-orange font-bold">' + formatarMoeda(l.lanceMaximo) + '</span>'
       : L('lanceInicial') + ': <span class="font-bold">' + formatarMoeda(l.lance_inicial) + '</span>';
 
-    // Miniatura para a vitrine (nome -thumb), com fallback para a imagem cheia
+    // Miniatura para a vitrine: prioriza WebP (mais leve); se faltar, tenta a miniatura
+    // original e, por fim, a imagem cheia (que por padrão é a fonte dos download).
     var urlCheia = l.imagem_url || '';
-    var urlThumb = urlCheia.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, '-thumb.$1$2');
-    var imgSrc = 'src="' + urlThumb + '" onerror="this.onerror=null;this.src=\'' + urlCheia.replace(/'/g, '\\\'') + '\'"';
+    var urlThumbWebp = urlCheia.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, '-thumb.webp$2');
+    var urlThumbOrig = urlCheia
+      .replace(/\.jpe?g(\?.*)?$/i, '-thumb.jpg$1')
+      .replace(/\.png(\?.*)?$/i, '-thumb.png$1')
+      .replace(/\.webp(\?.*)?$/i, '-thumb.webp$1');
+    var imgSrc = 'src="' + urlThumbWebp + '" data-fb="' + urlThumbOrig + '|' + urlCheia + '" onerror="window.leilaoThumb(this)"';
 
     var rodape = '';
     if (l.estado === 'encerrado') {
@@ -472,8 +490,10 @@
     var titulo = (_lang() === 'en' && l.titulo_en) ? l.titulo_en : l.titulo_pt;
     document.title = titulo + ' | Leilão leob.';
 
-    $('leilao-img').src = l.imagem_url || '';
-    $('leilao-img').srcset = (l.imagem_url || '').replace(/\.(jpe?g|png|webp)$/i, '-thumb.$1') + ' 800w, ' + (l.imagem_url || '') + ' 1600w';
+    var u0 = l.imagem_url || '';
+    // Prioriza WebP (mais leve) e mantém a original como fallback caso não exista
+    $('leilao-img').src = u0;
+    $('leilao-img').srcset = u0.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, '-thumb.webp') + ' 800w, ' + u0.replace(/\.(jpe?g|png)(\?.*)?$/i, '.webp') + ' 1600w';
     $('leilao-img').sizes = '(max-width: 1024px) 96vw, 600px';
     $('leilao-img').loading = 'eager';
     $('leilao-titulo').innerText = titulo;
