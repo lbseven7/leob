@@ -244,6 +244,8 @@ function doPost(e) {
     if (action === 'editLote') return json(addEditLote(dados, true));
     if (action === 'setStatus') return json(setStatus(dados));
     if (action === 'deleteLote') return json(deleteLote(dados));
+    if (action === 'deleteLance') return json(deleteLance(dados));
+    if (action === 'deleteParticipante') return json(deleteParticipante(dados));
     if (action === 'limparCache') return json(limparCache());
     return json({ ok: false, motivo: 'Ação desconhecida' });
   } catch (err) {
@@ -581,6 +583,36 @@ function deleteLote(dados) {
   SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ABA_LOTES).deleteRow(lin);
   var cache = CacheService.getScriptCache();
   cache.remove(PREFIXO_CACHE + 'estado_' + String(dados.lote_id || ''));
+  return { ok: true };
+}
+
+function deleteLance(dados) {
+  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ABA_LANCES);
+  var lin = acharIndiceLinha(ABA_LANCES, 'id', String(dados.lance_id || ''));
+  if (lin < 0) return { ok: false, motivo: 'Lance não encontrado.' };
+  var colLote = CAMPO_COLUNA[ABA_LANCES]['lote_id'];
+  var loteId = colLote ? String(sh.getRange(lin, colLote).getValue()) : '';
+  sh.deleteRow(lin);
+  var cache = CacheService.getScriptCache();
+  cache.remove(PREFIXO_CACHE + 'estado_' + loteId);
+  return { ok: true };
+}
+
+function deleteParticipante(dados) {
+  var lin = acharIndiceLinha(ABA_PARTICIPANTES, 'id', String(dados.participante_id || ''));
+  if (lin < 0) return { ok: false, motivo: 'Participante não encontrado.' };
+  var partId = String(dados.participante_id || '');
+  SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ABA_PARTICIPANTES).deleteRow(lin);
+  var lances = lerLinhas(ABA_LANCES);
+  lances.forEach(function (l) {
+    if (String(l.participante_id) === partId) {
+      var lsh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ABA_LANCES);
+      var llin = acharIndiceLinha(ABA_LANCES, 'id', String(l.id));
+      if (llin > 0) lsh.deleteRow(llin);
+    }
+  });
+  var cache = CacheService.getScriptCache();
+  cache.removeAll([]);
   return { ok: true };
 }
 

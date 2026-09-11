@@ -127,9 +127,10 @@
                                     <th class="p-4 border-b border-zinc-200">Participante</th>
                                     <th class="p-4 border-b border-zinc-200">Cidade</th>
                                     <th class="p-4 border-b border-zinc-200">Valor</th>
+                                    <th class="p-4 border-b border-zinc-200">Ações</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabela-lances-corpo" class="text-sm"><tr><td colspan="5" class="p-8 text-center text-zinc-500">—</td></tr></tbody>
+                            <tbody id="tabela-lances-corpo" class="text-sm"><tr><td colspan="6" class="p-8 text-center text-zinc-500">—</td></tr></tbody>
                         </table>
                     </div>
                 </div>
@@ -147,9 +148,10 @@
                                     <th class="p-4 border-b border-zinc-200">WhatsApp</th>
                                     <th class="p-4 border-b border-zinc-200">Cidade/UF</th>
                                     <th class="p-4 border-b border-zinc-200">Cadastro</th>
+                                    <th class="p-4 border-b border-zinc-200">Ações</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabela-participantes-corpo" class="text-sm"><tr><td colspan="4" class="p-8 text-center text-zinc-500">—</td></tr></tbody>
+                            <tbody id="tabela-participantes-corpo" class="text-sm"><tr><td colspan="5" class="p-8 text-center text-zinc-500">—</td></tr></tbody>
                         </table>
                     </div>
                 </div>
@@ -379,14 +381,17 @@
                     '<td class="p-4"><b>' + x.nome + '</b>' +
                     '<div class="text-[10px] text-zinc-500"><a class="hover:text-brand-orange" target="_blank" href="https://wa.me/55' + x.whatsapp + '">' + x.whatsapp + '</a></div></td>' +
                     '<td class="p-4 text-sm">' + x.cidade + ' / ' + x.uf + '</td>' +
-                    '<td class="p-4 font-bold text-brand-orange">' + moeda(x.valor) + '</td></tr>';
+                    '<td class="p-4 font-bold text-brand-orange">' + moeda(x.valor) + '</td>' +
+                    '<td class="p-4 whitespace-nowrap">' +
+                    '<button onclick="removerLance(\'' + x.id + '\')" class="text-zinc-400 hover:text-red-500 transition px-2 py-1" title="Remover lance"><i class="fa-solid fa-trash"></i></button>' +
+                    '</td></tr>';
             }).join('');
         }
 
         function renderParticipantes() {
             var tbody = document.getElementById('tabela-participantes-corpo');
             if (!dadosAtuais.participantes.length) {
-                tbody.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-zinc-500">Nenhum participante.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-zinc-500">Nenhum participante.</td></tr>';
                 return;
             }
             tbody.innerHTML = dadosAtuais.participantes.map(function (p) {
@@ -394,7 +399,10 @@
                     '<td class="p-4"><b>' + p.nome + '</b></td>' +
                     '<td class="p-4 text-sm"><a class="hover:text-brand-orange" target="_blank" href="https://wa.me/55' + p.whatsapp + '">' + p.whatsapp + '</a></td>' +
                     '<td class="p-4 text-sm">' + p.cidade + ' / ' + p.uf + '</td>' +
-                    '<td class="p-4 text-xs">' + dataFmt(Date.parse(p.criado_em) || null) + '</td></tr>';
+                    '<td class="p-4 text-xs">' + dataFmt(Date.parse(p.criado_em) || null) + '</td>' +
+                    '<td class="p-4 whitespace-nowrap">' +
+                    '<button onclick="removerParticipante(\'' + p.id + '\')" class="text-zinc-400 hover:text-red-500 transition px-2 py-1" title="Remover participante"><i class="fa-solid fa-user-xmark"></i></button>' +
+                    '</td></tr>';
             }).join('');
         }
 
@@ -502,6 +510,34 @@
                 setTimeout(carregarDados, 1500);
             }).catch(function () {
                 alert('Erro ao remover.');
+            });
+        }
+
+        function removerLance(lanceId) {
+            if (!confirm('Remover este lance?')) return;
+            fetch(apiUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'deleteLance', lance_id: lanceId })
+            }).then(function () {
+                setTimeout(carregarDados, 1500);
+            }).catch(function () {
+                alert('Erro ao remover lance.');
+            });
+        }
+
+        function removerParticipante(participanteId) {
+            if (!confirm('Remover este participante e seus lances?')) return;
+            fetch(apiUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'deleteParticipante', participante_id: participanteId })
+            }).then(function () {
+                setTimeout(carregarDados, 1500);
+            }).catch(function () {
+                alert('Erro ao remover participante.');
             });
         }
 
