@@ -386,6 +386,7 @@
       '<a href="' + href + '"><div class="aspect-[4/5] overflow-hidden bg-zinc-100 dark:bg-zinc-900 relative">' +
       '<img src="' + (l.imagem_url || '') + '" alt="' + titulo + '" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105' + (l.estado === 'aberto' ? ' opacity-95' : '') + '" onerror="this.style.opacity=0.15">' +
       '<div class="absolute top-3 left-3">' + badgeEstado(l.estado) + '</div>' +
+      (l.estado === 'aberto' && l.youtube_id ? '<a href="https://www.youtube.com/watch?v=' + l.youtube_id + '" target="_blank" rel="noopener" title="AO VIVO no YouTube" class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-red-600 text-white rounded-full hover:scale-110 transition"><i class="fa-brands fa-youtube"></i></a>' : '') +
       (l.estado === 'aberto' ? '<div class="absolute inset-x-0 bottom-0 h-1 bg-brand-orange animate-pulse"></div>' : '') +
       '</div></a>' +
       '<div class="p-5">' +
@@ -471,6 +472,19 @@
     if ($('leilao-tecnica')) $('leilao-tecnica').innerText = l.tecnica || '—';
     if ($('leilao-dimensoes')) $('leilao-dimensoes').innerText = l.dimensoes || '—';
     if ($('leilao-descricao')) $('leilao-descricao').innerText = (_lang() === 'en' && l.descricao_en) ? l.descricao_en : (l.descricao_pt || '');
+
+    // Live no YouTube
+    var yt = l.youtube_id ? String(l.youtube_id).trim() : '';
+    var liveBox = $('leilao-live-box');
+    if (liveBox) {
+      liveBox.classList.toggle('hidden', !yt);
+      if (yt) {
+        var ifr = $('youtube-iframe');
+        if (ifr) ifr.src = 'https://www.youtube.com/embed/' + yt + '?rel=0&modestbranding=1';
+        var link = $('youtube-link');
+        if (link) link.href = 'https://www.youtube.com/watch?v=' + yt;
+      }
+    }
 
     var badge = $('leilao-badge');
     badge.innerHTML = badgeEstado(l.estado);

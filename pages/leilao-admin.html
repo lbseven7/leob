@@ -198,6 +198,10 @@
                     </div>
                 </div>
                 <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Live no YouTube (ID do vídeo)</label>
+                    <input type="text" id="l-youtube_id" class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none" placeholder="dQw4w9WgXcQ (ID do vídeo após watch?v=)">
+                </div>
+                <div>
                     <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Descrição (PT)</label>
                     <textarea id="l-descricao_pt" rows="2" class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none"></textarea>
                 </div>
@@ -469,6 +473,7 @@
             document.getElementById('l-tecnica').value = l.tecnica || '';
             document.getElementById('l-dimensoes').value = l.dimensoes || '';
             document.getElementById('l-obs').value = l.obs || '';
+            document.getElementById('l-youtube_id').value = l.youtube_id || '';
             document.getElementById('l-descricao_pt').value = l.descricao_pt || '';
             document.getElementById('l-descricao_en').value = l.descricao_en || '';
             document.getElementById('l-lance_inicial').value = l.lance_inicial || '';
@@ -492,6 +497,7 @@
                 descricao_pt: document.getElementById('l-descricao_pt').value,
                 descricao_en: document.getElementById('l-descricao_en').value,
                 obs: document.getElementById('l-obs').value,
+                youtube_id: document.getElementById('l-youtube_id').value,
                 lance_inicial: document.getElementById('l-lance_inicial').value,
                 incremento: document.getElementById('l-incremento').value,
                 inicio: new Date(document.getElementById('l-inicio').value).toISOString(),

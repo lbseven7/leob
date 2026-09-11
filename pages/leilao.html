@@ -71,6 +71,27 @@
                     <img id="leilao-img" src="" alt="" class="w-full h-full object-cover">
                     <div class="absolute top-4 left-4" id="leilao-badge"></div>
                 </div>
+
+                <!-- Live no YouTube -->
+                <div id="leilao-live-box" class="hidden mt-8 border border-zinc-200 dark:border-zinc-800">
+                    <div class="flex items-center justify-between bg-zinc-900 dark:bg-zinc-950 px-4 py-3">
+                        <span class="text-[10px] uppercase tracking-[0.3em] text-white font-bold flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+                            <span data-lel="aoVivo" data-lel-pt="AO VIVO no YouTube" data-lel-en="LIVE on YouTube">AO VIVO no YouTube</span>
+                        </span>
+                        <a id="youtube-link" href="#" target="_blank" rel="noopener"
+                            class="text-[10px] uppercase tracking-widest text-zinc-400 hover:text-red-500 transition">
+                            <i class="fa-brands fa-youtube mr-1"></i><span data-lel="abrirYt" data-lel-pt="Ver no YouTube" data-lel-en="Watch on YouTube">Ver no YouTube</span>
+                        </a>
+                    </div>
+                    <div class="aspect-video bg-black">
+                        <iframe id="youtube-iframe" src="" title="YouTube live"
+                            class="w-full h-full" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                </div>
+
                 <div class="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 py-4 text-xs text-zinc-500 mt-2">
                     <span><i class="fa-regular fa-calendar mr-1"></i> <span data-lel="comecaEm2" data-lel-pt="Início" data-lel-en="Start">Início</span>: <b id="leilao-inicio" class="text-black dark:text-white"></b></span>
                     <span><i class="fa-regular fa-clock mr-1"></i> <span data-lel="terminara2" data-lel-pt="Encerra" data-lel-en="Ends">Encerra</span>: <b id="leilao-fim" class="text-black dark:text-white"></b></span>

@@ -21,7 +21,7 @@ var PREFIXO_CACHE = 'leob_';
 var CABECALHOS = {
   Lotes: ['id', 'titulo_pt', 'titulo_en', 'imagem_url', 'tecnica', 'dimensoes',
     'descricao_pt', 'descricao_en', 'lance_inicial', 'incremento', 'inicio', 'fim',
-    'estado', 'vencedor_id', 'valor_final', 'status_pagamento', 'obs'],
+    'estado', 'vencedor_id', 'valor_final', 'status_pagamento', 'obs', 'youtube_id'],
   Participantes: ['id', 'nome', 'whatsapp', 'cidade', 'uf', 'aceitou_regras', 'criado_em'],
   Lances: ['id', 'lote_id', 'participante_id', 'valor', 'criado_em'],
   Config: ['chave', 'valor']
@@ -34,6 +34,13 @@ function ensureSetup() {
     if (!sh) sh = ss.insertSheet(nome);
     if (sh.getLastRow() < 1) {
       sh.appendRow(CABECALHOS[nome]);
+    } else {
+      // Garante colunas novas adicionadas em versões futuras do script
+      var headers = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0].map(function (v) { return String(v).trim(); });
+      var adicionadas = CABECALHOS[nome].filter(function (h) { return headers.indexOf(h) === -1; });
+      if (adicionadas.length) {
+        sh.getRange(1, sh.getLastColumn() + 1, 1, adicionadas.length).setValues([adicionadas]);
+      }
     }
     if (nome === ABA_LANCES && sh.getLastRow() === 1) {
       // Índice simples para busca mais rápida (coluna B = lote_id)
@@ -300,7 +307,8 @@ function loteEstado(loteId) {
       fim: fimMs,
       estado: estado,
       status_pagamento: apurado ? apurado.status_pagamento : (lote.status_pagamento || ''),
-      obs: lote.obs
+      obs: lote.obs,
+      youtube_id: lote.youtube_id || ''
     },
     lanceMaximo: lanceMaximo,
     lancamentos: ultimos.map(function (x) { return { valor: x.valor, criado_em: parseMs(x.criado_em) }; }),
@@ -473,7 +481,8 @@ function listarLotes() {
       status_pagamento: l.status_pagamento || '',
       vencedor: vencedor,
       descricao_pt: l.descricao_pt,
-      descricao_en: l.descricao_en
+      descricao_en: l.descricao_en,
+      youtube_id: l.youtube_id || ''
     };
   });
   out.sort(function (a, b) { return (a.inicio || 0) - (b.inicio || 0); });
@@ -523,7 +532,8 @@ function adminData() {
       vencedor_id: l.vencedor_id || '',
       valor_final: toNum(l.valor_final),
       status_pagamento: l.status_pagamento || 'aguardando_pagamento',
-      obs: l.obs
+      obs: l.obs,
+      youtube_id: (l.youtube_id || '')
     };
   });
 
@@ -577,7 +587,8 @@ function addEditLote(dados, isEdit) {
     vencedor_id: isEdit ? (dados.vencedor_id || '') : '',
     valor_final: isEdit ? (dados.valor_final || '') : '',
     status_pagamento: isEdit ? (dados.status_pagamento || 'aguardando_pagamento') : 'aguardando_pagamento',
-    obs: (dados.obs || '').toString().trim()
+    obs: (dados.obs || '').toString().trim(),
+    youtube_id: (dados.youtube_id || '').toString().trim()
   };
 
   if (isEdit) {
