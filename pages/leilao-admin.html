@@ -282,24 +282,56 @@
             }[s] || s || '—';
         }
 
+        var _carregando = false;
+        var _falhasConsecutivas = 0;
+
         async function carregarDados() {
             apiUrl = localStorage.getItem('leob_leiloes_api') || '';
             var aviso = document.getElementById('aviso-config');
             aviso.classList.toggle('hidden', !!apiUrl);
             if (!apiUrl) return;
+            if (_carregando) return;
+            _carregando = true;
 
             try {
-                var resp = await fetch(apiUrl + '?action=admin');
-                var dados = await resp.json();
-                if (!dados.ok) throw new Error(dados.motivo);
+                var dados = await buscarAdminComRetry();
+                if (!dados.ok) throw new Error(dados.motivo || 'Resposta inválida');
                 dadosAtuais = dados;
+                _falhasConsecutivas = 0;
                 renderResumo();
                 renderLotes();
                 renderLances();
                 renderParticipantes();
             } catch (e) {
                 console.error(e);
-                alert('Erro ao carregar dados. Verifique a URL do Apps Script.');
+                _falhasConsecutivas++;
+                // Só alerta depois de várias falhas seguidas (evita ruído por timeout esporádico)
+                if (_falhasConsecutivas >= 3) {
+                    _falhasConsecutivas = 0;
+                    alert('Falha repetida ao carregar dados. Verifique a URL do Apps Script ou sua conexão.');
+                }
+            } finally {
+                _carregando = false;
+            }
+        }
+
+        function fetchComTimeout(url, ms) {
+            var controller = new AbortController();
+            var timer = setTimeout(function () { controller.abort(); }, ms || 25000);
+            return fetch(url, { signal: controller.signal }).finally(function () { clearTimeout(timer); });
+        }
+
+        async function buscarAdminComRetry() {
+            var tentativas = 2;
+            for (var i = 1; i <= tentativas; i++) {
+                try {
+                    var resp = await fetchComTimeout(apiUrl + '?action=admin');
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                    return await resp.json();
+                } catch (e) {
+                    if (i === tentativas) throw e;
+                    await new Promise(function (r) { setTimeout(r, 1500); });
+                }
             }
         }
 
