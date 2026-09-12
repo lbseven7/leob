@@ -44,6 +44,7 @@
       fimExtensao: 'Últimos minutos! Lance agora e o prazo estende +2 min.',
       historia: 'História do leilão',
       dataEvento: 'Data do evento',
+      carregandoImagem: 'Carregando imagem...',
       relacionados: 'Leilões ao vivo — leob.',
       enviarRegistro: 'Cadastrar e participar',
       regErroAceite: 'Você precisa aceitar as regras do leilão.',
@@ -90,6 +91,7 @@
       fimExtensao: 'Final minutes! Bid now and the deadline extends +2 min.',
       historia: 'Auction history',
       dataEvento: 'Event date',
+      carregandoImagem: 'Loading image...',
       relacionados: 'Live auctions — leob.',
       enviarRegistro: 'Register and join',
       regErroAceite: 'You must accept the auction rules.',
@@ -109,6 +111,16 @@
 
   // ---------- Utilidades ----------
   function $(id) { return document.getElementById(id); }
+
+  // ---------- Loading da imagem do lote ----------
+  function mostrarLoadingImg() {
+    var l = $('leilao-img-loading');
+    if (l) l.classList.remove('hidden');
+  }
+  function ocultarLoadingImg() {
+    var l = $('leilao-img-loading');
+    if (l) l.classList.add('hidden');
+  }
 
   function formatarMoeda(v) {
     if (v === null || v === undefined || isNaN(v)) return '—';
@@ -144,7 +156,7 @@
     return fetch(CFG.api, {
       method: 'POST',
       mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(dados)
     });
   }
@@ -365,13 +377,15 @@
   // Fallback em cascata das imagens dos cards: webp → miniatura original → imagem cheia
   window.leilaoThumb = function (img) {
     var fila = (img.getAttribute('data-fb') || '').split('|');
-    if (!fila.length) { img.onerror = null; return; }
+    if (!fila.length) { img.onerror = null; ocultarLoadingImg(); return; }
     img.removeAttribute('onerror');
     var prox = fila.shift();
     if (prox) {
       img.setAttribute('data-fb', fila.join('|'));
       img.src = prox;
       if (fila.length) img.onerror = function () { window.leilaoThumb(img); };
+    } else {
+      ocultarLoadingImg();
     }
   };
 
@@ -490,12 +504,32 @@
     var titulo = (_lang() === 'en' && l.titulo_en) ? l.titulo_en : l.titulo_pt;
     document.title = titulo + ' | Leilão leob.';
 
+    var img = $('leilao-img');
     var u0 = l.imagem_url || '';
-    // Prioriza WebP (mais leve) e mantém a original como fallback caso não exista
-    $('leilao-img').src = u0;
-    $('leilao-img').srcset = u0.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, '-thumb.webp') + ' 800w, ' + u0.replace(/\.(jpe?g|png)(\?.*)?$/i, '.webp') + ' 1600w';
-    $('leilao-img').sizes = '(max-width: 1024px) 96vw, 600px';
-    $('leilao-img').loading = 'eager';
+    // Prioriza a miniatura WebP (leve); se faltar, tenta a miniatura original e só
+    // então a imagem cheia — mesma cascata usada nos cards da vitrine, evitando
+    // baixar o arquivo original antes de a página precisar dele.
+    if (img && u0) {
+      var urlThumbWebp = u0.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, '-thumb.webp$2');
+      var urlThumbOrig = u0
+        .replace(/\.jpe?g(\?.*)?$/i, '-thumb.jpg$1')
+        .replace(/\.png(\?.*)?$/i, '-thumb.png$1')
+        .replace(/\.webp(\?.*)?$/i, '-thumb.webp$1');
+      img.removeAttribute('srcset');
+      img.src = urlThumbWebp;
+      img.setAttribute('data-fb', urlThumbOrig + '|' + u0);
+      img.loading = 'eager';
+      img.fetchPriority = 'high';
+      img.decoding = 'async';
+      img.alt = titulo;
+      if (img.complete && img.naturalWidth > 0) {
+        ocultarLoadingImg();
+      } else {
+        mostrarLoadingImg();
+        img.onload = function () { ocultarLoadingImg(); };
+        img.onerror = function () { window.leilaoThumb(img); };
+      }
+    }
     $('leilao-titulo').innerText = titulo;
     if ($('leilao-tecnica')) $('leilao-tecnica').innerText = l.tecnica || '—';
     if ($('leilao-dimensoes')) $('leilao-dimensoes').innerText = l.dimensoes || '—';

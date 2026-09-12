@@ -246,7 +246,7 @@ function doPost(e) {
   ensureSetup();
   montarColunas();
   try {
-    var dados = JSON.parse(e.postData.contents);
+    var dados = JSON.parse(e.postData.getDataAsString('UTF-8'));
     var action = dados.action;
     if (action === 'addLote') return json(addEditLote(dados, false));
     if (action === 'editLote') return json(addEditLote(dados, true));

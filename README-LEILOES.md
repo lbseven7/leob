@@ -74,7 +74,7 @@ O menu do `index.html` já tem o link **Leilões**.
 | `?action=registrar&nome&whatsapp&cidade&uf&aceitou=1` | GET | Cadastra participante |
 | `?action=lotes` | GET | Lista dos lotes para a vitrine |
 | `?action=admin` | GET | Dados completos para o painel |
-| POST `{action: addLote/editLote/setStatus/deleteLote}` | POST | CRUD do painel (`no-cors`) |
+| POST `{action: addLote/editLote/setStatus/deleteLote}` | POST | CRUD do painel (`no-cors`, `Content-Type: text/plain;charset=utf-8`) |
 
 ## Limites e boas práticas
 

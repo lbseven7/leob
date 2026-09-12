@@ -24,7 +24,8 @@ Static artist portfolio and art catalog site for Leo Barbosa, deployed to **Verc
 - `js/leiloes.js` — auction client logic (polling ~4s, bids, register, PIX BR Code)
 - `js/config-leiloes.js` — auction config: Apps Script URL, PIX key, WhatsApp
 - `apps-script/Code.gs` — Apps Script backend (Google Sheets): endpoints `estado`,
-  `lance`, `registrar`, `lotes`, `admin` (read via GET, writes via POST `no-cors`)
+  `lance`, `registrar`, `lotes`, `admin` (read via GET, writes via POST `no-cors`
+  com `Content-Type: text/plain;charset=utf-8` para preservar acentos)
 - `README-LEILOES.md` — full setup guide for the auctions system
 
 Auction backend lives in a Google Sheet (`Lotes` / `Participantes` / `Lances` / `Config`)

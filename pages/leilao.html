@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leilão | leob.</title>
+    <link rel="preconnect" href="https://www.leob.com.br">
+    <link rel="preconnect" href="https://script.google.com" crossorigin>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -67,8 +69,12 @@
         <div class="grid lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-14">
             <!-- Imagem -->
             <div>
-                <div class="bg-zinc-100 dark:bg-zinc-900 aspect-[4/5] overflow-hidden relative">
-                    <img id="leilao-img" src="" alt="" class="w-full h-full object-cover">
+                <div class="bg-zinc-100 dark:bg-zinc-900 overflow-hidden relative">
+                    <img id="leilao-img" src="" alt="" class="w-full h-auto object-contain">
+                    <div id="leilao-img-loading" class="flex flex-col items-center justify-center gap-3 min-h-[420px] sm:min-h-[560px]">
+                        <div class="w-10 h-10 border-2 border-zinc-200 dark:border-zinc-800 border-t-brand-orange rounded-full animate-spin"></div>
+                        <span class="text-[10px] uppercase tracking-[0.25em] text-zinc-400" data-lel="carregandoImagem" data-lel-pt="Carregando imagem..." data-lel-en="Loading image...">Carregando imagem...</span>
+                    </div>
                     <div class="absolute top-4 left-4" id="leilao-badge"></div>
                 </div>
 

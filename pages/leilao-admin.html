@@ -511,7 +511,7 @@
             fetch(apiUrl, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(payload)
             }).then(function () {
                 fecharModalLote();
@@ -528,7 +528,7 @@
             fetch(apiUrl, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({ action: 'setStatus', lote_id: loteId, status_pagamento: status })
             }).then(function () {
                 setTimeout(carregarDados, 1500);
@@ -542,7 +542,7 @@
             fetch(apiUrl, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({ action: 'deleteLote', lote_id: loteId })
             }).then(function () {
                 setTimeout(carregarDados, 1500);
@@ -556,7 +556,7 @@
             fetch(apiUrl, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({ action: 'deleteLance', lance_id: lanceId })
             }).then(function () {
                 setTimeout(carregarDados, 1500);
@@ -570,7 +570,7 @@
             fetch(apiUrl, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({ action: 'deleteParticipante', participante_id: participanteId })
             }).then(function () {
                 setTimeout(carregarDados, 1500);
