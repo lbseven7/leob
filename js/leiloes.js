@@ -376,8 +376,12 @@
 
   // Fallback em cascata das imagens dos cards: webp → miniatura original → imagem cheia
   window.leilaoThumb = function (img) {
+    function esconderPlaceholder() {
+      var prev = img.previousElementSibling;
+      if (prev && prev.classList) prev.classList.add('hidden');
+    }
     var fila = (img.getAttribute('data-fb') || '').split('|');
-    if (!fila.length) { img.onerror = null; ocultarLoadingImg(); return; }
+    if (!fila.length) { img.onerror = null; esconderPlaceholder(); return; }
     img.removeAttribute('onerror');
     var prox = fila.shift();
     if (prox) {
@@ -385,7 +389,7 @@
       img.src = prox;
       if (fila.length) img.onerror = function () { window.leilaoThumb(img); };
     } else {
-      ocultarLoadingImg();
+      esconderPlaceholder();
     }
   };
 
@@ -421,7 +425,8 @@
 
     return '<article class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden transition-all duration-300 hover:shadow-xl' + destaque + '">' +
       '<a href="' + href + '"><div class="aspect-[4/5] overflow-hidden bg-zinc-100 dark:bg-zinc-900 relative">' +
-      '<img ' + imgSrc + ' alt="' + titulo + '" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105' + (l.estado === 'aberto' ? ' opacity-95' : '') + '">' +
+      '<div class="absolute inset-0 flex items-center justify-center bg-zinc-100 dark:bg-zinc-900"><div class="w-8 h-8 rounded-full border-2 border-zinc-200 dark:border-zinc-800 border-t-brand-orange animate-spin"></div></div>' +
+      '<img ' + imgSrc + ' alt="' + titulo + '" loading="lazy" decoding="async" onload="this.previousElementSibling.classList.add(\'hidden\')" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105' + (l.estado === 'aberto' ? ' opacity-95' : '') + '">' +
       '<div class="absolute top-3 left-3">' + badgeEstado(l.estado) + '</div>' +
       (l.estado === 'aberto' && l.youtube_id ? '<a href="https://www.youtube.com/watch?v=' + l.youtube_id + '" target="_blank" rel="noopener" title="AO VIVO no YouTube" class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-red-600 text-white rounded-full hover:scale-110 transition"><i class="fa-brands fa-youtube"></i></a>' : '') +
       (l.estado === 'aberto' ? '<div class="absolute inset-x-0 bottom-0 h-1 bg-brand-orange animate-pulse"></div>' : '') +
