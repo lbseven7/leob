@@ -1,5 +1,11 @@
 {
+  "scripts": {
+    "css:build": "tailwindcss -c tailwind-leob.config.js -i css/tailwind.input.css -o css/tailwind-leob.css --minify && tailwindcss -c tailwind-tono.config.js -i css/tailwind.input.css -o css/tailwind-tono.css --minify && tailwindcss -c tailwind-valores.config.js -i css/tailwind.input.css -o css/tailwind-valores.css --minify"
+  },
   "dependencies": {
     "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
   }
 }

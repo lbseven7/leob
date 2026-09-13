@@ -18,17 +18,8 @@
     <meta name="twitter:image" content="https://tono.art.br/images/hero-site.jpg">
     <link rel="icon" href="images/logo-black3-sbg.png" type="image/png">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: { brand: { orange: '#d88800' } }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="css/tailwind-leob.css">
+    
 
     <link
         href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap"
@@ -148,7 +139,7 @@
     </footer>
 
     <div id="modal-overlay"
-        class="fixed inset-0 bg-black/92 z-50 hidden opacity-0 flex items-center justify-center p-3 sm:p-5 backdrop-blur-md">
+        class="fixed inset-0 bg-black/[0.92] z-50 hidden opacity-0 flex items-center justify-center p-3 sm:p-5 backdrop-blur-md">
         <div
             class="bg-[#f8f3ec] dark:bg-zinc-900 max-w-6xl w-full max-h-[92vh] overflow-y-auto md:overflow-hidden flex flex-col md:flex-row shadow-[0_30px_80px_rgba(0,0,0,0.28)] rounded-3xl border border-white/20">
             <div class="md:w-[62%] bg-[#efe7dc] dark:bg-black flex items-center justify-center p-6 sm:p-8 md:p-12">

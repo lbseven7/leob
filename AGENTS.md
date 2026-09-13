@@ -2,7 +2,7 @@
 
 ## Project overview
 
-Static artist portfolio and art catalog site for Leo Barbosa, deployed to **Vercel**. Brazilian Portuguese primary, English secondary. No build system, no bundler, no framework — plain HTML/CSS/JS with Tailwind via CDN.
+Static artist portfolio and art catalog site for Leo Barbosa, deployed to **Vercel**. Brazilian Portuguese primary, English secondary. No runtime build — Tailwind is **pre-compiled** to static CSS (see "Tailwind" below), plain HTML/CSS/JS served as-is.
 
 ## Key files
 
@@ -34,20 +34,29 @@ or via "Configurar API" in the admin panel (per-browser localStorage, key `leob_
 
 ## Architecture
 
-- **No build step.** Edit HTML/CSS/JS directly; Vercel serves as-is.
+- **Tailwind is pre-compiled** (no CDN). Sources are compiled locally into static files under `css/` and the results are committed — Vercel serves them as-is. Use the dedicated config file, never the per-page inline config:
+
+  | Build | Config | Used by | Output |
+  |-------|--------|---------|--------|
+  | leob (brand) | `tailwind-leob.config.js` | root pages, `pages/*`, `posts/*` (except `valores.html`), `js/*.js` | `css/tailwind-leob.css` |
+  | tono | `tailwind-tono.config.js` | `tono/*` | `css/tailwind-tono.css` |
+  | valores | `tailwind-valores.config.js` | `pages/valores.html` | `css/tailwind-valores.css` |
+
+  Each page links its own compiled file in `<head>` (this replaces the old `cdn.tailwindcss.com` script + inline `tailwind.config`). When adding a class, the build automatically re-scans the content globs; regenerate the CSS after editing any class. `posts/post.py` emits the leob link in its template (regenerating posts also requires a CSS rebuild if new classes were added).
 - **All artwork data lives in `js/script.js`** as the `obras` array. Adding/removing works means editing that array. The admin panel writes to Google Sheets but the catalog reads from the hardcoded JS array.
 - **i18n** is manual: every visible string has `pt`/`en` copies in `script.js`. The `changeLanguage()` function updates DOM elements by ID. New UI strings must be added in both languages.
 - **Blog pipeline:** Write `.md` in `posts/`, run `python posts/post.py` to regenerate `posts/*.html` and `posts/index.json`. The generated HTML files are committed.
-- **Brand color** is `#d88800` (Tailwind config in `index.html`). Note: `pages/admin.html` uses `#F97316` — an inconsistency to be aware of.
+- **Brand color** is `#d88800` (Tailwind config `theme.extend.colors.brand.orange`). Note: `pages/admin.html` uses `#F97316` — an inconsistency to be aware of.
 
 ## Commands
 
-There are no scripts in `package.json`. Key operations:
+Key operations:
 
 | Task | Command |
 |------|---------|
+| Regenerate Tailwind CSS (all 3 builds) | `npm run css:build` |
 | Regenerate blog posts from Markdown | `python posts/post.py` |
-| Install dependencies (only `qrcode`) | `npm install` |
+| Install dependencies (`qrcode` + `tailwindcss`) | `npm install` |
 
 ## Conventions
 
@@ -59,5 +68,7 @@ There are no scripts in `package.json`. Key operations:
 ## Gotchas
 
 - `.gitignore` excludes `*.txt` — text files with notes (like `CÓDIGO.txt`) are not tracked.
+- `animate-urgent` (deadline/low-stock pulse) e `animate-pulse-slow` vivem no config leob (`tailwind-leob.config.js`).
+- JIT note: classes que o Tailwind não consegue fazer o parse (ex.: opacidade fora da escala como `bg-black/92`) não geram CSS — use o formato com colchetes (`bg-black/[0.92]`).
 - Artwork stock counts (`restante`/`total` in `obras`) are hardcoded — they do not sync with the Google Sheets admin panel.
 - The `qrcode` npm package is used by certificate pages under `pages/`.
