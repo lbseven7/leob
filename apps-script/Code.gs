@@ -383,22 +383,33 @@ function loteEstado(loteId) {
 // ---------- Registrar participante ----------
 function registrar(p) {
   var nome = (p.nome || '').toString().trim();
-  var whatsapp = (p.whatsapp || '').toString().trim();
+  var whatsappDig = String(p.whatsapp || '').replace(/[^0-9]/g, '');
   var cidade = (p.cidade || '').toString().trim();
   var uf = (p.uf || '').toString().trim().toUpperCase();
   var aceitou = String(p.aceitou) === '1' || String(p.aceitou).toLowerCase() === 'true';
 
   if (!nome) return { ok: false, motivo: 'Informe seu nome.' };
-  if (!/^[0-9]{10,13}$/.test(whatsapp.replace(/[^0-9]/g, ''))) return { ok: false, motivo: 'WhatsApp inválido. Use só números (ddd + número).' };
+  // Celular brasileiro: DDD (2) + 9 + 8 dígitos = 11 dígitos
+  if (!/^[1-9]{2}9[0-9]{8}$/.test(whatsappDig)) {
+    return { ok: false, motivo: 'WhatsApp inválido. Informe um celular com DDD (ex: 73999112233).' };
+  }
   if (!cidade) return { ok: false, motivo: 'Informe sua cidade.' };
   if (!uf) return { ok: false, motivo: 'Informe seu estado (UF).' };
   if (!aceitou) return { ok: false, motivo: 'Você precisa aceitar as regras do leilão.' };
+
+  // Não permite cadastrar dois participantes com o mesmo número
+  var existentes = lerLinhas(ABA_PARTICIPANTES);
+  for (var i = 0; i < existentes.length; i++) {
+    if (String(existentes[i].whatsapp || '').replace(/[^0-9]/g, '') === whatsappDig) {
+      return { ok: false, motivo: 'Este WhatsApp já está cadastrado. Use outro número.' };
+    }
+  }
 
   var id = novoId('P');
   appendLinha(ABA_PARTICIPANTES, {
     id: id,
     nome: nome,
-    whatsapp: whatsapp.replace(/[^0-9]/g, ''),
+    whatsapp: whatsappDig,
     cidade: cidade,
     uf: uf,
     aceitou_regras: 'sim',

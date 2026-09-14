@@ -48,6 +48,8 @@
       relacionados: 'Leilões ao vivo — leob.',
       enviarRegistro: 'Cadastrar e participar',
       regErroAceite: 'Você precisa aceitar as regras do leilão.',
+      telefoneInvalido: 'Informe um celular válido com DDD (ex: 73 99911-2233).',
+      telefoneRepetido: 'Este número já está cadastrado. Use outro número para participar.',
       valorInvalido: 'Informe um valor válido.',
       semLeiloes: 'Nenhum leilão agendado no momento.',
       aceiteRegras: 'Ao participar, aceito as regras do leilão.',
@@ -95,6 +97,8 @@
       relacionados: 'Live auctions — leob.',
       enviarRegistro: 'Register and join',
       regErroAceite: 'You must accept the auction rules.',
+      telefoneInvalido: 'Enter a valid mobile number with area code (e.g. 73 99911-2233).',
+      telefoneRepetido: 'This number is already registered. Use another number to join.',
       valorInvalido: 'Enter a valid amount.',
       semLeiloes: 'No auctions scheduled right now.',
       aceiteRegras: 'By joining, I accept the auction rules.',
@@ -289,6 +293,23 @@
     if (m) m.classList.add('hidden');
   };
 
+  // Máscara do celular: (XX) 9XXXX-XXXX — só aceita dígitos
+  function maskCelular(v) {
+    var d = String(v).replace(/\D/g, '').slice(0, 11);
+    if (d.length > 6) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 3) + ' ' + d.slice(3, 7) + '-' + d.slice(7, 11);
+    if (d.length > 2) return '(' + d.slice(0, 2) + ') ' + d.slice(2);
+    if (d.length) return '(' + d;
+    return '';
+  }
+  function telefonarViz(campo) {
+    if (typeof campo === 'string') campo = $(campo);
+    if (!campo) return;
+    campo.value = maskCelular(campo.value);
+  }
+  function celularValido(dig) {
+    return /^[1-9]{2}9\d{8}$/.test(dig);
+  }
+
   window.enviarRegistro = function () {
     var nome = ($('reg-nome') && $('reg-nome').value || '').trim();
     var whatsapp = ($('reg-whatsapp') && $('reg-whatsapp').value || '').trim();
@@ -300,15 +321,21 @@
     function msgErro(t) { if (erro) { erro.innerText = t; erro.classList.remove('hidden'); } }
 
     if (!aceito) { msgErro(L('regErroAceite') || 'Você precisa aceitar as regras do leilão.'); return; }
+    // Envia só os dígitos do celular
+    var dig = String(whatsapp).replace(/\D/g, '');
+    if (!celularValido(dig)) { msgErro(L('telefoneInvalido')); return; }
     if (uf && uf.length === 2) uf = uf.toUpperCase();
     var btn = $('reg-enviar-btn');
 
     if (btn) { btn.disabled = true; btn.innerText = '...'; }
-    apiGet({ action: 'registrar', nome: nome, whatsapp: whatsapp, cidade: cidade, uf: uf, aceitou: '1' })
+    apiGet({ action: 'registrar', nome: nome, whatsapp: dig, cidade: cidade, uf: uf, aceitou: '1' })
       .then(function (d) {
         if (!d.ok) {
           if (btn) { btn.disabled = false; btn.innerText = L('enviarRegistro'); }
-          msgErro(d.motivo || 'Erro ao cadastrar.');
+          var m = d.motivo || '';
+          if (m.indexOf('já está cadastrado') !== -1) msgErro(L('telefoneRepetido'));
+          else if (m.indexOf('inválido') !== -1) msgErro(L('telefoneInvalido'));
+          else msgErro(m);
           return;
         }
         setParticipante({ id: d.id, nome: d.nome, cidade: cidade, uf: uf });
@@ -790,6 +817,12 @@
     var urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('id') && document.getElementById('leilao-img')) initLeilao();
     atualizarUsuario();
+    // Máscara do celular em qualquer popup de cadastro da página
+    var waIn = $('reg-whatsapp');
+    if (waIn) {
+      waIn.addEventListener('input', function () { telefonarViz(waIn); });
+      waIn.addEventListener('paste', function () { setTimeout(function () { telefonarViz(waIn); }, 0); });
+    }
     // Fecha modal-registro ao clicar fora
     var modal = $('modal-registro');
     if (modal) modal.addEventListener('click', function (e) {
