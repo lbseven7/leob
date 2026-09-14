@@ -4,7 +4,7 @@
 // ============================================================
 window.LEILOES = {
   // URL do Web App do Google Apps Script (termina em /exec)
-  api: 'https://script.google.com/macros/s/AKfycby7rssfeFalwZkAGnZPSvY9OdA3U1qPnphjprHf3eXgUWG2Brx59F82PGRMYy296rBs/exec',
+  api: 'https://script.google.com/macros/s/AKfycbwyhlrpQnXDxYuM7N3cMLAVuVGfxWGJckD1ie6smjGp0AWgZgSZl8QKrRnCAZ0X1EPs/exec',
 
   // Dados PIX (geração do BR Code / copia-e-cola)
   pix: {

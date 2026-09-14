@@ -329,6 +329,8 @@ function loteEstado(loteId) {
   var lances = lancesDoLote(loteId);
   var lanceMaximo = lances.length ? lances[0].valor : null;
   var ultimos = lances.slice(0, 20);
+  var participantesUtil = {};
+  lances.forEach(function (x) { participantesUtil[x.particid] = 1; });
 
   var resultado = {
     ok: true,
@@ -354,6 +356,7 @@ function loteEstado(loteId) {
     lanceMaximo: lanceMaximo,
     lancamentos: ultimos.map(function (x) { return { valor: x.valor, criado_em: parseMs(x.criado_em) }; }),
     totalLances: lances.length,
+    participantes: Object.keys(participantesUtil).length,
     terminaEm: fimMs,
     vencedor: null
   };
@@ -481,11 +484,11 @@ function listarLotes() {
   lances.forEach(function (l) {
     var k = String(l.lote_id);
     var v = toNum(l.valor);
-    if (!(k in porLote) || v > porLote[k].maxi) {
-      porLote[k] = { maxi: v, qtd: (porLote[k] ? porLote[k].qtd : 0) + 1 };
-    } else {
-      porLote[k].qtd = (porLote[k] ? porLote[k].qtd : 0) + 1;
-    }
+    if (!(k in porLote)) porLote[k] = { maxi: v, qtd: 0, partic: {} };
+    var rec = porLote[k];
+    if (v > rec.maxi) rec.maxi = v;
+    rec.qtd += 1;
+    rec.partic[String(l.participante_id)] = 1;
   });
 
   // Mapa de participantes carregado UMA vez
@@ -498,7 +501,7 @@ function listarLotes() {
     var inicioMs = parseMs(l.inicio);
     var fimMs = parseMs(l.fim);
     var k = String(l.id);
-    var info = porLote[k] || { maxi: null, qtd: 0 };
+    var info = porLote[k] || { maxi: null, qtd: 0, partic: {} };
     var vencedor = null;
     if (l.vencedor_id) {
       var p = participantePorId[String(l.vencedor_id)] || null;
@@ -518,6 +521,7 @@ function listarLotes() {
       estado: estadoDerivado(l, agora),
       lanceMaximo: info.maxi,
       totalLances: info.qtd,
+      participantes: Object.keys(info.partic || {}).length,
       valorFinal: toNum(l.valor_final),
       status_pagamento: l.status_pagamento || '',
       vencedor: vencedor,
@@ -685,18 +689,28 @@ function deleteLance(dados) {
 }
 
 function deleteParticipante(dados) {
-  var lin = acharIndiceLinha(ABA_PARTICIPANTES, 'id', String(dados.participante_id || ''));
-  if (lin < 0) return { ok: false, motivo: 'Participante não encontrado.' };
   var partId = String(dados.participante_id || '');
+  var lin = acharIndiceLinha(ABA_PARTICIPANTES, 'id', partId);
+  if (lin < 0) return { ok: false, motivo: 'Participante não encontrado.' };
+
+  // Remove o participante
   planilha().getSheetByName(ABA_PARTICIPANTES).deleteRow(lin);
-  var lances = lerLinhas(ABA_LANCES);
-  lances.forEach(function (l) {
-    if (String(l.participante_id) === partId) {
-      var lsh = planilha().getSheetByName(ABA_LANCES);
-      var llin = acharIndiceLinha(ABA_LANCES, 'id', String(l.id));
-      if (llin > 0) lsh.deleteRow(llin);
+
+  // Remove TODOS os lances do participante em uma única leitura e de baixo para
+  // cima — evita índices deslocados entre deleteRow() e o "?" órfão no admin.
+  var shLances = planilha().getSheetByName(ABA_LANCES);
+  var col = CAMPO_COLUNA[ABA_LANCES]['participante_id'];
+  var ult = shLances.getLastRow();
+  if (col && ult > 1) {
+    var vals = shLances.getRange(2, col, ult - 1, 1).getValues();
+    var inds = [];
+    for (var i = 0; i < vals.length; i++) {
+      if (String(vals[i][0]) === partId) inds.push(i + 2);
     }
-  });
+    inds.sort(function (a, b) { return b - a; }); // de baixo para cima
+    for (var j = 0; j < inds.length; j++) shLances.deleteRow(inds[j]);
+  }
+
   var cache = CacheService.getScriptCache();
   cache.removeAll([]);
   return { ok: true };

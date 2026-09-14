@@ -436,7 +436,7 @@
       '<h3 class="text-lg serif font-medium leading-tight">' + titulo + '</h3>' +
       '</div>' +
       '<p class="text-[10px] uppercase tracking-widest opacity-50 mb-3">' + (l.tecnica || '') + ' ' + (l.dimensoes ? '· ' + l.dimensoes : '') + '</p>' +
-      '<div class="mb-4">' + media + '<div class="text-[10px] text-zinc-400 mt-1">' + l.totalLances + ' ' + L('totalLances') + '</div></div>' +
+      '<div class="mb-4">' + media + '<div class="text-[10px] text-zinc-400 mt-1">' + l.totalLances + ' ' + L('totalLances') + ' · ' + (l.participantes || 0) + ' ' + L('participantes') + '</div></div>' +
       rodape +
       '</div></article>';
   }
@@ -561,6 +561,8 @@
     if ($('leilao-incremento')) $('leilao-incremento').innerText = formatarMoeda(l.incremento);
     $('leilao-lance-maximo').innerText = formatarMoeda(d.lanceMaximo);
     if ($('leilao-total-lances')) $('leilao-total-lances').innerText = d.totalLances + ' ' + L('totalLances');
+    var partEl = $('leilao-total-participantes');
+    if (partEl) partEl.innerText = (d.participantes || 0) + ' ' + L('participantes');
 
     // Áreas por estado
     $('area-agendado').classList.toggle('hidden', l.estado !== 'agendado');
@@ -607,6 +609,8 @@
     }
     var n = $('leilao-total-lances');
     if (n) n.innerText = d.totalLances + ' ' + L('totalLances');
+    var p = $('leilao-total-participantes');
+    if (p) p.innerText = (d.participantes || 0) + ' ' + L('participantes');
   }
 
   function renderHistorico(d) {
@@ -710,7 +714,13 @@
         } else {
           if (msgEl) { msgEl.classList.add('text-red-500'); msgEl.classList.remove('text-green-600'); msgEl.innerText = d.motivo || L('erroLance'); }
           if (d.minimoNecessario) input.placeholder = formatarMoeda(d.minimoNecessario) + ' ou mais';
-          if (d.motivo && d.motivo.indexOf('Cadastre') !== -1) abrirRegistro();
+          if (d.motivo && d.motivo.indexOf('Cadastre') !== -1) {
+            // Participante foi apagado no servidor (ou o ID é de outra planilha):
+            // remove o "participante fantasma" do localStorage e pede recadastro.
+            setParticipante(null);
+            atualizarUsuario();
+            abrirRegistro();
+          }
         }
       })
       .catch(function () {
