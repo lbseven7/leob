@@ -16,6 +16,20 @@ var ABA_CONFIG = 'Config';
 var CACHE_TTL_SEG = 3;
 var EXTENSAO_MS = 120000; // anti-rajada: lance nos 2 min finais estende +2 min
 var PREFIXO_CACHE = 'leob_';
+// Cabeçalhos/colunas mudam raramente — cache longo evita reler planilha em toda chamada
+var TTL_SETUP = 21600; // 6h (máx. do ScriptCache)
+var TTL_CAMPOS = 21600;
+var SETUP_OK_KEY = PREFIXO_CACHE + 'setup_ok';
+var CAMPOS_KEY = PREFIXO_CACHE + 'campos';
+
+var _planilhaCache = null;
+function planilha() {
+  if (!_planilhaCache) _planilhaCache = SpreadsheetApp.getActiveSpreadsheet();
+  return _planilhaCache;
+}
+
+// Marca de versão injetada em toda resposta — permite confirmar no ar qual build está publicado.
+var VERSAO_CODIGO = '2.1-cache';
 
 // ---------- Estrutura da planilha ----------
 var CABECALHOS = {
@@ -28,31 +42,50 @@ var CABECALHOS = {
 };
 
 function ensureSetup() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  Object.keys(CABECALHOS).forEach(function (nome) {
-    var sh = ss.getSheetByName(nome);
-    if (!sh) sh = ss.insertSheet(nome);
-    if (sh.getLastRow() < 1) {
-      sh.appendRow(CABECALHOS[nome]);
-    } else {
-      // Garante colunas novas adicionadas em versões futuras do script
-      var headers = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0].map(function (v) { return String(v).trim(); });
-      var adicionadas = CABECALHOS[nome].filter(function (h) { return headers.indexOf(h) === -1; });
-      if (adicionadas.length) {
-        sh.getRange(1, sh.getLastColumn() + 1, 1, adicionadas.length).setValues([adicionadas]);
+  var cache = CacheService.getScriptCache();
+  if (cache.get(SETUP_OK_KEY)) return;
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    // Reconfere depois do lock: outra chamada pode ter feito o setup.
+    if (cache.get(SETUP_OK_KEY)) return;
+    var ss = planilha();
+    Object.keys(CABECALHOS).forEach(function (nome) {
+      var sh = ss.getSheetByName(nome);
+      if (!sh) sh = ss.insertSheet(nome);
+      if (sh.getLastRow() < 1) {
+        sh.appendRow(CABECALHOS[nome]);
+      } else {
+        // Garante colunas novas adicionadas em versões futuras do script
+        var headers = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0].map(function (v) { return String(v).trim(); });
+        var adicionadas = CABECALHOS[nome].filter(function (h) { return headers.indexOf(h) === -1; });
+        if (adicionadas.length) {
+          sh.getRange(1, sh.getLastColumn() + 1, 1, adicionadas.length).setValues([adicionadas]);
+          // Cabeçalhos mudaram: invalida o mapa de colunas em cache
+          cache.remove(CAMPOS_KEY);
+        }
       }
-    }
-    if (nome === ABA_LANCES && sh.getLastRow() === 1) {
-      // Índice simples para busca mais rápida (coluna B = lote_id)
-      sh.getRange('A1').setNote('ID x lote_id x participante_id');
-    }
-  });
+      if (nome === ABA_LANCES && sh.getLastRow() === 1) {
+        // Índice simples para busca mais rápida (coluna B = lote_id)
+        sh.getRange('A1').setNote('ID x lote_id x participante_id');
+      }
+    });
+    cache.put(SETUP_OK_KEY, '1', TTL_SETUP);
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 // ---------- Utilitários ----------
 function json(obj) {
+  var out = obj;
+  if (obj && typeof obj === 'object' && !obj.versao) {
+    out = {};
+    for (var k in obj) out[k] = obj[k];
+    out.versao = VERSAO_CODIGO;
+  }
   return ContentService
-    .createTextOutput(JSON.stringify(obj))
+    .createTextOutput(JSON.stringify(out))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -81,7 +114,7 @@ function novoId(prefixo) {
 }
 
 function lerLinhas(nome) {
-  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(nome);
+  var sh = planilha().getSheetByName(nome);
   if (!sh) return [];
   var ult = sh.getLastRow();
   if (ult < 2) return [];
@@ -104,7 +137,7 @@ function lerLinhas(nome) {
 }
 
 function appendLinha(nome, obj) {
-  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(nome);
+  var sh = planilha().getSheetByName(nome);
   var linha = CABECALHOS[nome].map(function (h) {
     var v = obj[h];
     return (v === null || v === undefined) ? '' : v;
@@ -113,7 +146,7 @@ function appendLinha(nome, obj) {
 }
 
 function acharIndiceLinha(nome, campo, valor) {
-  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(nome);
+  var sh = planilha().getSheetByName(nome);
   var ult = sh.getLastRow();
   if (ult < 2) return -1;
   var col = CAMPO_COLUNA[nome][campo];
@@ -128,7 +161,7 @@ function acharIndiceLinha(nome, campo, valor) {
 function atualizarCampo(nome, id, campo, valor) {
   var lin = acharIndiceLinha(nome, 'id', id);
   if (lin < 0) return false;
-  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(nome);
+  var sh = planilha().getSheetByName(nome);
   var col = CAMPO_COLUNA[nome][campo];
   if (!col) return false;
   sh.getRange(lin, col).setValue(valor);
@@ -136,8 +169,15 @@ function atualizarCampo(nome, id, campo, valor) {
 }
 
 var CAMPO_COLUNA = {}; // preenchido abaixo, após ensureSetup
-function montarColunas() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+function montarColunas(forcar) {
+  var cache = CacheService.getScriptCache();
+  if (!forcar) {
+    var cacheado = cache.get(CAMPOS_KEY);
+    if (cacheado) {
+      try { CAMPO_COLUNA = JSON.parse(cacheado); return; } catch (e) { /* recria abaixo */ }
+    }
+  }
+  var ss = planilha();
   Object.keys(CABECALHOS).forEach(function (nome) {
     var sh = ss.getSheetByName(nome);
     CAMPO_COLUNA[nome] = {};
@@ -150,6 +190,7 @@ function montarColunas() {
       if (h) CAMPO_COLUNA[nome][h] = c + 1;
     }
   });
+  cache.put(CAMPOS_KEY, JSON.stringify(CAMPO_COLUNA), TTL_CAMPOS);
 }
 
 function buscarLote(id) {
@@ -595,7 +636,7 @@ function addEditLote(dados, isEdit) {
     var lin = acharIndiceLinha(ABA_LOTES, 'id', dados.id);
     if (lin < 0) return { ok: false, motivo: 'Lote não encontrado.' };
     CABECALHOS[ABA_LOTES].forEach(function (h, i) {
-      SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ABA_LOTES)
+      planilha().getSheetByName(ABA_LOTES)
         .getRange(lin, i + 1).setValue(linha[h]);
     });
     var cache = CacheService.getScriptCache();
@@ -623,7 +664,7 @@ function setStatus(dados) {
 function deleteLote(dados) {
   var lin = acharIndiceLinha(ABA_LOTES, 'id', String(dados.lote_id || ''));
   if (lin < 0) return { ok: false, motivo: 'Lote não encontrado.' };
-  SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ABA_LOTES).deleteRow(lin);
+  planilha().getSheetByName(ABA_LOTES).deleteRow(lin);
   var cache = CacheService.getScriptCache();
   cache.remove(PREFIXO_CACHE + 'estado_' + String(dados.lote_id || ''));
   limparCachesPublicos();
@@ -631,7 +672,7 @@ function deleteLote(dados) {
 }
 
 function deleteLance(dados) {
-  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ABA_LANCES);
+  var sh = planilha().getSheetByName(ABA_LANCES);
   var lin = acharIndiceLinha(ABA_LANCES, 'id', String(dados.lance_id || ''));
   if (lin < 0) return { ok: false, motivo: 'Lance não encontrado.' };
   var colLote = CAMPO_COLUNA[ABA_LANCES]['lote_id'];
@@ -647,11 +688,11 @@ function deleteParticipante(dados) {
   var lin = acharIndiceLinha(ABA_PARTICIPANTES, 'id', String(dados.participante_id || ''));
   if (lin < 0) return { ok: false, motivo: 'Participante não encontrado.' };
   var partId = String(dados.participante_id || '');
-  SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ABA_PARTICIPANTES).deleteRow(lin);
+  planilha().getSheetByName(ABA_PARTICIPANTES).deleteRow(lin);
   var lances = lerLinhas(ABA_LANCES);
   lances.forEach(function (l) {
     if (String(l.participante_id) === partId) {
-      var lsh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ABA_LANCES);
+      var lsh = planilha().getSheetByName(ABA_LANCES);
       var llin = acharIndiceLinha(ABA_LANCES, 'id', String(l.id));
       if (llin > 0) lsh.deleteRow(llin);
     }
