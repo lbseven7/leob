@@ -11,6 +11,7 @@
         href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="../js/config-leiloes.js"></script>
     <style>
         body {
             font-family: 'Comfortaa', cursive;
@@ -33,7 +34,7 @@
             <span class="text-xs tracking-widest uppercase opacity-70 border-l border-white/20 pl-3">Gestão</span>
         </div>
         <div class="flex items-center gap-3">
-            <button onclick="configurarAPI()" class="text-xs text-brand-orange hover:text-white transition"><i class="fa-solid fa-gear"></i></button>
+            <button onclick="carregarDados()" class="text-xs text-brand-orange hover:text-white transition" title="Recarregar"><i class="fa-solid fa-rotate"></i></button>
             <button onclick="toggleSidebar()" class="text-white text-lg"><i class="fa-solid fa-bars"></i></button>
         </div>
     </header>
@@ -59,8 +60,8 @@
             <a href="leilao-admin.html" class="flex items-center gap-3 px-6 py-3 text-sm hover:bg-white/10 transition">
                 <i class="fa-solid fa-gavel w-5 text-center text-brand-orange"></i> Leilões
             </a>
-            <button onclick="configurarAPI()" class="w-full flex items-center gap-3 px-6 py-3 text-sm hover:bg-white/10 transition text-left">
-                <i class="fa-solid fa-gear w-5 text-center text-brand-orange"></i> Configurar Planilha
+            <button onclick="carregarDados()" class="w-full flex items-center gap-3 px-6 py-3 text-sm hover:bg-white/10 transition text-left">
+                <i class="fa-solid fa-rotate w-5 text-center text-brand-orange"></i> Recarregar
             </button>
         </nav>
         <div class="p-6 border-t border-white/10 text-xs text-zinc-500">
@@ -75,11 +76,11 @@
         <div class="flex justify-between items-end mb-8">
             <div>
                 <h1 class="serif text-3xl font-bold mb-2">Controle de Vendas e Entregas</h1>
-                <p class="text-sm text-zinc-600">Acompanhe a numeração das tiragens e o status dos clientes.</p>
+                <p class="text-sm text-zinc-600">Lotes arrematados nos leilões: vencedor, valor e status do pagamento.</p>
             </div>
-            <button onclick="abrirModal()"
+            <button onclick="carregarDados()"
                 class="bg-brand-orange text-white px-6 py-3 font-bold uppercase tracking-widest text-xs hover:bg-black transition shadow-lg">
-                <i class="fa-solid fa-plus mr-2"></i> Novo Registro
+                <i class="fa-solid fa-rotate mr-2"></i> Recarregar
             </button>
         </div>
 
@@ -92,14 +93,14 @@
                             <th class="p-4 border-b border-zinc-200">Data</th>
                             <th class="p-4 border-b border-zinc-200">Cliente</th>
                             <th class="p-4 border-b border-zinc-200">Obra</th>
-                            <th class="p-4 border-b border-zinc-200">Tiragem</th>
+                            <th class="p-4 border-b border-zinc-200">Valor</th>
                             <th class="p-4 border-b border-zinc-200">Status</th>
                             <th class="p-4 border-b border-zinc-200">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="tabela-corpo" class="text-sm">
                         <tr>
-                            <td colspan="6" class="p-8 text-center text-zinc-500">Carregando dados da planilha...</td>
+                            <td colspan="6" class="p-8 text-center text-zinc-500">Carregando dados dos leilões...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -108,63 +109,56 @@
     </main>
     </div>
 
-    <!-- Modal Novo Registro -->
+    <!-- Modal Editar Venda -->
     <div id="modal-registro"
         class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-[60] p-4">
         <div class="bg-white p-8 w-full max-w-lg shadow-2xl">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="serif text-2xl font-bold">Novo Registro</h2>
+                <h2 class="serif text-2xl font-bold">Editar Venda</h2>
                 <button onclick="fecharModal()" class="text-zinc-400 hover:text-black"><i
                         class="fa-solid fa-xmark text-xl"></i></button>
             </div>
 
             <form id="form-registro" class="space-y-4">
-                <input type="hidden" id="linha-id" value="">
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Nome do
-                        Cliente</label>
-                    <input type="text" id="cliente" required
-                        class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Obra</label>
-                    <select id="obra" required
-                        class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
-                        <option value="Casa do Vaqueiro">Casa do Vaqueiro</option>
-                        <option value="Ela e Seu Cavalo">Ela e Seu Cavalo</option>
-                        <!-- Adicione outras obras aqui -->
-                    </select>
+                <input type="hidden" id="lote-id" value="">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Cliente</label>
+                        <p id="venda-cliente" class="p-3 border border-zinc-300 bg-zinc-50 text-sm"></p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Obra</label>
+                        <p id="venda-obra" class="p-3 border border-zinc-300 bg-zinc-50 text-sm"></p>
+                    </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Tiragem (Ex:
-                            1/10)</label>
-                        <input type="text" id="tiragem" required
-                            class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Valor
+                            Arrematado</label>
+                        <p id="venda-valor" class="p-3 border border-zinc-300 bg-zinc-50 text-sm"></p>
                     </div>
                     <div>
                         <label
                             class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Status</label>
                         <select id="status"
                             class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none">
-                            <option value="Em Andamento">Em Negociação</option>
-                            <option value="Pago">Pagamento Pendente</option>
-                            <option value="Certificado Emitido">Pagamento Efetuado</option>
-                            <option value="Enviado">Enviado Pela Gráfica</option>
-                            <option value="Entregue">Recebido Pelo Cliente</option>
-                            <option value="Cancelado"></option>
+                            <option value="aguardando_pagamento">Aguardando Pagamento</option>
+                            <option value="pago">Pago</option>
+                            <option value="enviado">Enviado</option>
+                            <option value="entregue">Entregue</option>
+                            <option value="cancelado">Cancelado</option>
                         </select>
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Observações
-                        (Endereço, WhatsApp...)</label>
+                        (WhatsApp, endereço...)</label>
                     <textarea id="observacoes" rows="3"
                         class="w-full p-3 border border-zinc-300 bg-zinc-50 focus:border-brand-orange outline-none"></textarea>
                 </div>
                 <button type="submit"
                     class="w-full bg-black text-white py-4 font-bold uppercase tracking-[0.2em] hover:bg-brand-orange transition mt-4">
-                    Salvar na Planilha
+                    Salvar Status
                 </button>
             </form>
         </div>
@@ -178,78 +172,80 @@
             overlay.classList.toggle('hidden');
         }
 
-        // Força a leitura direta do localStorage logo no início
-        let apiUrl = localStorage.getItem('leob_sheet_api') || '';
+        // ---------- Status das vendas (léxico do backend de leilões) ----------
+        const STATUS_LABEL = {
+            'aguardando_pagamento': 'Aguardando Pagamento',
+            'pago': 'Pago',
+            'enviado': 'Enviado',
+            'entregue': 'Entregue',
+            'cancelado': 'Cancelado'
+        };
 
-        function configurarAPI() {
-            // Sugere a URL atual se ela já existir
-            const url = prompt("Cole aqui a URL do seu Google Apps Script (Web App):", apiUrl || window.localStorage.getItem('leob_sheet_api'));
-
-            if (url !== null && url.trim() !== "") {
-                apiUrl = url.trim();
-                window.localStorage.setItem('leob_sheet_api', apiUrl);
-                alert("URL configurada com sucesso e salva no navegador!");
-                carregarDados();
-            } else if (url === "") {
-                // Se o usuário apagar tudo e der OK, limpa o registro
-                apiUrl = '';
-                window.localStorage.removeItem('leob_sheet_api');
-                carregarDados();
+        function statusClass(status) {
+            switch (status) {
+                case 'pago': return 'bg-green-100 text-green-800';
+                case 'entregue': return 'bg-purple-100 text-purple-800';
+                case 'enviado': return 'bg-blue-100 text-blue-800';
+                case 'cancelado': return 'bg-red-100 text-red-800';
+                default: return 'bg-yellow-100 text-yellow-800';
             }
         }
 
-        async function carregarDados() {
-            // Atualiza a variável local antes de tentar carregar, por garantia
-            apiUrl = window.localStorage.getItem('leob_sheet_api') || '';
+        function formatarData(ms) {
+            if (!ms) return '---';
+            const d = new Date(ms);
+            return isNaN(d) ? '---' : d.toLocaleDateString('pt-BR');
+        }
 
+        function formatarValor(v) {
+            if (v === null || v === undefined || isNaN(v)) return '---';
+            return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // Guarda as vendas para o modal de edição encontrar pelo lote_id
+        let vendasCache = [];
+
+        async function carregarDados() {
             const tbody = document.getElementById('tabela-corpo');
-            if (!apiUrl) {
-                tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-brand-orange font-bold">⚠️ Clique em "Configurar Planilha" no topo para conectar seu Google Sheets.</td></tr>';
+            if (!window.LEILOES || !window.LEILOES.api) {
+                tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-brand-orange font-bold">Configuração dos leilões ausente (js/config-leiloes.js).</td></tr>';
                 return;
             }
 
             tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-zinc-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Carregando...</td></tr>';
 
             try {
-                const response = await fetch(apiUrl);
+                const response = await fetch(window.LEILOES.api + '?action=vendas');
+                if (!response.ok) throw new Error('HTTP ' + response.status);
                 const dados = await response.json();
+                if (!dados || !dados.ok || !Array.isArray(dados.vendas)) throw new Error('Resposta inesperada do backend');
 
-                if (!dados || dados.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-zinc-500">Nenhum registro encontrado na planilha.</td></tr>';
+                vendasCache = dados.vendas;
+
+                if (dados.vendas.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-zinc-500">Nada por aqui ainda.</td></tr>';
                     return;
                 }
 
                 tbody.innerHTML = '';
-                dados.forEach((linha, index) => {
-                    let statusColor = 'bg-zinc-200 text-zinc-700';
-                    if (linha.Status === 'Pago') statusColor = 'bg-green-100 text-green-800';
-                    if (linha.Status === 'Certificado Emitido') statusColor = 'bg-yellow-100 text-yellow-800';
-                    if (linha.Status === 'Enviado') statusColor = 'bg-blue-100 text-blue-800';
-                    if (linha.Status === 'Entregue') statusColor = 'bg-purple-100 text-purple-800';
-
-                    // Evita quebras se a data vier inválida ou vazia
-                    let dataFormatada = '---';
-                    if (linha.Data) {
-                        const dataObj = new Date(linha.Data);
-                        if (!isNaN(dataObj)) {
-                            dataFormatada = dataObj.toLocaleDateString('pt-BR');
-                        }
-                    }
-
-                    const dadosJSON = encodeURIComponent(JSON.stringify({ ...linha, index: index + 2 }));
+                dados.vendas.forEach((v) => {
+                    const status = v.status_pagamento || 'aguardando_pagamento';
+                    const obs = (v.obs || '').trim();
+                    const vencedor = v.vencedor || {};
+                    const contato = (vencedor.whatsapp || '') + (vencedor.cidade ? ' · ' + vencedor.cidade + (vencedor.uf ? '/' + vencedor.uf : '') : '');
 
                     tbody.innerHTML += `
                         <tr class="hover:bg-zinc-50 transition border-b border-zinc-100">
-                            <td class="p-4">${dataFormatada}</td>
+                            <td class="p-4">${formatarData(v.arremate_em)}</td>
                             <td class="p-4 font-bold">
-                                ${linha.Cliente || 'Sem Nome'}
-                                <div class="text-[10px] font-normal text-zinc-500 mt-1 truncate max-w-[150px]">${linha.Observacoes || ''}</div>
+                                ${vencedor.nome || '?'}
+                                <div class="text-[10px] font-normal text-zinc-500 mt-1 truncate max-w-[150px]">${obs || contato}</div>
                             </td>
-                            <td class="p-4">${linha.Obra || '---'}</td>
-                            <td class="p-4"><span class="bg-black text-white px-2 py-1 text-xs font-bold tracking-widest">${linha.Tiragem || '---'}</span></td>
-                            <td class="p-4"><span class="px-2 py-1 text-xs font-bold uppercase tracking-wider ${statusColor}">${linha.Status || 'Pendente'}</span></td>
+                            <td class="p-4">${v.titulo || '---'}</td>
+                            <td class="p-4 font-semibold">${formatarValor(v.valor_final)}</td>
+                            <td class="p-4"><span class="px-2 py-1 text-xs font-bold uppercase tracking-wider ${statusClass(status)}">${STATUS_LABEL[status] || status}</span></td>
                             <td class="p-4">
-                                <button onclick="editarRegistro('${dadosJSON}')" class="text-zinc-400 hover:text-brand-orange transition px-2 py-1" title="Editar">
+                                <button onclick="editarVenda('${v.lote_id}')" class="text-zinc-400 hover:text-brand-orange transition px-2 py-1" title="Editar status">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
                             </td>
@@ -258,15 +254,31 @@
                 });
             } catch (error) {
                 console.error(error);
-                tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-red-500">Erro ao carregar os dados. Verifique a URL do Google Script ou se as permissões de CORS estão corretas.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-red-500">Erro ao conectar com o backend dos leilões. Verifique o Web App e tente novamente.</td></tr>';
             }
+        }
+
+        function editarVenda(loteId) {
+            const v = vendasCache.find(x => String(x.lote_id) === String(loteId));
+            if (!v) return;
+            const vencedor = v.vencedor || {};
+            document.getElementById('lote-id').value = v.lote_id || '';
+            document.getElementById('venda-cliente').innerText = (vencedor.nome || '?') + (vencedor.whatsapp ? ' · ' + vencedor.whatsapp : '');
+            document.getElementById('venda-obra').innerText = v.titulo || '---';
+            document.getElementById('venda-valor').innerText = formatarValor(v.valor_final);
+            document.getElementById('status').value = v.status_pagamento || 'aguardando_pagamento';
+            document.getElementById('observacoes').value = v.obs || '';
+            document.getElementById('modal-registro').classList.remove('hidden');
+        }
+
+        function fecharModal() {
+            document.getElementById('modal-registro').classList.add('hidden');
         }
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
-            // Garante que pega a API atualizada do localStorage na hora de salvar
-            apiUrl = window.localStorage.getItem('leob_sheet_api') || '';
-            if (!apiUrl) return alert("Configure a URL da planilha primeiro!");
+            const loteId = document.getElementById('lote-id').value;
+            if (!loteId || !window.LEILOES || !window.LEILOES.api) return;
 
             const btn = e.target.querySelector('button');
             const textoOriginal = btn.innerText;
@@ -274,63 +286,35 @@
             btn.disabled = true;
 
             const dados = {
-                action: document.getElementById('linha-id').value ? 'edit' : 'add',
-                row: document.getElementById('linha-id').value,
-                Cliente: document.getElementById('cliente').value,
-                Obra: document.getElementById('obra').value,
-                Tiragem: document.getElementById('tiragem').value,
-                Status: document.getElementById('status').value,
-                Observacoes: document.getElementById('observacoes').value
+                action: 'setStatus',
+                lote_id: loteId,
+                status_pagamento: document.getElementById('status').value,
+                obs: document.getElementById('observacoes').value
             };
 
             try {
-                await fetch(apiUrl, {
+                await fetch(window.LEILOES.api, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(dados)
                 });
 
                 fecharModal();
                 e.target.reset();
-                alert("Registro enviado com sucesso!");
-
+                alert('Status salvo!');
                 setTimeout(carregarDados, 2000);
             } catch (error) {
-                alert("Erro ao salvar. Tente novamente.");
+                console.error(error);
+                alert('Erro ao salvar. Tente novamente.');
             } finally {
                 btn.innerText = textoOriginal;
                 btn.disabled = false;
             }
         });
 
-        function abrirModal() {
-            document.getElementById('form-registro').reset();
-            document.getElementById('linha-id').value = '';
-            document.querySelector('#modal-registro h2').innerText = 'Novo Registro';
-            document.getElementById('modal-registro').classList.remove('hidden');
-        }
-
-        function fecharModal() { document.getElementById('modal-registro').classList.add('hidden'); }
-
-        function editarRegistro(dadosJSON) {
-            const dados = JSON.parse(decodeURIComponent(dadosJSON));
-
-            document.getElementById('linha-id').value = dados.index;
-            document.getElementById('cliente').value = dados.Cliente || '';
-            document.getElementById('obra').value = dados.Obra || '';
-            document.getElementById('tiragem').value = dados.Tiragem || '';
-            document.getElementById('status').value = dados.Status || 'Pago';
-            document.getElementById('observacoes').value = dados.Observacoes || '';
-
-            document.querySelector('#modal-registro h2').innerText = 'Editar Registro';
-            document.getElementById('modal-registro').classList.remove('hidden');
-        }
-
-        // Executa a carga inicial assegurando que o DOM está pronto e buscando do localstorage atualizado
-        window.addEventListener('DOMContentLoaded', () => {
-            carregarDados();
-        });
+        // Executa a carga inicial assegurando que o DOM está pronto
+        window.addEventListener('DOMContentLoaded', carregarDados);
     </script>
 </body>
 

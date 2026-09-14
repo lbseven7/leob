@@ -275,6 +275,7 @@ function doGet(e) {
     if (action === 'lance') return json(fazerLance(p));
     if (action === 'registrar') return json(registrar(p));
     if (action === 'lotes') return json(listarLotes());
+    if (action === 'vendas') return json(listarVendas());
     if (action === 'admin') return json(adminData());
     return json({ ok: false, motivo: 'Ação desconhecida' });
   } catch (err) {
@@ -547,6 +548,49 @@ function listarLotes() {
   return resultado;
 }
 
+// ---------- Vendas (painel de Controle de Vendas e Entregas) ----------
+function listarVendas() {
+  var key = PREFIXO_CACHE + 'vendas';
+  var cache = CacheService.getScriptCache();
+  var cacheado = cache.get(key);
+  if (cacheado) return JSON.parse(cacheado);
+
+  var lotes = lerLinhas(ABA_LOTES);
+  var participantes = lerLinhas(ABA_PARTICIPANTES);
+  var agora = Date.now();
+  var partPorId = {};
+  participantes.forEach(function (p) { if (p.id) partPorId[String(p.id)] = p; });
+
+  var vendas = lotes.filter(function (l) { return l.id && l.vencedor_id; }).map(function (l) {
+    var p = partPorId[String(l.vencedor_id)] || null;
+    return {
+      lote_id: l.id,
+      titulo: l.titulo_pt,
+      titulo_en: l.titulo_en,
+      tecnica: l.tecnica,
+      imagem_url: l.imagem_url,
+      vencedor: {
+        id: l.vencedor_id,
+        nome: p ? p.nome : '?',
+        whatsapp: p ? p.whatsapp : '',
+        cidade: p ? p.cidade : '',
+        uf: p ? p.uf : ''
+      },
+      valor_final: toNum(l.valor_final),
+      status_pagamento: l.status_pagamento || 'aguardando_pagamento',
+      obs: l.obs || '',
+      estado: estadoDerivado(l, agora),
+      arremate_em: parseMs(l.fim)
+    };
+  });
+
+  vendas.sort(function (a, b) { return (a.arremate_em || 0) - (b.arremate_em || 0); });
+
+  var resultado = { ok: true, vendas: vendas };
+  cache.put(key, JSON.stringify(resultado), CACHE_TTL_SEG);
+  return resultado;
+}
+
 // ---------- Admin ----------
 function adminData() {
   var key = PREFIXO_CACHE + 'admin';
@@ -670,6 +714,10 @@ function setStatus(dados) {
   var status = String(dados.status_pagamento || '');
   if (!loteId || !status) return { ok: false, motivo: 'Parâmetros inválidos.' };
   atualizarCampo(ABA_LOTES, loteId, 'status_pagamento', status);
+  // Obs opcional — usada pelo painel de vendas e entregas
+  if (dados.obs !== undefined && dados.obs !== null) {
+    atualizarCampo(ABA_LOTES, loteId, 'obs', String(dados.obs).trim());
+  }
   var cache = CacheService.getScriptCache();
   cache.remove(PREFIXO_CACHE + 'estado_' + loteId);
   limparCachesPublicos();
@@ -737,6 +785,7 @@ function limparCachesPublicos() {
   var cache = CacheService.getScriptCache();
   cache.remove(PREFIXO_CACHE + 'admin');
   cache.remove(PREFIXO_CACHE + 'lista_lotes');
+  cache.remove(PREFIXO_CACHE + 'vendas');
 }
 
 // ---------- Menu no editor do Apps Script ----------
