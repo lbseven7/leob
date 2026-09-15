@@ -547,6 +547,7 @@
 
   function renderLeilao(d) {
     var l = d.lote;
+    window.loteAtual = l;
     var titulo = (_lang() === 'en' && l.titulo_en) ? l.titulo_en : l.titulo_pt;
     document.title = titulo + ' | Leilão leob.';
 
