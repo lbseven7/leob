@@ -225,7 +225,7 @@
     var valorStr = (+valor).toFixed(2);
     var ps = '';
     ps += campo('00', '01');
-    ps += campo('26', '00' + 'br.gov.bcb.pix' + campo('01', cfg.chave));
+    ps += campo('26', campo('00', 'br.gov.bcb.pix') + campo('01', cfg.chave));
     ps += campo('52', '0000');
     ps += campo('53', '986');
     ps += campo('54', valorStr);
