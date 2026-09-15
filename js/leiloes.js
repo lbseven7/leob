@@ -51,6 +51,7 @@
       telefoneInvalido: 'Informe um celular válido com DDD (ex: 73 99911-2233).',
       telefoneRepetido: 'Este número já está cadastrado. Use outro número para participar.',
       valorInvalido: 'Informe um valor válido.',
+      lanceMinimo: 'O lance deve ser maior que R$ 30,00.',
       semLeiloes: 'Nenhum leilão agendado no momento.',
       aceiteRegras: 'Ao participar, aceito as regras do leilão.',
       regrasFreteOk: 'Vencedores fora da região arcam com o frete de envio.'
@@ -100,6 +101,7 @@
       telefoneInvalido: 'Enter a valid mobile number with area code (e.g. 73 99911-2233).',
       telefoneRepetido: 'This number is already registered. Use another number to join.',
       valorInvalido: 'Enter a valid amount.',
+      lanceMinimo: 'The bid must be higher than R$ 30.00.',
       semLeiloes: 'No auctions scheduled right now.',
       aceiteRegras: 'By joining, I accept the auction rules.',
       regrasFreteOk: 'Winners outside the region pay the shipping costs.'
@@ -676,7 +678,7 @@
     if (d.lote.estado !== 'aberto') { input.disabled = true; return; }
     input.disabled = false;
     var minimo = d.lanceMaximo !== null ? d.lanceMaximo + d.lote.incremento : d.lote.lance_inicial;
-    input.placeholder = formatarMoeda(minimo) + ' ou mais';
+    input.placeholder = 'Meu lance';
     $('lance-msg').innerText = '';
     $('lance-hint') ? $('lance-hint').innerText = L('agoraPodeLance') + ' ' + L('lanceInicial') + ': ' + formatarMoeda(minimo) : '';
   }
@@ -723,6 +725,12 @@
       if (msgEl) { msgEl.classList.remove('hidden'); msgEl.classList.add('text-red-500'); msgEl.innerText = L('valorInvalido') || 'Informe um valor válido.'; }
       return;
     }
+    // Piso do lance: não permite valor igual ou abaixo do lance inicial (R$ 30)
+    var limite = (estadoAtual && estadoAtual.lote && estadoAtual.lote.lance_inicial) || 30;
+    if (valorNum <= limite) {
+      if (msgEl) { msgEl.classList.remove('hidden'); msgEl.classList.remove('text-green-600'); msgEl.classList.add('text-red-500'); msgEl.innerText = L('lanceMinimo') || ('O lance deve ser maior que ' + formatarMoeda(limite) + '.'); }
+      return;
+    }
     var p = getParticipante();
     if (!p) { abrirRegistro(); return; }
 
@@ -740,7 +748,7 @@
           buscarEstado();
         } else {
           if (msgEl) { msgEl.classList.add('text-red-500'); msgEl.classList.remove('text-green-600'); msgEl.innerText = d.motivo || L('erroLance'); }
-          if (d.minimoNecessario) input.placeholder = formatarMoeda(d.minimoNecessario) + ' ou mais';
+          if (d.minimoNecessario) input.placeholder = 'Meu lance';
           if (d.motivo && d.motivo.indexOf('Cadastre') !== -1) {
             // Participante foi apagado no servidor (ou o ID é de outra planilha):
             // remove o "participante fantasma" do localStorage e pede recadastro.
