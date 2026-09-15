@@ -277,6 +277,32 @@
         var _carregando = false;
         var _falhasConsecutivas = 0;
 
+        var CACHE_LOCAL_KEY = 'leob_admin_cache';
+
+        function renderTudo() {
+            renderResumo();
+            renderLotes();
+            renderLances();
+            renderParticipantes();
+        }
+
+        function salvarCacheLocal() {
+            try { localStorage.setItem(CACHE_LOCAL_KEY, JSON.stringify(dadosAtuais)); } catch (e) { }
+        }
+        function lerCacheLocal() {
+            try { return JSON.parse(localStorage.getItem(CACHE_LOCAL_KEY)); } catch (e) { return null; }
+        }
+
+        // Mostra os dados da última visita imediatamente (sem esperar o servidor),
+        // depois o carregamento real atualiza tudo em segundo plano.
+        function usarCacheLocal() {
+            var cache = lerCacheLocal();
+            if (cache && cache.ok && cache.lotes && cache.lotes.length) {
+                dadosAtuais = cache;
+                renderTudo();
+            }
+        }
+
         async function carregarDados() {
             apiUrl = localStorage.getItem('leob_leiloes_api') || '';
             var aviso = document.getElementById('aviso-config');
@@ -289,11 +315,9 @@
                 var dados = await buscarAdminComRetry();
                 if (!dados.ok) throw new Error(dados.motivo || 'Resposta inválida');
                 dadosAtuais = dados;
+                salvarCacheLocal();
                 _falhasConsecutivas = 0;
-                renderResumo();
-                renderLotes();
-                renderLances();
-                renderParticipantes();
+                renderTudo();
             } catch (e) {
                 console.error(e);
                 _falhasConsecutivas++;
@@ -498,14 +522,20 @@
 
             fetch(apiUrl, {
                 method: 'POST',
-                mode: 'no-cors',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify(payload)
-            }).then(function () {
-                fecharModalLote();
-                setTimeout(carregarDados, 2500);
-            }).catch(function () {
-                alert('Erro ao salvar. Tente novamente.');
+            }).then(function (resp) {
+                return resp.json();
+            }).then(function (dados) {
+                if (dados && dados.ok) {
+                    fecharModalLote();
+                    carregarDados();
+                } else {
+                    alert('Erro ao salvar: ' + (dados.motivo || 'Resposta inválida do servidor.'));
+                }
+            }).catch(function (e) {
+                console.error('Salvar lote:', e);
+                alert('Erro ao salvar. Verifique a conexão e a URL do Apps Script.');
             }).finally(function () {
                 btn.disabled = false;
                 btn.innerText = original;
@@ -515,12 +545,18 @@
         function setStatus(loteId, status) {
             fetch(apiUrl, {
                 method: 'POST',
-                mode: 'no-cors',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({ action: 'setStatus', lote_id: loteId, status_pagamento: status })
-            }).then(function () {
-                setTimeout(carregarDados, 1500);
-            }).catch(function () {
+            }).then(function (resp) {
+                return resp.json();
+            }).then(function (dados) {
+                if (dados && dados.ok) {
+                    carregarDados();
+                } else {
+                    alert('Erro ao atualizar status: ' + (dados.motivo || ''));
+                }
+            }).catch(function (e) {
+                console.error('setStatus:', e);
                 alert('Erro ao atualizar status.');
             });
         }
@@ -529,12 +565,18 @@
             if (!confirm('Remover este lote definitivamente?')) return;
             fetch(apiUrl, {
                 method: 'POST',
-                mode: 'no-cors',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({ action: 'deleteLote', lote_id: loteId })
-            }).then(function () {
-                setTimeout(carregarDados, 1500);
-            }).catch(function () {
+            }).then(function (resp) {
+                return resp.json();
+            }).then(function (dados) {
+                if (dados && dados.ok) {
+                    carregarDados();
+                } else {
+                    alert('Erro ao remover: ' + (dados.motivo || ''));
+                }
+            }).catch(function (e) {
+                console.error('removerLote:', e);
                 alert('Erro ao remover.');
             });
         }
@@ -543,12 +585,18 @@
             if (!confirm('Remover este lance?')) return;
             fetch(apiUrl, {
                 method: 'POST',
-                mode: 'no-cors',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({ action: 'deleteLance', lance_id: lanceId })
-            }).then(function () {
-                setTimeout(carregarDados, 1500);
-            }).catch(function () {
+            }).then(function (resp) {
+                return resp.json();
+            }).then(function (dados) {
+                if (dados && dados.ok) {
+                    carregarDados();
+                } else {
+                    alert('Erro ao remover lance: ' + (dados.motivo || ''));
+                }
+            }).catch(function (e) {
+                console.error('removerLance:', e);
                 alert('Erro ao remover lance.');
             });
         }
@@ -557,17 +605,24 @@
             if (!confirm('Remover este participante e seus lances?')) return;
             fetch(apiUrl, {
                 method: 'POST',
-                mode: 'no-cors',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({ action: 'deleteParticipante', participante_id: participanteId })
-            }).then(function () {
-                setTimeout(carregarDados, 1500);
-            }).catch(function () {
+            }).then(function (resp) {
+                return resp.json();
+            }).then(function (dados) {
+                if (dados && dados.ok) {
+                    carregarDados();
+                } else {
+                    alert('Erro ao remover participante: ' + (dados.motivo || ''));
+                }
+            }).catch(function (e) {
+                console.error('removerParticipante:', e);
                 alert('Erro ao remover participante.');
             });
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+            usarCacheLocal();
             carregarDados();
             // atualiza periodicamente (lances ao vivo)
             var poll = setInterval(function () {

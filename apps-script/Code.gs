@@ -653,7 +653,10 @@ function adminData() {
   });
 
   var resultado = { ok: true, lotes: lotesApi, participantes: participantes, lances: lancesApi };
-  cache.put(key, JSON.stringify(resultado), 6);
+  // Cache maior que o polling do admin (10s): a maioria dos polls serve do cache,
+  // evitando reler as 3 planilhas a cada chamada. POSTs (salvar/editar/remover)
+  // limpam esse cache via limparCachesPublicos(), então os dados nunca ficam velhos.
+  cache.put(key, JSON.stringify(resultado), 20);
   return resultado;
 }
 
