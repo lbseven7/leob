@@ -14,7 +14,7 @@ window.LEILOES = {
   },
 
   // WhatsApp de contato do leiloeiro (só números, com DDD)
-  whatsapp: '5573988279832',
+  whatsapp: '5573991182932',
 
   // Cidade/região de origem (para as regras de frete)
   cidadeLeiloeiro: 'Jaguaquara',

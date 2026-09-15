@@ -204,7 +204,7 @@ function openModal(obra) {
 
         helper.innerText = currentLang === 'pt' ? 'Você será direcionado para uma página segura para iniciar sua reserva.' : 'You will be redirected to a secure checkout page to begin your order.';
         btnPayment.innerText = currentLang === 'pt' ? 'Verificar Disponibilidade' : 'Check Availability';
-        btnPayment.href = `https://wa.me/5573988279832?text=${encodeURIComponent(disponibilidadeMsg)}`;
+        btnPayment.href = `https://wa.me/5573991182932?text=${encodeURIComponent(disponibilidadeMsg)}`;
         btnPayment.className = 'inline-flex items-center justify-center w-full bg-black text-white text-center py-4 px-6 font-semibold uppercase tracking-[0.22em] hover:bg-brand-orange transition duration-300 shadow-md';
         btnPayment.setAttribute('target', '_blank');
     }
