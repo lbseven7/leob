@@ -278,7 +278,19 @@
   };
 
   window.abrirWhatsLeiloeiro = function () {
-    window.open('https://wa.me/' + CFG.whatsapp + '?text=' + encodeURIComponent('Olá Leo! Tenho interesse no leilão.'), '_blank');
+    var l = window.loteAtual;
+    var msg = 'Olá Leo!';
+    if (l && (l.titulo_pt || l.titulo_en)) {
+      var titulo = (_lang() === 'en' && l.titulo_en) ? l.titulo_en : l.titulo_pt;
+      msg += ' Fui o vencedor do lote "' + titulo + '"';
+      if (window.__pixValor !== undefined && window.__pixValor !== null) {
+        msg += ' no valor de ' + formatarMoeda(window.__pixValor);
+      }
+      msg += ' e quero finalizar a compra.';
+    } else {
+      msg += ' Tenho interesse no leilão.';
+    }
+    window.open('https://wa.me/' + CFG.whatsapp + '?text=' + encodeURIComponent(msg), '_blank');
   };
 
   // ---------- Registro ----------
