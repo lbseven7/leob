@@ -82,6 +82,24 @@ const bastidores = [
         tipo: "Bastidores",
         titulo: "Baruque em Destaque",
         data: "Mai 2026"
+    },
+    {
+        imagem: "../images/site-images/leob-2 (1).jpg",
+        tipo: "Bastidores",
+        titulo: "Impressão fineart by Stúdio Cláudio Colavolpe em Salvador-BA",
+        data: "Set 2026"
+    },
+    {
+        imagem: "../images/site-images/lb-cv.jpg",
+        tipo: "Bastidores",
+        titulo: "Impressão fineart by Stúdio Cláudio Colavolpe em Salvador-BA",
+        data: "Set 2026"
+    },
+    {
+        imagem: "../images/site-images/leob-ec.jpg",
+        tipo: "Bastidores",
+        titulo: "Impressão fineart by Stúdio Cláudio Colavolpe em Salvador-BA",
+        data: "Set 2026"
     }
 ];
 
