@@ -15,13 +15,13 @@ function toggleTheme() {
 const obras = [
     {
         id: 1,
-        img: "images/casa-do-vaqueiro.jpg",
+        img: "images/site-images/cv.jpg",
         categoria: "disponível",
         restante: 30,
         total: 30,
         linkPayment: null,
         pt: {
-            titulo: "Série Fazenda Ouro Verde",
+            titulo: "Casa de Vaqueiro",
             tecnica: "Papel Ultra Smooth",
             dimensoes: "20x28cm",
             valor: "R$ 1.200"
@@ -35,7 +35,7 @@ const obras = [
     },
     {
         id: 2,
-        img: "images/ela-e-seu-cavalo.jpg",
+        img: "images/site-images/ec.jpg",
         categoria: "disponível",
         restante: 30,
         total: 30,
