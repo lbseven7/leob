@@ -52,7 +52,6 @@
             cursor: pointer;
         }
 
-        /* Estrutura Responsiva */
         .certificado-wrapper {
             width: 100%;
             max-width: 1060px;
@@ -64,14 +63,18 @@
         #certificado-area {
             width: 1060px;
             height: 750px;
-            background: #ffffff url('../images/selo-transp.png') center center / contain no-repeat;
+            background: #ffffff;
             display: flex;
+            flex-direction: column;
             box-sizing: border-box;
             position: absolute;
             top: 0;
             left: 0;
             transform-origin: top left;
             transform: scale(calc(var(--certificado-scale, 1)));
+            padding: 40px 45px 35px;
+            position: relative;
+            overflow: hidden;
         }
 
         .marca-dagua {
@@ -79,206 +82,262 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 520px;
-            height: 520px;
+            width: 700px;
+            height: 700px;
             object-fit: contain;
-            /* opacity: 0.1; */
+            opacity: 0.08;
             pointer-events: none;
             z-index: 0;
         }
 
-        .col-esq {
-            width: 430px;
-            min-width: 430px;
-            padding: 42px 36px 34px 42px;
+        /* CABEÇALHO */
+        .cabecalho {
             display: flex;
-            flex-direction: column;
+            align-items: flex-start;
             position: relative;
             z-index: 1;
-        }
-
-        .divisoria {
-            width: 1px;
-            background: #c0b898;
-            margin: 28px 0;
-            flex-shrink: 0;
-            position: relative;
-            z-index: 1;
-        }
-
-        .col-dir {
-            flex: 1;
-            padding: 42px 42px 34px 36px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 1;
-        }
-
-        .logo img {
-            width: 150px;
-            height: auto;
-            margin-bottom: 50px;
-        }
-
-        .dados-obra {
-            font-size: 12px;
-            line-height: 2;
-            color: #1a1a1a;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
             margin-bottom: 30px;
         }
 
-        .dados-obra .val {
-            color: #c47f17;
-            font-weight: 600;
-        }
-
-        .secao-titulo {
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: #1a1a1a;
-            margin-bottom: 5px;
-        }
-
-        .secao-corpo {
-            font-size: 12px;
-            line-height: 1.95;
-            color: #1a1a1a;
-            font-weight: 400;
-            letter-spacing: 0.4px;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-        }
-
-        .secao-corpo .val {
-            color: #c47f17;
-            font-weight: 600;
-        }
-
-        .secao-corpo ul {
-            list-style: disc;
-            padding-left: 16px;
-        }
-
-        .rodape-esq {
-            margin-top: auto;
-            display: flex;
-            align-items: flex-end;
-            gap: 28px;
-        }
-
-        .qr-label {
-            font-size: 8.5px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: #1a1a1a;
-            margin-bottom: 6px;
-        }
-
-        #qrcode-img {
-            width: 110px;
-            height: 110px;
-            border: 1px solid #ccc;
-            padding: 4px;
-            background: white;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .selo {
-            width: 110px;
-            height: 110px;
-            flex-shrink: 0;
-        }
-
-        .selo-img {
+        .logo-area {
             width: 200px;
+        }
+
+        .logo-area img {
+            width: 140px;
             height: auto;
-            display: block;
-            object-fit: contain;
+        }
+
+        .titulo-area {
+            flex: 1;
+            text-align: center;
         }
 
         .titulo-cert {
             font-family: 'Playfair Display', serif;
-            font-size: 24px;
+            font-size: 30px;
             font-weight: 700;
             color: #1a1a1a;
-            letter-spacing: 2.5px;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            margin-bottom: 20px;
-            line-height: 1.25;
+            line-height: 1.1;
         }
 
-        .declaracao {
-            font-size: 10.5px;
-            line-height: 1.95;
-            color: #1a1a1a;
-            text-align: justify;
-            margin-bottom: 18px;
+        .subtitulo-cert {
+            font-size: 14px;
+            font-weight: 300;
+            color: #999;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-top: 4px;
         }
 
-        .obra-frame {
-            flex: 1;
+        /* CORPO - 3 COLUNAS */
+        .corpo {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 18px;
+            flex: 1;
+            gap: 25px;
+            position: relative;
+            z-index: 1;
         }
 
-        #obra-img {
-            max-width: 100%;
-            max-height: 280px;
-            object-fit: cover;
+        .col-esq {
+            width: 28%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .col-meio {
+            width: 37%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .col-dir {
+            width: 35%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .texto-declaracao {
+            font-size: 11px;
+            line-height: 1.7;
+            color: #333;
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+
+        .texto-declaracao strong {
+            color: #1a1a1a;
+        }
+
+        .texto-parabens {
+            font-size: 11px;
+            line-height: 1.7;
+            color: #333;
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+
+        .qr-texto {
+            font-size: 11px;
+            line-height: 1.7;
+            color: #333;
+            text-align: justify;
+            margin-bottom: 12px;
+        }
+
+        .qr-texto strong {
+            color: #1a1a1a;
+        }
+
+        #qrcode-img {
+            width: 130px;
+            height: 130px;
+            border: 1px solid #ccc;
+            padding: 4px;
+            background: white;
             display: block;
         }
 
-        .rodape-dir {
-            margin-top: auto;
-        }
-
-        .linha-data {
-            font-size: 15px;
-            color: #1a1a1a;
-            margin-bottom: 26px;
-            letter-spacing: 3px;
-        }
-
-        .sublinhado {
-            display: inline-block;
-            border-bottom: 1px solid #1a1a1a;
-            min-width: 130px;
-        }
-
-        .sublinhado-sm {
-            display: inline-block;
-            border-bottom: 1px solid #1a1a1a;
-            min-width: 45px;
-        }
-
-        .assinatura-bloco {
-            border-top: 1px solid #1a1a1a;
-            padding-top: 6px;
-            text-align: center;
-            font-size: 9px;
+        /* COLUNA MEIO - DADOS DA OBRA */
+        .secao-titulo {
+            font-size: 11px;
             font-weight: 700;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             text-transform: uppercase;
             color: #1a1a1a;
+            margin-bottom: 8px;
+            margin-top: 4px;
+        }
+
+        .dados-linha {
+            font-size: 11px;
+            line-height: 1.8;
+            color: #333;
+            text-transform: uppercase;
+        }
+
+        .dados-linha .label {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .dados-linha .val {
+            color: #c47f17;
+            font-weight: 600;
+        }
+
+        .acabamento-lista {
+            list-style: disc;
+            padding-left: 16px;
+            font-size: 11px;
+            line-height: 1.8;
+            color: #333;
+            text-transform: uppercase;
+        }
+
+        .acabamento-lista .val {
+            color: #c47f17;
+            font-weight: 600;
+        }
+
+        /* COLUNA DIREITA - IMAGEM DA OBRA */
+        .obra-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .moldura {
+            width: 100%;
+            background: linear-gradient(135deg, #5a3a1a, #3d2510, #5a3a1a);
+            padding: 12px;
+            border-radius: 2px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .paspatuur {
+            background: #f5f5f0;
+            padding: 10px;
+        }
+
+        #obra-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .selo-holografico {
+            position: absolute;
+            bottom: -15px;
+            right: -15px;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #ffd700, #c47f17, #8b5a00, #c47f17);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .selo-holografico::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.3), transparent, rgba(255,255,255,0.2), transparent);
+            animation: none;
+        }
+
+        .selo-holografico span {
+            position: relative;
+            z-index: 1;
+            font-size: 7px;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            line-height: 1.2;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* RODAPÉ */
+        .rodape {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            margin-top: 20px;
+        }
+
+        .assinatura-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .assinatura-img {
-            width: 50px;
-            height: auto;
-            /* margin-bottom: 12px; */
-            margin-left: 250px;
-            margin-right: auto;
+            height: 45px;
+            width: auto;
+            margin-bottom: 2px;
+        }
+
+        .linha-assinatura {
+            width: 250px;
+            height: 1px;
+            background: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .linha-data {
+            font-size: 11px;
+            color: #1a1a1a;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -294,57 +353,80 @@
 
     <div class="certificado-wrapper">
         <div id="certificado-area">
-            <!-- <img src="../images/selo-transp.png" class="marca-dagua" alt=""> -->
-            <div class="col-esq">
-                <div class="logo">
-                    <img src="../images/logo-white (1).png" alt="Logo">
+            <img src="../images/selo-transp.png" class="marca-dagua" alt="">
+
+            <!-- CABEÇALHO -->
+            <div class="cabecalho">
+                <div class="logo-area">
+                    <img src="../images/logo-ouro (1).png" alt="Leo Barbosa Art Studio">
+                </div>
+                <div class="titulo-area">
+                    <h1 class="titulo-cert">Certificado de Autenticidade</h1>
+                    <p class="subtitulo-cert">Certificate of Authenticity</p>
+                </div>
+            </div>
+
+            <!-- CORPO -->
+            <div class="corpo">
+                <!-- COLUNA ESQUERDA -->
+                <div class="col-esq">
+                    <p class="texto-declaracao">
+                        Eu, <strong>Leo Barbosa</strong>, artista autodidata, declaro que a obra supracitada é original e de minha autoria. Este certificado atesta a qualidade dos materiais utilizados e a procedência da peça, garantindo sua integridade para colecionadores e apreciadores de arte.
+                    </p>
+                    <p class="texto-parabens">
+                        <strong>Parabéns pelo seu investimento.</strong> Você tem o privilégio de possuir uma obra de arte única e genuína com produção exclusiva e limitada a <strong>30 exemplares impressos</strong>.
+                    </p>
+                    <p class="qr-texto">
+                        Para visualizar/imprimir o seu certificado, <strong>acesse o QRCode abaixo</strong>:
+                    </p>
+                    <img id="qrcode-img" src="../qrcode/ELA-E-SEU-CAVALO/ESC_lb-2026-001.png" alt="QR Code">
                 </div>
 
-                <div class="secao-titulo">Descrição Técnica</div>
-                <div class="secao-corpo">
-                    DIMENSÕES: <span id="d-dimensoes" class="val">29,7 X 42 CM</span><br>
-                    SUPORTE: <span id="d-suporte" class="val">IMPRESSÃO EM PAPEL SMOOTH ULTRA</span><br>
-                    TÉCNICA DE IMPRESSÃO: <span id="d-tecnica" class="val">TINTA PIGMENTADA</span><br>
-                    LONGEVIDADE: <span class="val">DURABILIDADE DE ATÉ 200 ANOS</span>
-                </div>
-                <div class="secao-titulo">Acabamento e Apresentação</div>
-                <div class="secao-corpo">
-                    <ul>
-                        <li>MOLDURA: <span class="val">INDUSTRIAL, COR MARROM ESCURO.</span></li>
-                        <li>PROTEÇÃO: <span class="val">VIDRO ARTGLASS 70%.</span></li>
-                    </ul>
-                </div>
-                <div class="rodape-esq">
-                    <div>
-                        <div class="qr-label">Verificar Certificado</div>
-                        <img id="qrcode-img" src="../qrcode/CASA-DE-VAQUEIRO/CV_lb-2026-001.png" alt="QR">
+                <!-- COLUNA MEIO -->
+                <div class="col-meio">
+                    <div class="secao-titulo">Informações da Obra</div>
+                    <div class="dados-linha">
+                        <span class="label">ARTISTA:</span> <span id="d-artista">LEO BARBOSA, 1982</span><br>
+                        <span class="label">TÍTULO DA OBRA:</span> <span id="d-titulo" class="val">ELA E SEU CAVALO</span><br>
+                        <span class="label">ANO DE EXECUÇÃO:</span> <span id="d-ano" class="val">2026</span><br>
+                        <span class="label">NÚMERO DE SÉRIE:</span> <span id="d-serie" class="val">001/30</span>
                     </div>
-                    <div class="selo">
-                        <img src="../images/Gemini_Generated_Image_8w91vi8w91vi8w91-remove-bg-io.png" class="selo-img"
-                            alt="Selo">
+
+                    <div class="secao-titulo" style="margin-top: 18px;">Acabamento e Apresentação</div>
+                    <ul class="acabamento-lista">
+                        <li>MOLDURA: <span id="d-moldura" class="val">INDUSTRIAL, TABACO, PASPATUR BRANCO, VIDRO ARTGLASS 70%.</span></li>
+                    </ul>
+
+                    <div class="secao-titulo" style="margin-top: 18px;">Descrição Técnica</div>
+                    <div class="dados-linha">
+                        <span class="label">DIMENSÕES:</span> <span id="d-dimensoes">30 X 42 CM</span><br>
+                        <span class="label">SUPORTE:</span> <span id="d-suporte" class="val">PAPEL ULTRA SMOOTH</span><br>
+                        <span class="label">TÉCNICA:</span> <span id="d-tecnica" class="val">PIGMENTADA</span>
+                    </div>
+                </div>
+
+                <!-- COLUNA DIREITA -->
+                <div class="col-dir">
+                    <div class="obra-container">
+                        <div class="moldura">
+                            <div class="paspatuur">
+                                <img id="obra-img" src="../images/ela-e-seu-cavalo.jpg" alt="Obra">
+                            </div>
+                        </div>
+                        <div class="selo-holografico">
+                            <span>Certificado<br>de<br>Autenticidade<br>LB</span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="divisoria"></div>
-            <div class="col-dir">
-                <div class="titulo-cert">Certificado de Autenticidade</div>
-                <p class="declaracao">
-                    Eu, <STRONG>LEO BARBOSA</STRONG>, artista autodidata, DECLARO que a obra supracitada é original e de
-                    minha autoria.
-                    Este certificado atesta a qualidade dos materiais utilizados e a procedência da peça, garantindo sua
-                    integridade para colecionadores e apreciadores de arte.
-                    <br>
-                    <br>
-                    UTILIZE O QRCODE PARA VERIFICAR A AUTENTICIDADE DA OBRA.
-                </p>
-                <div class="obra-frame"><img id="obra-img" src="../images/CV.jpeg" alt="Obra"></div>
-                <div class="rodape-dir">
-                    <p class="linha-data" id="data-certificado">Itaquara, _________ de ________________________ de
-                        ________________.</p>
 
-                    <img src="../images/assinatura-leob.png" class="assinatura-img" alt="Logo">
-                    <div class="assinatura-bloco">Assinatura do Artista Léo Barbosa</div>
+            <!-- RODAPÉ -->
+            <div class="rodape">
+                <div class="assinatura-area">
+                    <img src="../images/assinatura-leob.png" class="assinatura-img" alt="Assinatura">
+                    <div class="linha-assinatura"></div>
                 </div>
+                <p class="linha-data" id="data-certificado">JAGUAQUARA, 12 DE OUTUBRO DE 2026.</p>
             </div>
         </div>
     </div>
@@ -352,18 +434,23 @@
     <script>
         // ====== EDITE SÓ ISTO PARA CADA CERTIFICADO NOVO ======
         const CONFIG = {
-            artistaSigla: "lb",        // sigla do artista (fixo)
-            obraSigla: "ESC",           // sigla da obra (você escolhe, ex: CV = Casa de Vaqueiro)
-            ano: 2026,                 // ano de execução/emissão
-            numero: 1,                 // número sequencial dessa obra (1, 2, 3...)
+            artistaSigla: "lb",
+            obraSigla: "ESC",
+            ano: 2026,
+            numero: 1,
 
+            artista: "LEO BARBOSA, 1982",
             titulo: "ELA E SEU CAVALO",
-            dimensoes: "29,7 X 42 CM",
-            suporte: "IMPRESSÃO EM PAPEL SMOOTH ULTRA",
-            tecnica: "TINTA PIGMENTADA",
+            anoExecucao: "2026",
+            serie: "001/30",
+            dimensoes: "30 X 42 CM",
+            suporte: "PAPEL ULTRA SMOOTH",
+            tecnica: "PIGMENTADA",
+            moldura: "INDUSTRIAL, TABACO, PASPATUR BRANCO, VIDRO ARTGLASS 70%.",
+            cidade: "JAGUAQUARA",
 
             imagemObra: "../images/ela-e-seu-cavalo.jpg",
-            qrcodeImg: "../qrcode/ELA-SEU-CAVALO/ESC_lb-2026-001.png"
+            qrcodeImg: "../qrcode/ELA-E-SEU-CAVALO/ESC_lb-2026-001.png"
         };
         // ====== NÃO PRECISA EDITAR DAQUI PRA BAIXO ======
 
@@ -375,6 +462,11 @@
         function preencherCertificado(cfg) {
             const codigo = gerarCodigoSerie(cfg);
 
+            document.getElementById('d-artista').textContent = cfg.artista;
+            document.getElementById('d-titulo').textContent = cfg.titulo;
+            document.getElementById('d-ano').textContent = cfg.anoExecucao;
+            document.getElementById('d-serie').textContent = cfg.serie;
+            document.getElementById('d-moldura').textContent = cfg.moldura;
             document.getElementById('d-dimensoes').textContent = cfg.dimensoes;
             document.getElementById('d-suporte').textContent = cfg.suporte;
             document.getElementById('d-tecnica').textContent = cfg.tecnica;
@@ -382,9 +474,9 @@
             document.getElementById('obra-img').src = cfg.imagemObra;
             document.getElementById('qrcode-img').src = cfg.qrcodeImg;
 
-            // guarda pro nome do PDF depois
             window.__codigoCertificado = codigo;
             window.__tituloObra = cfg.titulo;
+            window.__cidadeCertificado = cfg.cidade;
         }
 
         function ajustarEscala() {
@@ -410,6 +502,36 @@
             html2pdf().set(opt).from(el).save().then(ajustarEscala);
         }
 
+        function gerarPNG() {
+            const el = document.getElementById('certificado-area');
+            el.style.transform = 'scale(1)';
+
+            // Aviso se estiver usando file:// (CORS quebra as imagens)
+            if (window.location.protocol === 'file:') {
+                alert('⚠️ Abra esta página via servidor local (não duplo clique!).\n\nUse: python -m http.server\n\nSenão as imagens não aparecem no PNG.');
+            }
+
+            html2canvas(el, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                logging: false,
+                width: 1060,
+                height: 750,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = window.__codigoCertificado + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                ajustarEscala();
+            }).catch(err => {
+                console.error('Erro ao gerar PNG:', err);
+                alert('❌ Erro ao gerar o PNG. Verifique o console.');
+                ajustarEscala();
+            });
+        }
+
         preencherCertificado(CONFIG);
         window.addEventListener('resize', ajustarEscala);
         ajustarEscala();
@@ -428,7 +550,7 @@
             const ano = hoje.getFullYear();
 
             document.getElementById("data-certificado").innerText =
-                `Itaquara, ${dia} de ${mes} de ${ano}.`;
+                `${window.__cidadeCertificado || 'JAGUAQUARA'}, ${dia} DE ${mes.toUpperCase()} DE ${ano}.`;
         });
     </script>
 

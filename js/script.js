@@ -37,7 +37,7 @@ const obras = [
         id: 2,
         img: "images/site-images/ec.jpg",
         categoria: "disponível",
-        restante: 30,
+        restante: 29,
         total: 30,
         linkPayment: null,
         pt: {

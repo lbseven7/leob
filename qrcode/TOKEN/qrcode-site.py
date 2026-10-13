@@ -48,19 +48,19 @@ if __name__ == "__main__":
         #     "nome": "CASA-DE-VAQUEIRO",
         #     "prefixo": "CV"
         # },
-        # {
-        #     "nome": "ELA-E-SEU-CAVALO", 
-        #     "prefixo": "ESC"
-        # },
         {
-            "nome": "MARKETING",
-            "prefixo": "MAR"
-        }
+             "nome": "ELA-E-SEU-CAVALO", 
+             "prefixo": "ESC"
+         },
+        # {
+        #     "nome": "MARKETING",
+        #     "prefixo": "MAR"
+        # }
     ]
 
     # Gerar QR Codes para todas as séries
     for serie in series:
         gerar_qrs_para_serie(serie["nome"], serie["prefixo"])
 
-    print("\n🎉 Todos os QR Codes gerados com sucesso!")
-    
+    print("\n🎉 Todos os QR Codes gerados com sucesso!")    
+
